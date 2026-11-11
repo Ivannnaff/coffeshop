@@ -1,3 +1,4 @@
+import { Coffee } from 'lucide-react';
 import { OrderMode } from '@/lib/api/types';
 
 interface ModeBarProps {
@@ -15,19 +16,24 @@ const options: Array<{ value: 'takeaway' | 'delivery'; label: string }> = [
 export function ModeBar({ mode, table, pending, onChange }: ModeBarProps) {
     if (mode === 'dine_in' || table) {
         return (
-            <div className="flex items-center gap-2 rounded-xl border border-brand-soft bg-brand-soft px-4 py-3">
-                <span className="text-sm font-medium text-brand">
-                    Dine-in di meja {table?.number ?? ''}
-                </span>
-                <span className="text-[13px] text-ink-muted">Mode meja tidak dapat diubah.</span>
+            <div className="flex items-center gap-3 rounded-2xl border border-brand-soft/50 bg-brand-soft/30 px-5 py-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
+                    <Coffee className="h-5 w-5" />
+                </div>
+                <div>
+                    <p className="text-sm font-semibold text-brand">
+                        Dine-in di meja {table?.number ?? ''}
+                    </p>
+                    <p className="text-[12px] text-brand-hover/70">Mode meja tidak dapat diubah.</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col gap-2">
-            <span className="text-[13px] text-ink-muted">Pilih cara pengambilan pesanan</span>
-            <div className="flex gap-2" role="group" aria-label="Mode pesanan">
+        <div className="flex flex-col gap-2.5">
+            <span className="text-[13px] font-semibold text-ink-muted uppercase tracking-wider">Cara Pengambilan</span>
+            <div className="flex gap-2 p-1 rounded-2xl border border-line bg-surface" role="group" aria-label="Mode pesanan">
                 {options.map((option) => (
                     <button
                         key={option.value}
@@ -35,10 +41,10 @@ export function ModeBar({ mode, table, pending, onChange }: ModeBarProps) {
                         aria-pressed={mode === option.value}
                         disabled={pending}
                         onClick={() => onChange(option.value)}
-                        className={`inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border px-4 text-sm font-medium transition-colors ${
+                        className={`inline-flex min-h-12 flex-1 items-center justify-center rounded-xl px-4 text-sm font-semibold transition-all duration-300 ${
                             mode === option.value
-                                ? 'border-brand bg-brand text-white'
-                                : 'border-line bg-surface text-ink hover:border-brand'
+                                ? 'bg-brand text-white shadow-sm'
+                                : 'text-ink-muted hover:text-ink'
                         }`}
                     >
                         {option.label}
