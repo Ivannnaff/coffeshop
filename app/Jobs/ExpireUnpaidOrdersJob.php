@@ -24,9 +24,11 @@ class ExpireUnpaidOrdersJob implements ShouldQueue
 
     public function handle(OrderStatusService $orderStatusService, PaymentGateway $gateway): void
     {
+        $graceSeconds = (int) config('menanti.payment.expiry_grace_seconds', 60);
+
         Order::query()
             ->where('status', OrderStatus::PendingPayment->value)
-            ->where('expires_at', '<=', now())
+            ->where('expires_at', '<=', now()->subSeconds($graceSeconds))
             ->with('payments')
             ->chunkById(100, function ($orders) use ($orderStatusService, $gateway) {
                 foreach ($orders as $order) {

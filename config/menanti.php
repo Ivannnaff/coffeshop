@@ -30,11 +30,23 @@ return [
     'menu_url' => env('MENU_URL', '/api/public/menu'),
 
     /*
+    | URL publik Reverb/WebSocket untuk CSP connect-src di production.
+    */
+    'realtime_url' => env('REVERB_PUBLIC_URL', ''),
+
+    /*
     | Pembayaran. Gateway dipilih lewat PAYMENT_GATEWAY (saat ini: midtrans).
     */
     'payment' => [
         'gateway' => env('PAYMENT_GATEWAY', 'midtrans'),
         'finish_url' => env('PAYMENT_FINISH_URL', ''),
+
+        /*
+        | Tenggang sebelum pesanan PENDING_PAYMENT dianggap kedaluwarsa.
+        | Memberi ruang bagi pembayaran yang masuk beberapa detik setelah
+        | expires_at (N-04).
+        */
+        'expiry_grace_seconds' => (int) env('PAYMENT_EXPIRY_GRACE_SECONDS', 60),
 
         'midtrans' => [
             'server_key' => env('MIDTRANS_SERVER_KEY', ''),

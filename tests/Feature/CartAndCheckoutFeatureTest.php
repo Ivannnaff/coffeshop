@@ -321,7 +321,7 @@ class CartAndCheckoutFeatureTest extends TestCase
             'delivery_discount' => 0,
             'total' => 20000,
             'min_item_price_snapshot' => 15000,
-            'expires_at' => now()->subMinute(), // sudah kedaluwarsa
+            'expires_at' => now()->subMinutes(2), // sudah melewati grace period
         ]);
 
         (new ExpireUnpaidOrdersJob)->handle(

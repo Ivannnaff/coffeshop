@@ -51,19 +51,24 @@ class OrderController extends Controller
         $cart = ResolveCart::cart($request);
         $skipped = [];
 
+        // Muat semua produk sekaligus agar reorder tidak menghasilkan N+1 query.
+        $productIds = $order->items
+            ->pluck('product_id')
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $products = Product::query()
+            ->with(['variants', 'addonGroups.addons'])
+            ->whereIn('id', $productIds)
+            ->get()
+            ->keyBy('id');
+
         foreach ($order->items as $item) {
-            if ($item->product_id === null) {
-                $skipped[] = $item->product_name;
+            $product = $item->product_id !== null ? $products->get($item->product_id) : null;
 
-                continue;
-            }
-
-            /** @var Product|null $product */
-            $product = Product::query()
-                ->with(['variants', 'addonGroups.addons'])
-                ->find($item->product_id);
-
-            if ($product === null || ! $product->is_active || $product->is_sold_out) {
+            if (! $product instanceof Product || ! $product->is_active || $product->is_sold_out) {
                 $skipped[] = $item->product_name;
 
                 continue;
