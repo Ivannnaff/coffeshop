@@ -28,6 +28,7 @@ use App\Models\StoreSetting;
 use App\Services\Checkout\DTO\CheckoutInput;
 use App\Services\Checkout\DTO\CheckoutPreview;
 use Carbon\Carbon;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -69,6 +70,26 @@ class CheckoutService
         );
         $preview = $this->buildPreview($pricing, $quote);
 
+        $attempt = 0;
+
+        // Retry singkat bila nomor pesanan bentrok karena checkout bersamaan (B-05).
+        while (true) {
+            try {
+                return $this->persistOrder($cart, $input, $pricing, $preview);
+            } catch (UniqueConstraintViolationException $exception) {
+                if (++$attempt >= 3) {
+                    throw $exception;
+                }
+            }
+        }
+    }
+
+    private function persistOrder(
+        Cart $cart,
+        CheckoutInput $input,
+        PricingResult $pricing,
+        CheckoutPreview $preview,
+    ): Order {
         return DB::transaction(function () use ($cart, $input, $pricing, $preview): Order {
             // Lock keranjang agar dua checkout bersamaan tidak membuat order ganda.
             $lockedCart = Cart::query()->whereKey($cart->id)->lockForUpdate()->first();
