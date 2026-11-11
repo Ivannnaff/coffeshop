@@ -32,7 +32,7 @@ class TableModeController extends Controller
             'mode' => 'dine_in',
         ]);
 
-        $redirectUrl = (string) config('menanti.menu_url', '/api/public/menu');
+        $redirectUrl = (string) config('menanti.menu_url', '/');
 
         return redirect($redirectUrl);
     }

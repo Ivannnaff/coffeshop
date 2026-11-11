@@ -14,6 +14,7 @@ use App\Domain\Store\Exceptions\StoreConfigurationException;
 use App\Http\Controllers\Webhook\PaymentWebhookController;
 use App\Http\Middleware\AuditAdminRequests;
 use App\Http\Middleware\EnsureUserHasRole;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\ResolveCart;
 use App\Http\Middleware\SecurityHeaders;
 use App\Models\Order;
@@ -47,6 +48,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(SecurityHeaders::class);
+        $middleware->web(append: [
+            HandleInertiaRequests::class,
+        ]);
 
         $middleware->alias([
             'role' => EnsureUserHasRole::class,

@@ -28,7 +28,7 @@ class AddonGroupResource extends JsonResource
             'min_select' => $group->min_select,
             'max_select' => $group->max_select,
             'is_active' => $group->is_active,
-            'addons' => AddonResource::collection($this->whenLoaded('addons')),
+            'addons' => $this->whenLoaded('addons', fn () => AddonResource::collection($this->resource->addons)->resolve($request)),
         ];
     }
 }

@@ -28,7 +28,7 @@ class CategoryResource extends JsonResource
             'sort_order' => $category->sort_order,
             'is_active' => $category->is_active,
             'products_count' => $this->whenCounted('products'),
-            'products' => ProductResource::collection($this->whenLoaded('products')),
+            'products' => $this->whenLoaded('products', fn () => ProductResource::collection($this->resource->products)->resolve($request)),
         ];
     }
 }
