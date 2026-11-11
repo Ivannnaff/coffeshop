@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Contracts\PaymentGateway;
 use App\Services\Payment\MidtransGateway;
+use App\Services\StoreSettingsService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(PaymentGateway::class, MidtransGateway::class);
+
+        // Satu instance per request/job: menghindari query store_settings berulang
+        // dalam satu alur checkout tanpa menyimpan data basi antar request.
+        $this->app->scoped(StoreSettingsService::class);
     }
 
     /**

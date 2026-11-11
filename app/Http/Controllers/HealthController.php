@@ -7,10 +7,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
+/**
+ * Health check publik. Detail error tidak pernah dikembalikan ke klien,
+ * hanya dicatat ke log agar tidak membocorkan konfigurasi/infrastruktur.
+ */
 class HealthController extends Controller
 {
     public function __invoke(): JsonResponse
@@ -32,21 +37,25 @@ class HealthController extends Controller
     }
 
     /**
-     * @return array{ok: bool, driver: string, error?: string}
+     * @return array{ok: bool, driver: string}
      */
     private function checkDatabase(): array
     {
+        $driver = (string) config('database.default');
+
         try {
             DB::select('SELECT 1');
 
-            return ['ok' => true, 'driver' => (string) config('database.default')];
+            return ['ok' => true, 'driver' => $driver];
         } catch (Throwable $e) {
-            return ['ok' => false, 'driver' => (string) config('database.default'), 'error' => $e->getMessage()];
+            $this->reportFailure('database', $e);
+
+            return ['ok' => false, 'driver' => $driver];
         }
     }
 
     /**
-     * @return array{ok: bool, driver: string, error?: string}
+     * @return array{ok: bool, driver: string}
      */
     private function checkCache(): array
     {
@@ -60,12 +69,14 @@ class HealthController extends Controller
 
             return ['ok' => $value === 'ok', 'driver' => $driver];
         } catch (Throwable $e) {
-            return ['ok' => false, 'driver' => $driver, 'error' => $e->getMessage()];
+            $this->reportFailure('cache', $e);
+
+            return ['ok' => false, 'driver' => $driver];
         }
     }
 
     /**
-     * @return array{ok: bool, driver: string, error?: string}
+     * @return array{ok: bool, driver: string}
      */
     private function checkStorage(): array
     {
@@ -79,12 +90,14 @@ class HealthController extends Controller
 
             return ['ok' => $contents === 'ok', 'driver' => $disk];
         } catch (Throwable $e) {
-            return ['ok' => false, 'driver' => $disk, 'error' => $e->getMessage()];
+            $this->reportFailure('storage', $e);
+
+            return ['ok' => false, 'driver' => $disk];
         }
     }
 
     /**
-     * @return array{ok: bool, driver: string, size?: int|null, error?: string}
+     * @return array{ok: bool, driver: string, size: int|null}
      */
     private function checkQueue(): array
     {
@@ -98,7 +111,17 @@ class HealthController extends Controller
 
             return ['ok' => true, 'driver' => $driver, 'size' => $size];
         } catch (Throwable $e) {
-            return ['ok' => false, 'driver' => $driver, 'error' => $e->getMessage()];
+            $this->reportFailure('queue', $e);
+
+            return ['ok' => false, 'driver' => $driver, 'size' => null];
         }
+    }
+
+    private function reportFailure(string $check, Throwable $exception): void
+    {
+        Log::error('Health check gagal.', [
+            'check' => $check,
+            'error' => $exception->getMessage(),
+        ]);
     }
 }

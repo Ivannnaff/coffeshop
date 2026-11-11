@@ -77,7 +77,7 @@ class CheckoutService
             try {
                 return $this->persistOrder($cart, $input, $pricing, $preview);
             } catch (UniqueConstraintViolationException $exception) {
-                if (++$attempt >= 3) {
+                if (++$attempt >= 5) {
                     throw $exception;
                 }
             }
@@ -309,11 +309,22 @@ class CheckoutService
     {
         $limit = (int) config('menanti.active_order_limit_per_phone', 3);
 
+        // PostgreSQL menolak FOR UPDATE pada query agregat (N-01). Kunci per
+        // nomor telepon memakai advisory lock transaksi yang otomatis lepas
+        // saat transaksi selesai, lalu count dijalankan tanpa lock.
+        $connection = DB::connection();
+
+        if ($connection->getDriverName() === 'pgsql') {
+            $connection->select(
+                'SELECT pg_advisory_xact_lock(hashtext(?)::bigint)',
+                [$customerPhone]
+            );
+        }
+
         $activeCount = Order::query()
             ->where('customer_phone', $customerPhone)
             ->where('status', OrderStatus::PendingPayment->value)
             ->where('expires_at', '>', now())
-            ->lockForUpdate()
             ->count();
 
         if ($activeCount >= $limit) {

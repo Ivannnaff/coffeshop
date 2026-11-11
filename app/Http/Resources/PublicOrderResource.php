@@ -33,7 +33,6 @@ class PublicOrderResource extends JsonResource
             'table_number' => $order->table_number,
             'customer_name' => $maskedName,
             'delivery_address' => $order->delivery_address !== null ? 'Alamat pengiriman terdaftar' : null,
-            'delivery_distance_km' => $order->delivery_distance_km,
             'delivery_zone_name' => $order->delivery_zone_name,
             'version' => $order->updated_at?->getTimestampMs(),
             'items' => $order->items->map(fn (OrderItem $item): array => [
