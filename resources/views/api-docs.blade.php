@@ -1,137 +1,145 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dokumentasi API - Menanti Backend</title>
+    <title>API Documentation - Menanti Backend</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        pre { tab-size: 2; }
+        code, pre { font-family: 'JetBrains Mono', monospace; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased">
+<body class="bg-neutral-950 text-neutral-100 antialiased selection:bg-amber-500/30 selection:text-amber-200">
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="w-72 bg-slate-950 border-r border-slate-800 flex flex-col hidden lg:flex">
-            <div class="p-6 border-b border-slate-800">
-                <h1 class="text-xl font-bold text-amber-400">☕ Menanti API</h1>
-                <p class="text-xs text-slate-400 mt-1">Dokumentasi Backend (Fase 1 - 8)</p>
+        <!-- Sidebar Navigation -->
+        <aside class="w-72 bg-neutral-900/80 backdrop-blur border-r border-neutral-800/80 flex flex-col hidden lg:flex shrink-0">
+            <div class="p-6 border-b border-neutral-800/80">
+                <span class="text-xs font-semibold tracking-wider text-amber-500 uppercase">Menanti API</span>
+                <h1 class="text-base font-bold text-white mt-1">Backend Documentation</h1>
+                <p class="text-xs text-neutral-400 mt-0.5">Laravel 12 / PHP 8.3+</p>
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-6 text-sm">
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Umum</p>
+                    <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Overview</p>
                     <ul class="space-y-1">
-                        <li><a href="#overview" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Pengantar & Standar</a></li>
-                        <li><a href="#errors" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Format Error</a></li>
+                        <li><a href="#overview" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Introduction & Standards</a></li>
+                        <li><a href="#errors" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Error Handling</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Autentikasi Staf</p>
+                    <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Staff Auth</p>
                     <ul class="space-y-1">
-                        <li><a href="#staff-login" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">POST /login</a></li>
-                        <li><a href="#staff-logout" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">POST /logout</a></li>
-                        <li><a href="#staff-me" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">GET /me</a></li>
+                        <li><a href="#staff-login" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">POST /login</a></li>
+                        <li><a href="#staff-logout" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">POST /logout</a></li>
+                        <li><a href="#staff-me" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">GET /me</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pelanggan (Publik)</p>
+                    <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Customer Public API</p>
                     <ul class="space-y-1">
-                        <li><a href="#public-cart" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Keranjang & Item</a></li>
-                        <li><a href="#public-checkout" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Preview & Checkout</a></li>
-                        <li><a href="#public-order" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Status Pesanan</a></li>
+                        <li><a href="#public-menu" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Menu & Search</a></li>
+                        <li><a href="#public-cart" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Cart Management</a></li>
+                        <li><a href="#public-checkout" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Checkout & Preview</a></li>
+                        <li><a href="#public-orders" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Orders & Retry Payment</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Webhook</p>
+                    <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Payment Webhook</p>
                     <ul class="space-y-1">
-                        <li><a href="#webhook-midtrans" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">POST /webhooks/payment/midtrans</a></li>
+                        <li><a href="#webhook-midtrans" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">POST /webhooks/payment/midtrans</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">KDS (Barista & Admin)</p>
+                    <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">KDS & Barista</p>
                     <ul class="space-y-1">
-                        <li><a href="#kds-orders" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Antrean & Transisi Status</a></li>
+                        <li><a href="#kds-orders" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Queue & Status Transitions</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Admin</p>
+                    <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Admin Dashboard</p>
                     <ul class="space-y-1">
-                        <li><a href="#admin-categories" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Kategori</a></li>
-                        <li><a href="#admin-products" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Produk, Varian & Add-on</a></li>
-                        <li><a href="#admin-tables" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Meja & QR Token</a></li>
-                        <li><a href="#admin-settings" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Pengaturan Toko</a></li>
-                        <li><a href="#admin-delivery" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Zona & Aturan Ongkir</a></li>
-                        <li><a href="#admin-reports" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Laporan Penjualan</a></li>
+                        <li><a href="#admin-categories" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Categories</a></li>
+                        <li><a href="#admin-products" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Products & Variants</a></li>
+                        <li><a href="#admin-tables" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Tables & QR Tokens</a></li>
+                        <li><a href="#admin-settings" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Store Settings</a></li>
+                        <li><a href="#admin-delivery" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Delivery Zones</a></li>
+                        <li><a href="#admin-reports" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Sales Reports</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Real-time</p>
+                    <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Real-Time (Reverb)</p>
                     <ul class="space-y-1">
-                        <li><a href="#realtime" class="block px-3 py-1.5 rounded hover:bg-slate-800 text-slate-300">Reverb & Channel</a></li>
+                        <li><a href="#realtime" class="block px-3 py-1.5 rounded-md hover:bg-neutral-800/60 text-neutral-300 hover:text-white transition-colors">Channels & Events</a></li>
                     </ul>
                 </div>
             </nav>
         </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-8 lg:p-12 space-y-16">
-            <!-- Header -->
-            <section id="overview" class="space-y-4">
-                <div class="inline-block bg-amber-500/10 text-amber-400 text-xs font-medium px-2.5 py-1 rounded-full border border-amber-500/20">Laravel 12 Backend</div>
-                <h1 class="text-3xl font-extrabold tracking-tight text-white">Menanti Coffee Shop API Documentation</h1>
-                <p class="text-slate-400 text-base leading-relaxed">
-                    Dokumentasi resmi arsitektur backend Menanti. Semua nominal uang menggunakan integer rupiah (tanpa desimal/float), zona waktu <code class="text-amber-300">Asia/Jakarta</code>, dan validasi ketat via Form Request.
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 space-y-16 max-w-5xl mx-auto">
+            <!-- Header Section -->
+            <section id="overview" class="space-y-4 border-b border-neutral-800 pb-10">
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded text-xs font-medium bg-neutral-900 border border-neutral-800 text-neutral-300">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    API v1.0 Active
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">Menanti Backend API Specification</h1>
+                <p class="text-neutral-400 text-base leading-relaxed">
+                    This document outlines the API endpoints, data formats, authentication rules, and event channels for the Menanti coffee shop backend. All monetary amounts are handled as integer IDR (Rupiah) with zero floating-point arithmetic. Timezone operates strictly in <code class="text-amber-400 bg-neutral-900 px-1.5 py-0.5 rounded border border-neutral-800">Asia/Jakarta</code>.
                 </p>
             </section>
 
             <!-- Error Format -->
-            <section id="errors" class="space-y-4 bg-slate-950 p-6 rounded-xl border border-slate-800">
-                <h2 class="text-xl font-bold text-white">Format Error Standar</h2>
-                <p class="text-slate-400 text-sm">Respon error API mengikuti format stabil berikut:</p>
-                <pre class="bg-slate-900 p-4 rounded-lg text-emerald-400 text-xs overflow-x-auto border border-slate-800"><code>{
-  "message": "Pesan ringkas untuk pengguna",
+            <section id="errors" class="space-y-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-white">Standard Error Format</h2>
+                    <p class="text-neutral-400 text-sm mt-1">All error responses adhere to a consistent JSON structure.</p>
+                </div>
+                <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <pre class="bg-neutral-950 p-4 rounded-md text-emerald-400 text-xs overflow-x-auto border border-neutral-800"><code>{
+  "message": "The given data was invalid.",
   "code": "VALIDATION_FAILED",
   "errors": {
-    "field": ["Pesan detail kesalahan"]
+    "customer_phone": ["The customer phone field is required."]
   }
 }</code></pre>
-                <div class="flex flex-wrap gap-2 pt-2">
-                    <span class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-mono">VALIDATION_FAILED</span>
-                    <span class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-mono">PRODUCT_UNAVAILABLE</span>
-                    <span class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-mono">STORE_CLOSED</span>
-                    <span class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-mono">INVALID_TRANSITION</span>
-                    <span class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-mono">PAYMENT_GATEWAY_ERROR</span>
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <span class="bg-neutral-950 text-neutral-300 text-xs px-2.5 py-1 rounded border border-neutral-800 font-mono">VALIDATION_FAILED</span>
+                        <span class="bg-neutral-950 text-neutral-300 text-xs px-2.5 py-1 rounded border border-neutral-800 font-mono">PRODUCT_UNAVAILABLE</span>
+                        <span class="bg-neutral-950 text-neutral-300 text-xs px-2.5 py-1 rounded border border-neutral-800 font-mono">STORE_CLOSED</span>
+                        <span class="bg-neutral-950 text-neutral-300 text-xs px-2.5 py-1 rounded border border-neutral-800 font-mono">INVALID_TRANSITION</span>
+                        <span class="bg-neutral-950 text-neutral-300 text-xs px-2.5 py-1 rounded border border-neutral-800 font-mono">PAYMENT_GATEWAY_ERROR</span>
+                    </div>
                 </div>
             </section>
 
-            <!-- Staff Auth -->
+            <!-- Staff Authentication -->
             <section id="staff-login" class="space-y-6">
-                <div class="border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold text-white">Autentikasi Staf (Admin & Barista)</h2>
-                    <p class="text-slate-400 text-sm mt-1">Autentikasi menggunakan Laravel Breeze session cookie.</p>
+                <div class="border-b border-neutral-800 pb-4">
+                    <h2 class="text-2xl font-semibold text-white">Staff Authentication</h2>
+                    <p class="text-neutral-400 text-sm mt-1">Session-based authentication for admin and barista roles.</p>
                 </div>
 
-                <!-- POST /login -->
-                <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <span class="bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                        <code class="text-lg font-mono text-white">/login</code>
+                <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                        <code class="text-base font-mono text-white">/login</code>
                     </div>
-                    <p class="text-slate-300 text-sm">Masuk sebagai staf (admin atau barista). Staf dengan <code class="text-amber-300">is_active = false</code> ditolak.</p>
+                    <p class="text-neutral-300 text-sm">Authenticates staff credentials. Inactive staff accounts (<code class="text-amber-400">is_active = false</code>) are rejected.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">Request Body (JSON)</p>
-                            <pre class="bg-slate-900 p-3 rounded-lg text-amber-300 text-xs overflow-x-auto border border-slate-800"><code>{
+                            <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Request Body</p>
+                            <pre class="bg-neutral-950 p-3 rounded-md text-amber-300 text-xs overflow-x-auto border border-neutral-800"><code>{
   "email": "admin@menanti.test",
   "password": "password12345"
 }</code></pre>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">Response (200 OK)</p>
-                            <pre class="bg-slate-900 p-3 rounded-lg text-emerald-400 text-xs overflow-x-auto border border-slate-800"><code>{
+                            <p class="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Response (200 OK)</p>
+                            <pre class="bg-neutral-950 p-3 rounded-md text-emerald-400 text-xs overflow-x-auto border border-neutral-800"><code>{
   "data": {
     "id": 1,
     "name": "Admin Menanti",
@@ -143,224 +151,200 @@
                     </div>
                 </div>
 
-                <!-- POST /logout & GET /me -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div id="staff-logout" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-rose-500/20 text-rose-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                            <code class="font-mono text-white">/logout</code>
+                    <div id="staff-logout" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                            <code class="font-mono text-white text-sm">/logout</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Menghapus session staf dan token CSRF.</p>
+                        <p class="text-neutral-300 text-sm">Destroys the staff session and clears CSRF state.</p>
                     </div>
-                    <div id="staff-me" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-blue-500/20 text-blue-400 font-mono text-xs font-bold px-2.5 py-1 rounded">GET</span>
-                            <code class="font-mono text-white">/me</code>
+                    <div id="staff-me" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">GET</span>
+                            <code class="font-mono text-white text-sm">/me</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Mendapatkan profil user yang sedang login.</p>
+                        <p class="text-neutral-300 text-sm">Retrieves the profile of the currently authenticated staff user.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Public Customer API -->
-            <section id="public-cart" class="space-y-6">
-                <div class="border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold text-white">Pelanggan (Tanpa Login)</h2>
-                    <p class="text-slate-400 text-sm mt-1">Keranjang dikelola lewat cookie <code class="text-amber-300">cart_token</code> secara otomatis.</p>
+            <!-- Customer Public API -->
+            <section id="public-menu" class="space-y-6">
+                <div class="border-b border-neutral-800 pb-4">
+                    <h2 class="text-2xl font-semibold text-white">Customer Public API</h2>
+                    <p class="text-neutral-400 text-sm mt-1">Stateless customer flow managed via <code class="text-amber-400">cart_token</code> cookie.</p>
                 </div>
 
-                <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <span class="bg-blue-500/20 text-blue-400 font-mono text-xs font-bold px-2.5 py-1 rounded">GET</span>
-                        <code class="text-lg font-mono text-white">/api/public/cart</code>
+                <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">GET</span>
+                        <code class="text-base font-mono text-white">/api/public/menu</code>
                     </div>
-                    <p class="text-slate-300 text-sm">Melihat isi keranjang beserta harga final yang dihitung ulang di server.</p>
+                    <p class="text-neutral-300 text-sm">Retrieves active categories, products, variants, and add-ons.</p>
                 </div>
 
-                <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <span class="bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                        <code class="text-lg font-mono text-white">/api/public/cart/items</code>
+                <div id="public-cart" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">GET</span>
+                        <code class="text-base font-mono text-white">/api/public/cart</code>
                     </div>
-                    <p class="text-slate-300 text-sm">Menambahkan produk ke keranjang.</p>
-                    <pre class="bg-slate-900 p-3 rounded-lg text-amber-300 text-xs overflow-x-auto border border-slate-800"><code>{
+                    <p class="text-neutral-300 text-sm">Inspects the current cart state, items, and server-calculated totals.</p>
+                </div>
+
+                <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                        <code class="text-base font-mono text-white">/api/public/cart/items</code>
+                    </div>
+                    <p class="text-neutral-300 text-sm">Adds an item with variants and add-ons to the cart.</p>
+                    <pre class="bg-neutral-950 p-3 rounded-md text-amber-300 text-xs overflow-x-auto border border-neutral-800"><code>{
   "product_id": 1,
-  "variant_ids": [1, 3],
-  "addon_ids": [5],
+  "variant_ids": [1],
+  "addon_ids": [3, 4],
   "qty": 2,
-  "note": "Kurang manis"
+  "note": "Less ice"
 }</code></pre>
                 </div>
 
-                <div id="public-checkout" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <span class="bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                        <code class="text-lg font-mono text-white">/api/public/checkout</code>
+                <div id="public-checkout" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                        <code class="text-base font-mono text-white">/api/public/checkout</code>
                     </div>
-                    <p class="text-slate-300 text-sm">Melakukan checkout pesanan, membuat pesanan <code class="text-amber-300">PENDING_PAYMENT</code>, dan menginisiasi pembayaran Midtrans Snap.</p>
-                    <pre class="bg-slate-900 p-3 rounded-lg text-amber-300 text-xs overflow-x-auto border border-slate-800"><code>{
+                    <p class="text-neutral-300 text-sm">Creates a <code class="text-amber-400">PENDING_PAYMENT</code> order and initiates a Midtrans Snap payment token.</p>
+                    <pre class="bg-neutral-950 p-3 rounded-md text-amber-300 text-xs overflow-x-auto border border-neutral-800"><code>{
   "customer_name": "Budi Santoso",
   "customer_phone": "081234567890",
   "mode": "takeaway",
-  "pickup_note": "Ambil jam 3 sore"
+  "pickup_note": "Pick up at 3 PM"
 }</code></pre>
                 </div>
 
-                <div id="public-order" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <span class="bg-blue-500/20 text-blue-400 font-mono text-xs font-bold px-2.5 py-1 rounded">GET</span>
-                        <code class="text-lg font-mono text-white">/api/public/orders/{public_token}</code>
+                <div id="public-orders" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">GET</span>
+                        <code class="text-base font-mono text-white">/api/public/orders/{public_token}</code>
                     </div>
-                    <p class="text-slate-300 text-sm">Melihat status, rincian item, dan link pembayaran Midtrans pelanggan.</p>
+                    <p class="text-neutral-300 text-sm">Retrieves masked order status and payment details using the public token.</p>
                 </div>
             </section>
 
             <!-- Webhook -->
             <section id="webhook-midtrans" class="space-y-6">
-                <div class="border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold text-white">Webhook Pembayaran</h2>
+                <div class="border-b border-neutral-800 pb-4">
+                    <h2 class="text-2xl font-semibold text-white">Payment Webhook</h2>
                 </div>
-                <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <span class="bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                        <code class="text-lg font-mono text-white">/webhooks/payment/midtrans</code>
+                <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                        <code class="text-base font-mono text-white">/webhooks/payment/midtrans</code>
                     </div>
-                    <p class="text-slate-300 text-sm">Menerima notifikasi status pembayaran dari Midtrans. Diverifikasi dengan signature SHA512 dan idempotensi transaksi.</p>
+                    <p class="text-neutral-300 text-sm">Receives gateway notifications, verified via SHA512 signature hash and strict transaction idempotency.</p>
                 </div>
             </section>
 
             <!-- KDS -->
             <section id="kds-orders" class="space-y-6">
-                <div class="border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold text-white">Kitchen Display System (KDS) & Barista</h2>
-                    <p class="text-slate-400 text-sm mt-1">Memerlukan autentikasi staf dengan role <code class="text-amber-300">barista</code> atau <code class="text-amber-300">admin</code>.</p>
+                <div class="border-b border-neutral-800 pb-4">
+                    <h2 class="text-2xl font-semibold text-white">Kitchen Display System (KDS)</h2>
+                    <p class="text-neutral-400 text-sm mt-1">Requires authenticated staff with <code class="text-amber-400">barista</code> or <code class="text-amber-400">admin</code> role.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-blue-500/20 text-blue-400 font-mono text-xs font-bold px-2.5 py-1 rounded">GET</span>
-                            <code class="font-mono text-white">/kds/orders?status=PAID,PREPARING</code>
+                    <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">GET</span>
+                            <code class="font-mono text-white text-sm">/kds/orders?status=PAID,PREPARING</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Melihat daftar pesanan aktif di KDS.</p>
+                        <p class="text-neutral-300 text-sm">Lists active kitchen orders filtered by status.</p>
                     </div>
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                            <code class="font-mono text-white">/kds/orders/{id}/start</code>
+                    <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                            <code class="font-mono text-white text-sm">/kds/orders/{id}/start</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Mengubah status pesanan dari <code class="text-amber-300">PAID</code> ke <code class="text-amber-300">PREPARING</code>.</p>
+                        <p class="text-neutral-300 text-sm">Transitions order status from <code class="text-amber-400">PAID</code> to <code class="text-amber-400">PREPARING</code>.</p>
                     </div>
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                            <code class="font-mono text-white">/kds/orders/{id}/ready</code>
+                    <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                            <code class="font-mono text-white text-sm">/kds/orders/{id}/ready</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Mengubah status pesanan dari <code class="text-amber-300">PREPARING</code> ke <code class="text-amber-300">READY</code>.</p>
+                        <p class="text-neutral-300 text-sm">Transitions order status from <code class="text-amber-400">PREPARING</code> to <code class="text-amber-400">READY</code>.</p>
                     </div>
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold px-2.5 py-1 rounded">POST</span>
-                            <code class="font-mono text-white">/kds/orders/{id}/complete</code>
+                    <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">POST</span>
+                            <code class="font-mono text-white text-sm">/kds/orders/{id}/complete</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Menandai pesanan dine-in / takeaway selesai (<code class="text-amber-300">COMPLETED</code>).</p>
+                        <p class="text-neutral-300 text-sm">Marks order as completed (<code class="text-amber-400">COMPLETED</code>).</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Admin -->
+            <!-- Admin Endpoints -->
             <section id="admin-categories" class="space-y-6">
-                <div class="border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold text-white">Admin Dashboard Endpoints</h2>
-                    <p class="text-slate-400 text-sm mt-1">Semua route di bawah <code class="text-amber-300">/admin</code> memerlukan role <code class="text-amber-300">admin</code>.</p>
+                <div class="border-b border-neutral-800 pb-4">
+                    <h2 class="text-2xl font-semibold text-white">Admin Management Endpoints</h2>
+                    <p class="text-neutral-400 text-sm mt-1">Requires authenticated staff with <code class="text-amber-400">admin</code> role.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div id="admin-categories" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-2">
-                        <h3 class="font-bold text-white">Kategori Menu</h3>
-                        <p class="text-slate-400 text-xs font-mono">GET/POST /admin/categories</p>
-                        <p class="text-slate-400 text-xs font-mono">PUT/DELETE /admin/categories/{id}</p>
+                    <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-2">
+                        <h3 class="font-semibold text-white">Categories</h3>
+                        <p class="text-neutral-400 text-xs font-mono">GET/POST /admin/categories</p>
+                        <p class="text-neutral-400 text-xs font-mono">PUT/DELETE /admin/categories/{id}</p>
                     </div>
-                    <div id="admin-products" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-2">
-                        <h3 class="font-bold text-white">Produk & Varian</h3>
-                        <p class="text-slate-400 text-xs font-mono">GET/POST/PUT/DELETE /admin/products</p>
-                        <p class="text-slate-400 text-xs font-mono">PATCH /admin/products/{id}/sold-out</p>
-                        <p class="text-slate-400 text-xs font-mono">POST /admin/products/{id}/image</p>
+                    <div id="admin-products" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-2">
+                        <h3 class="font-semibold text-white">Products & Variants</h3>
+                        <p class="text-neutral-400 text-xs font-mono">GET/POST/PUT/DELETE /admin/products</p>
+                        <p class="text-neutral-400 text-xs font-mono">PATCH /admin/products/{id}/sold-out</p>
                     </div>
-                    <div id="admin-tables" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-2">
-                        <h3 class="font-bold text-white">Meja & QR Token</h3>
-                        <p class="text-slate-400 text-xs font-mono">GET/POST/PUT/DELETE /admin/tables</p>
-                        <p class="text-slate-400 text-xs font-mono">POST /admin/tables/{id}/regenerate-token</p>
+                    <div id="admin-tables" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-2">
+                        <h3 class="font-semibold text-white">Tables & QR Tokens</h3>
+                        <p class="text-neutral-400 text-xs font-mono">GET/POST/PUT/DELETE /admin/tables</p>
+                        <p class="text-neutral-400 text-xs font-mono">POST /admin/tables/{id}/regenerate-token</p>
                     </div>
-                    <div id="admin-settings" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-2">
-                        <h3 class="font-bold text-white">Pengaturan Toko</h3>
-                        <p class="text-slate-400 text-xs font-mono">GET /admin/store-settings</p>
-                        <p class="text-slate-400 text-xs font-mono">PUT /admin/store-settings</p>
+                    <div id="admin-settings" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-2">
+                        <h3 class="font-semibold text-white">Store Settings</h3>
+                        <p class="text-neutral-400 text-xs font-mono">GET /admin/store-settings</p>
+                        <p class="text-neutral-400 text-xs font-mono">PUT /admin/store-settings</p>
                     </div>
-                    <div id="admin-delivery" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-2">
-                        <h3 class="font-bold text-white">Zona Delivery</h3>
-                        <p class="text-slate-400 text-xs font-mono">GET/POST/PUT/DELETE /admin/delivery-zones</p>
-                        <p class="text-slate-400 text-xs font-mono">CRUD aturan fee per zona</p>
+                    <div id="admin-delivery" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-2">
+                        <h3 class="font-semibold text-white">Delivery Zones</h3>
+                        <p class="text-neutral-400 text-xs font-mono">GET/POST/PUT/DELETE /admin/delivery-zones</p>
                     </div>
-                    <div id="admin-reports" class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-2">
-                        <h3 class="font-bold text-white">Laporan Ringkasan</h3>
-                        <p class="text-slate-400 text-xs font-mono">GET /admin/reports/summary</p>
-                        <p class="text-slate-400 text-xs font-mono">Query dengan parameter ?from= & ?to=</p>
-                        <p class="text-slate-400 text-xs">Difilter dari <code class="text-amber-300">paid_at</code> (Asia/Jakarta), di-cache 30 menit dan otomatis invalid saat status pesanan berubah.</p>
+                    <div id="admin-reports" class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-2">
+                        <h3 class="font-semibold text-white">Sales Reports</h3>
+                        <p class="text-neutral-400 text-xs font-mono">GET /admin/reports/summary</p>
+                        <p class="text-neutral-400 text-xs">Filtered by <code class="text-amber-400">paid_at</code> (Asia/Jakarta), cached with short TTL.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Real-time -->
+            <!-- Real-Time -->
             <section id="realtime" class="space-y-6">
-                <div class="border-b border-slate-800 pb-4">
-                    <h2 class="text-2xl font-bold text-white">Real-time (Laravel Reverb)</h2>
-                    <p class="text-slate-400 text-sm mt-1">Event dikirim setelah transaksi database commit (<code class="text-amber-300">ShouldDispatchAfterCommit</code>).</p>
+                <div class="border-b border-neutral-800 pb-4">
+                    <h2 class="text-2xl font-semibold text-white">Real-Time Broadcasting (Laravel Reverb)</h2>
+                    <p class="text-neutral-400 text-sm mt-1">Events dispatched after database transaction commit (<code class="text-amber-400">ShouldDispatchAfterCommit</code>).</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-amber-500/20 text-amber-400 font-mono text-xs font-bold px-2.5 py-1 rounded">PUBLIC</span>
-                            <code class="font-mono text-white">order.{public_token}</code>
+                    <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">PUBLIC</span>
+                            <code class="font-mono text-white text-sm">order.{public_token}</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Channel pelanggan. Berisi status pesanan tanpa data pribadi.</p>
+                        <p class="text-neutral-300 text-sm">Customer tracking channel without sensitive personal data.</p>
                     </div>
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="bg-rose-500/20 text-rose-400 font-mono text-xs font-bold px-2.5 py-1 rounded">PRIVATE</span>
-                            <code class="font-mono text-white">kds.store.{store_id}</code>
+                    <div class="bg-neutral-900 rounded-lg border border-neutral-800 p-6 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono text-xs font-semibold px-2.5 py-1 rounded">PRIVATE</span>
+                            <code class="font-mono text-white text-sm">kds.store.{store_id}</code>
                         </div>
-                        <p class="text-slate-300 text-sm">Channel KDS. Otorisasi lewat <code class="text-amber-300">/broadcasting/auth</code>; hanya staf aktif (barista/admin).</p>
+                        <p class="text-neutral-300 text-sm">Kitchen display channel for active staff.</p>
                     </div>
-                </div>
-
-                <div class="bg-slate-950 rounded-xl border border-slate-800 p-6 space-y-4">
-                    <h3 class="font-bold text-white">Event</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">OrderPaid</p>
-                            <pre class="bg-slate-900 p-3 rounded-lg text-emerald-400 text-xs overflow-x-auto border border-slate-800"><code>{
-  "order_id": 42,
-  "order_number": "MNT-261110-0001",
-  "public_token": "...",
-  "status": "PAID",
-  "paid_at": "2026-11-10T09:30:00+07:00"
-}</code></pre>
-                        </div>
-                        <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase mb-2">OrderStatusChanged</p>
-                            <pre class="bg-slate-900 p-3 rounded-lg text-emerald-400 text-xs overflow-x-auto border border-slate-800"><code>{
-  "order_id": 42,
-  "order_number": "MNT-261110-0001",
-  "public_token": "...",
-  "from_status": "PAID",
-  "to_status": "PREPARING",
-  "updated_at": "2026-11-10T09:32:00+07:00"
-}</code></pre>
-                        </div>
-                    </div>
-                    <p class="text-slate-400 text-sm">Fallback polling: KDS memanggil <code class="text-amber-300">GET /kds/orders</code> tiap 10 detik, pelanggan memanggil <code class="text-amber-300">GET /api/public/orders/{public_token}</code> jika WebSocket gagal.</p>
                 </div>
             </section>
         </main>
