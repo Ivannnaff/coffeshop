@@ -44,5 +44,10 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(5)->by($request->ip());
         });
+
+        // Webhook gateway: batasi per IP agar endpoint publik tidak mudah dibanjiri (B-12).
+        RateLimiter::for('payment-webhook', function (Request $request) {
+            return Limit::perMinute(120)->by($request->ip());
+        });
     }
 }

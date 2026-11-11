@@ -31,6 +31,11 @@ class FakePaymentGateway implements PaymentGateway
         );
     }
 
+    public function expireTransaction(Order $order): void
+    {
+        // No-op for fake gateway
+    }
+
     public function verifySignature(array $payload): bool
     {
         return true;

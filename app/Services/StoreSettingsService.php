@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Domain\Store\Exceptions\StoreConfigurationException;
 use App\Models\StoreSetting;
-use RuntimeException;
 
 final class StoreSettingsService
 {
@@ -17,7 +17,7 @@ final class StoreSettingsService
             $settings = StoreSetting::query()->orderBy('id')->first();
 
             if ($settings === null) {
-                throw new RuntimeException('store_settings belum diisi.');
+                throw StoreConfigurationException::missingStoreSettings();
             }
 
             $this->settings = $settings;

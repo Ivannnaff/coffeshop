@@ -10,6 +10,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -47,7 +48,7 @@ class MenuController extends Controller
     }
 
     /**
-     * @param  Builder<Product>|\Illuminate\Database\Eloquent\Relations\HasMany<Product, Category>  $query
+     * @param  Builder<Product>|HasMany<Product, Category>  $query
      */
     private static function applyMenuRelations(mixed $query): void
     {

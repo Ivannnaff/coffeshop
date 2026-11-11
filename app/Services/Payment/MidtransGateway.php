@@ -84,10 +84,34 @@ class MidtransGateway implements PaymentGateway
         );
     }
 
-    public function verifySignature(array $payload): bool
+    public function expireTransaction(Order $order): void
     {
         $serverKey = $this->serverKey();
 
+        if ($serverKey === '') {
+            throw PaymentGatewayException::because('MIDTRANS_SERVER_KEY belum diisi.');
+        }
+
+        try {
+            $response = Http::withBasicAuth($serverKey, '')
+                ->acceptJson()
+                ->timeout(15)
+                ->post($this->apiUrl().'/v2/'.$order->order_number.'/expire');
+        } catch (ConnectionException $exception) {
+            throw PaymentGatewayException::because($exception->getMessage());
+        }
+
+        // 404 berarti transaksi belum pernah dibuat di gateway, tidak perlu dianggap gagal.
+        if ($response->failed() && $response->status() !== 404) {
+            throw PaymentGatewayException::because(
+                (string) ($response->json('status_message') ?? $response->body())
+            );
+        }
+    }
+
+    public function verifySignature(array $payload): bool
+    {
+        $serverKey = $this->serverKey();
         if ($serverKey === '') {
             return false;
         }
@@ -147,5 +171,18 @@ class MidtransGateway implements PaymentGateway
         return (bool) config('menanti.payment.midtrans.is_production', false)
             ? 'https://app.midtrans.com/snap/v1/transactions'
             : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
+    }
+
+    private function apiUrl(): string
+    {
+        $configured = (string) config('menanti.payment.midtrans.api_url', '');
+
+        if ($configured !== '') {
+            return rtrim($configured, '/');
+        }
+
+        return (bool) config('menanti.payment.midtrans.is_production', false)
+            ? 'https://api.midtrans.com'
+            : 'https://api.sandbox.midtrans.com';
     }
 }

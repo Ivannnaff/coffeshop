@@ -10,6 +10,7 @@ use App\Domain\Order\Exceptions\TooManyActiveOrdersException;
 use App\Domain\Payment\Exceptions\PaymentGatewayException;
 use App\Domain\Pricing\Exceptions\AddonInvalidException;
 use App\Domain\Pricing\Exceptions\ProductUnavailableException;
+use App\Domain\Store\Exceptions\StoreConfigurationException;
 use App\Http\Controllers\Webhook\PaymentWebhookController;
 use App\Http\Middleware\AuditAdminRequests;
 use App\Http\Middleware\EnsureUserHasRole;
@@ -36,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function (): void {
             // Webhook berada di root (bukan /api) dan tanpa CSRF/session auth.
             Route::post('/webhooks/payment/midtrans', [PaymentWebhookController::class, 'midtrans'])
+                ->middleware('throttle:payment-webhook')
                 ->name('webhooks.payment.midtrans');
 
             // KDS dan Admin: prefix root sesuai 05-API.md, memakai session staff (Breeze-style).
@@ -102,6 +104,11 @@ return Application::configure(basePath: dirname(__DIR__))
                     $e->getMessage(),
                     'STORE_CLOSED',
                     409,
+                ),
+                $e instanceof StoreConfigurationException => $error(
+                    $e->getMessage(),
+                    'STORE_CONFIGURATION_ERROR',
+                    503,
                 ),
                 $e instanceof CartExpiredException => $error(
                     $e->getMessage(),

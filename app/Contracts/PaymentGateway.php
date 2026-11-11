@@ -30,6 +30,12 @@ interface PaymentGateway
     public function verifySignature(array $payload): bool;
 
     /**
+     * Menutup transaksi yang masih terbuka di gateway agar status lokal
+     * dan status gateway tetap sinkron (B-09).
+     */
+    public function expireTransaction(Order $order): void;
+
+    /**
      * Mengubah payload webhook menjadi DTO netral.
      *
      * @param  array<string, mixed>  $payload

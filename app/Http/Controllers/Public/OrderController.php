@@ -10,8 +10,8 @@ use App\Enums\VariantType;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ResolveCart;
 use App\Http\Resources\CartResource;
-use App\Http\Resources\OrderResource;
 use App\Http\Resources\PaymentResource;
+use App\Http\Resources\PublicOrderResource;
 use App\Models\Addon;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -20,6 +20,7 @@ use App\Services\CartService;
 use App\Services\PaymentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class OrderController extends Controller
 {
@@ -28,7 +29,7 @@ class OrderController extends Controller
         protected PaymentService $paymentService,
     ) {}
 
-    public function show(string $publicToken): OrderResource
+    public function show(string $publicToken): PublicOrderResource
     {
         /** @var Order $order */
         $order = Order::query()
@@ -36,7 +37,7 @@ class OrderController extends Controller
             ->with(['items.addons', 'statusLogs', 'table', 'deliveryZone', 'payments'])
             ->firstOrFail();
 
-        return new OrderResource($order);
+        return new PublicOrderResource($order);
     }
 
     public function reorder(Request $request, string $publicToken): JsonResponse
@@ -152,7 +153,7 @@ class OrderController extends Controller
      */
     private function addonIdsFor(Product $product, OrderItem $item): array
     {
-        /** @var \Illuminate\Support\Collection<int, Addon> $availableAddons */
+        /** @var Collection<int, Addon> $availableAddons */
         $availableAddons = $product->addonGroups->flatMap(
             fn ($group) => $group->addons
         );

@@ -55,41 +55,42 @@ final class PriceCalculator
     public function calculateItemDisplay(CartItemInput $item, int $deliveryMinItemPrice): PricedItem
     {
         if ($item->qty < 1) {
-            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Kuantitas tidak valid.');
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Kuantitas tidak valid.', false);
         }
 
         if (! $item->isActive) {
-            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Produk sudah tidak aktif.');
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Produk sudah tidak aktif.', false);
         }
 
         if ($item->isSoldOut) {
-            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Produk sedang habis (sold out).');
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Produk sedang habis (sold out).', false);
         }
 
         if ($item->unavailableReason !== null) {
-            return $this->computePricedItem($item, $deliveryMinItemPrice, false, $item->unavailableReason);
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, $item->unavailableReason, false);
         }
 
         foreach ($item->addons as $addon) {
             if (! $addon->isActive || $addon->isSoldOut) {
-                return $this->computePricedItem($item, $deliveryMinItemPrice, false, "Add-on '{$addon->name}' sudah tidak tersedia.");
+                return $this->computePricedItem($item, $deliveryMinItemPrice, false, "Add-on '{$addon->name}' sudah tidak tersedia.", false);
             }
         }
 
         try {
             $this->addonValidator->validate($item);
         } catch (\Throwable) {
-            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Pilihan add-on tidak valid.');
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Pilihan add-on tidak valid.', false);
         }
 
-        return $this->computePricedItem($item, $deliveryMinItemPrice, true, null);
+        return $this->computePricedItem($item, $deliveryMinItemPrice, true, null, false);
     }
 
     private function computePricedItem(
         CartItemInput $item,
         int $deliveryMinItemPrice,
         bool $isAvailable,
-        ?string $unavailableReason
+        ?string $unavailableReason,
+        bool $strictVariants = true
     ): PricedItem {
         $variantDelta = 0;
         $sizeName = null;
@@ -98,16 +99,27 @@ final class PriceCalculator
         $seenVariantIds = [];
 
         foreach ($item->variants as $variant) {
-            if (isset($seenVariantIds[$variant->id])) {
-                throw new InvalidArgumentException('Varian yang sama tidak boleh dipilih dua kali.');
-            }
-            $seenVariantIds[$variant->id] = true;
+            $isDuplicate = isset($seenVariantIds[$variant->id])
+                || isset($usedTypes[$variant->type->value]);
 
-            $type = $variant->type;
-            if (isset($usedTypes[$type->value])) {
-                throw new InvalidArgumentException('Hanya boleh satu varian untuk setiap tipe.');
+            if ($isDuplicate) {
+                if ($strictVariants) {
+                    throw new InvalidArgumentException(
+                        isset($seenVariantIds[$variant->id])
+                            ? 'Varian yang sama tidak boleh dipilih dua kali.'
+                            : 'Hanya boleh satu varian untuk setiap tipe.'
+                    );
+                }
+
+                // Data keranjang lama bisa berisi varian ganda; tampilkan sebagai tidak tersedia (R-04).
+                $isAvailable = false;
+                $unavailableReason ??= 'Pilihan varian tidak valid.';
+
+                continue;
             }
-            $usedTypes[$type->value] = true;
+
+            $seenVariantIds[$variant->id] = true;
+            $usedTypes[$variant->type->value] = true;
 
             $variantDelta += $variant->priceDelta;
 

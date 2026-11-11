@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\CheckoutController;
+use App\Http\Controllers\Public\MenuController;
 use App\Http\Controllers\Public\OrderController;
+use App\Http\Controllers\Public\TableModeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 | Prefix /api otomatis dari konfigurasi routing, sehingga cukup /public/...
 */
 Route::prefix('public')->group(function (): void {
+    Route::get('/menu', [MenuController::class, 'index']);
+    Route::get('/menu/search', [MenuController::class, 'search']);
+
     Route::middleware('resolve.cart')->group(function (): void {
         Route::get('/cart', [CartController::class, 'show'])
             ->middleware('throttle:cart-items');
@@ -32,8 +37,17 @@ Route::prefix('public')->group(function (): void {
 
         Route::post('/checkout', [CheckoutController::class, 'store'])
             ->middleware('throttle:checkout');
+
+        Route::post('/mode', [TableModeController::class, 'updateMode'])
+            ->middleware('throttle:checkout-preview');
+
+        Route::post('/orders/{publicToken}/reorder', [OrderController::class, 'reorder'])
+            ->middleware('throttle:checkout-preview');
     });
 
     Route::get('/orders/{publicToken}', [OrderController::class, 'show'])
         ->middleware('throttle:60,1');
+
+    Route::post('/orders/{publicToken}/payment', [OrderController::class, 'retryPayment'])
+        ->middleware('throttle:checkout-preview');
 });

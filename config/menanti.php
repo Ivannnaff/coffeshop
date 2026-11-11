@@ -25,6 +25,11 @@ return [
     'active_order_limit_per_phone' => (int) env('ACTIVE_ORDER_LIMIT_PER_PHONE', 3),
 
     /*
+    | URL halaman menu frontend setelah pelanggan memindai QR meja.
+    */
+    'menu_url' => env('MENU_URL', '/api/public/menu'),
+
+    /*
     | Pembayaran. Gateway dipilih lewat PAYMENT_GATEWAY (saat ini: midtrans).
     */
     'payment' => [
@@ -36,6 +41,7 @@ return [
             'client_key' => env('MIDTRANS_CLIENT_KEY', ''),
             'is_production' => (bool) env('MIDTRANS_IS_PRODUCTION', false),
             'snap_url' => env('MIDTRANS_SNAP_URL', ''),
+            'api_url' => env('MIDTRANS_API_URL', ''),
         ],
     ],
 

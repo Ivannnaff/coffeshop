@@ -324,7 +324,10 @@ class CartAndCheckoutFeatureTest extends TestCase
             'expires_at' => now()->subMinute(), // sudah kedaluwarsa
         ]);
 
-        (new ExpireUnpaidOrdersJob)->handle(app(OrderStatusService::class));
+        (new ExpireUnpaidOrdersJob)->handle(
+            app(OrderStatusService::class),
+            app(PaymentGateway::class),
+        );
 
         $this->assertEquals(OrderStatus::Expired, $order->fresh()->status);
     }

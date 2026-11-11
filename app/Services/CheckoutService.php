@@ -13,6 +13,7 @@ use App\Domain\Delivery\GeoDistanceCalculator;
 use App\Domain\Order\Exceptions\StoreClosedException;
 use App\Domain\Order\Exceptions\TooManyActiveOrdersException;
 use App\Domain\Pricing\DTO\PricingResult;
+use App\Domain\Store\Exceptions\StoreConfigurationException;
 use App\Domain\Store\StoreOpeningHours;
 use App\Enums\OrderMode;
 use App\Enums\OrderStatus;
@@ -58,7 +59,6 @@ class CheckoutService
         $this->cartService->assertActive($cart);
         $this->assertStoreCanAcceptOrders();
         $this->assertModeAllowed($cart, $input->mode);
-        $this->assertActiveOrderLimit($input->customerPhone);
 
         $pricing = $this->pricedCart($cart);
         $quote = $this->deliveryQuote(
@@ -78,6 +78,9 @@ class CheckoutService
                     'cart' => 'Keranjang sudah kosong atau sudah diproses.',
                 ]);
             }
+
+            // Batas pesanan aktif dicek di dalam transaksi dengan lock (B-11).
+            $this->assertActiveOrderLimit($input->customerPhone);
 
             /** @var StoreSetting $store */
             $store = $this->storeSettings->get();
@@ -158,7 +161,9 @@ class CheckoutService
 
     private function pricedCart(Cart $cart): PricingResult
     {
-        $pricing = $this->cartService->calculate($cart);
+        // Checkout dan preview wajib memakai perhitungan ketat: item yang sold out,
+        // nonaktif, atau variannya hilang harus menolak pesanan, bukan dihitung 0.
+        $pricing = $this->cartService->calculateStrict($cart);
 
         if ($pricing->items === []) {
             throw ValidationException::withMessages([
@@ -188,7 +193,7 @@ class CheckoutService
         $store = $this->storeSettings->get();
 
         if ($store->latitude === null || $store->longitude === null) {
-            throw StoreClosedException::because();
+            throw StoreConfigurationException::missingDeliveryCoordinates();
         }
 
         $distanceKm = $this->geoCalculator->distanceKm(
@@ -287,6 +292,7 @@ class CheckoutService
             ->where('customer_phone', $customerPhone)
             ->where('status', OrderStatus::PendingPayment->value)
             ->where('expires_at', '>', now())
+            ->lockForUpdate()
             ->count();
 
         if ($activeCount >= $limit) {
@@ -299,9 +305,19 @@ class CheckoutService
         $prefix = (string) config('menanti.order_number_prefix', 'MNT');
         $date = $now->format('ymd');
 
-        $sequence = Order::query()
-            ->whereDate('created_at', $now->toDateString())
-            ->count() + 1;
+        $todayPrefix = sprintf('%s-%s-', $prefix, $date);
+
+        $maxOrderNumber = Order::query()
+            ->where('order_number', 'like', $todayPrefix.'%')
+            ->orderByDesc('id')
+            ->value('order_number');
+
+        $sequence = 1;
+        if ($maxOrderNumber !== null) {
+            $parts = explode('-', $maxOrderNumber);
+            $lastSeq = (int) end($parts);
+            $sequence = $lastSeq + 1;
+        }
 
         return sprintf('%s-%s-%04d', $prefix, $date, $sequence);
     }
