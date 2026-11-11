@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Documentation & Markdown files (kept locally, ignored in repo)
+*.md
+/md file backend/
+
