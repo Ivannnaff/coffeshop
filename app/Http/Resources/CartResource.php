@@ -42,8 +42,14 @@ class CartResource extends JsonResource
                 'qty' => $item->qty,
                 'line_total' => $item->lineTotal,
                 'is_delivery_eligible' => $item->isDeliveryEligible,
+                'is_available' => $item->isAvailable,
+                'unavailable_reason' => $item->unavailableReason,
                 'note' => $item->note,
             ], $this->pricing->items),
+            'has_unavailable_items' => in_array(false, array_map(
+                fn (PricedItem $item): bool => $item->isAvailable,
+                $this->pricing->items
+            ), true),
             'subtotal' => $this->pricing->subtotal,
             'eligible_subtotal' => $this->pricing->eligibleSubtotal,
             'min_item_price' => $this->pricing->minItemPrice,

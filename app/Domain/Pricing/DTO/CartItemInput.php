@@ -24,5 +24,6 @@ final readonly class CartItemInput
         public bool $isSoldOut = false,
         public ?string $note = null,
         public ?int $cartItemId = null,
+        public ?string $unavailableReason = null,
     ) {}
 }

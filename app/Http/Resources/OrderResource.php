@@ -29,6 +29,13 @@ class OrderResource extends JsonResource
             'status' => $order->status->value,
             'mode' => $order->mode->value,
             'table_number' => $order->table_number,
+            'customer_name' => $order->customer_name,
+            'delivery_address' => $order->delivery_address,
+            'delivery_latitude' => $order->delivery_latitude,
+            'delivery_longitude' => $order->delivery_longitude,
+            'delivery_distance_km' => $order->delivery_distance_km,
+            'delivery_zone_name' => $order->delivery_zone_name,
+            'version' => $order->updated_at?->getTimestampMs(),
             'items' => $order->items->map(fn (OrderItem $item): array => [
                 'product_name' => $item->product_name,
                 'size_name' => $item->size_name,

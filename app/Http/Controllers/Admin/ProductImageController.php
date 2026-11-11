@@ -26,7 +26,15 @@ class ProductImageController extends Controller
         // Nama file dari UUID, bukan nama asli (06-SECURITY.md bagian 8).
         $path = 'products/'.Str::uuid()->toString().'.'.$extension;
 
-        Storage::disk($disk)->put($path, $file->get());
+        $stream = fopen($file->getRealPath(), 'r');
+        if ($stream !== false) {
+            Storage::disk($disk)->put($path, $stream);
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        } else {
+            Storage::disk($disk)->put($path, $file->get());
+        }
 
         if ($product->image_path !== null) {
             Storage::disk($disk)->delete($product->image_path);

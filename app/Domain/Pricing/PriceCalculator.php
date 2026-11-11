@@ -22,7 +22,7 @@ final class PriceCalculator
     ) {}
 
     /**
-     * Menghitung satu item keranjang menjadi snapshot harga.
+     * Menghitung satu item keranjang menjadi snapshot harga secara ketat (untuk checkout).
      */
     public function calculateItem(CartItemInput $item, int $deliveryMinItemPrice): PricedItem
     {
@@ -34,13 +34,81 @@ final class PriceCalculator
             throw ProductUnavailableException::because($item->productName);
         }
 
+        if ($item->unavailableReason !== null) {
+            throw ProductUnavailableException::because($item->productName);
+        }
+
+        foreach ($item->addons as $addon) {
+            if (! $addon->isActive || $addon->isSoldOut) {
+                throw ProductUnavailableException::because($item->productName);
+            }
+        }
+
         $this->addonValidator->validate($item);
 
+        return $this->computePricedItem($item, $deliveryMinItemPrice, true, null);
+    }
+
+    /**
+     * Menghitung satu item keranjang untuk ditampilkan di keranjang tanpa melempar exception (B-02).
+     */
+    public function calculateItemDisplay(CartItemInput $item, int $deliveryMinItemPrice): PricedItem
+    {
+        if ($item->qty < 1) {
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Kuantitas tidak valid.');
+        }
+
+        if (! $item->isActive) {
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Produk sudah tidak aktif.');
+        }
+
+        if ($item->isSoldOut) {
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Produk sedang habis (sold out).');
+        }
+
+        if ($item->unavailableReason !== null) {
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, $item->unavailableReason);
+        }
+
+        foreach ($item->addons as $addon) {
+            if (! $addon->isActive || $addon->isSoldOut) {
+                return $this->computePricedItem($item, $deliveryMinItemPrice, false, "Add-on '{$addon->name}' sudah tidak tersedia.");
+            }
+        }
+
+        try {
+            $this->addonValidator->validate($item);
+        } catch (\Throwable) {
+            return $this->computePricedItem($item, $deliveryMinItemPrice, false, 'Pilihan add-on tidak valid.');
+        }
+
+        return $this->computePricedItem($item, $deliveryMinItemPrice, true, null);
+    }
+
+    private function computePricedItem(
+        CartItemInput $item,
+        int $deliveryMinItemPrice,
+        bool $isAvailable,
+        ?string $unavailableReason
+    ): PricedItem {
         $variantDelta = 0;
         $sizeName = null;
         $temperatureName = null;
+        $usedTypes = [];
+        $seenVariantIds = [];
 
         foreach ($item->variants as $variant) {
+            if (isset($seenVariantIds[$variant->id])) {
+                throw new InvalidArgumentException('Varian yang sama tidak boleh dipilih dua kali.');
+            }
+            $seenVariantIds[$variant->id] = true;
+
+            $type = $variant->type;
+            if (isset($usedTypes[$type->value])) {
+                throw new InvalidArgumentException('Hanya boleh satu varian untuk setiap tipe.');
+            }
+            $usedTypes[$type->value] = true;
+
             $variantDelta += $variant->priceDelta;
 
             if ($variant->type === VariantType::Size) {
@@ -59,16 +127,17 @@ final class PriceCalculator
 
         $grossPrice = $item->basePrice + $variantDelta + $addonsTotal;
         $discountAmount = max(0, $item->promoDiscountPerUnit);
-        $anomaly = null;
 
-        $unitPrice = $grossPrice - $discountAmount;
+        $unitPrice = $isAvailable ? ($grossPrice - $discountAmount) : 0;
         $priceClamped = false;
 
-        if ($grossPrice - $item->promoDiscountPerUnit < 0) {
+        if ($isAvailable && $grossPrice - $item->promoDiscountPerUnit < 0) {
             $discountAmount = $grossPrice;
             $unitPrice = 0;
             $priceClamped = true;
         }
+
+        $lineTotal = $isAvailable ? ($unitPrice * $item->qty) : 0;
 
         return new PricedItem(
             productId: $item->productId,
@@ -81,17 +150,19 @@ final class PriceCalculator
             discountAmount: $discountAmount,
             unitPrice: $unitPrice,
             qty: $item->qty,
-            lineTotal: $unitPrice * $item->qty,
-            isDeliveryEligible: $this->isDeliveryEligible($unitPrice, $deliveryMinItemPrice),
+            lineTotal: $lineTotal,
+            isDeliveryEligible: $isAvailable && $this->isDeliveryEligible($unitPrice, $deliveryMinItemPrice),
             addons: $item->addons,
             note: $item->note,
             priceClamped: $priceClamped,
             cartItemId: $item->cartItemId,
+            isAvailable: $isAvailable,
+            unavailableReason: $unavailableReason,
         );
     }
 
     /**
-     * Menghitung seluruh item keranjang dan totalnya.
+     * Menghitung seluruh item keranjang dan totalnya secara ketat (untuk checkout).
      *
      * @param  list<CartItemInput>  $items
      */
@@ -112,11 +183,44 @@ final class PriceCalculator
                 $eligibleSubtotal += $pricedItem->lineTotal;
             }
 
-            // Anomali harga negatif dideteksi ulang agar tetap tercatat di hasil agregat.
             $grossPrice = $pricedItem->basePrice + $pricedItem->variantDelta + $pricedItem->addonsTotal;
 
             if ($item->promoDiscountPerUnit > $grossPrice) {
                 $anomalies[] = "Harga unit produk '{$item->productName}' negatif, di-clamp ke 0.";
+            }
+        }
+
+        return new PricingResult(
+            items: $pricedItems,
+            subtotal: $subtotal,
+            eligibleSubtotal: $eligibleSubtotal,
+            anomalies: $anomalies,
+            minItemPrice: $deliveryMinItemPrice,
+        );
+    }
+
+    /**
+     * Menghitung seluruh item keranjang untuk ditampilkan di keranjang (B-02).
+     *
+     * @param  list<CartItemInput>  $items
+     */
+    public function calculateDisplay(array $items, int $deliveryMinItemPrice): PricingResult
+    {
+        $pricedItems = [];
+        $subtotal = 0;
+        $eligibleSubtotal = 0;
+        $anomalies = [];
+
+        foreach ($items as $item) {
+            $pricedItem = $this->calculateItemDisplay($item, $deliveryMinItemPrice);
+
+            $pricedItems[] = $pricedItem;
+            if ($pricedItem->isAvailable) {
+                $subtotal += $pricedItem->lineTotal;
+
+                if ($pricedItem->isDeliveryEligible) {
+                    $eligibleSubtotal += $pricedItem->lineTotal;
+                }
             }
         }
 

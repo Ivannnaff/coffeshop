@@ -69,6 +69,15 @@ class AddCartItemRequest extends FormRequest
                 $variantIds = $this->input('variant_ids', []);
 
                 if ($variantIds !== []) {
+                    if (count($variantIds) !== count(array_unique($variantIds))) {
+                        $validator->errors()->add(
+                            'variant_ids',
+                            'Varian yang sama tidak boleh dipilih dua kali.'
+                        );
+
+                        return;
+                    }
+
                     $variants = ProductVariant::query()->whereIn('id', $variantIds)->get();
                     $usedTypes = [];
 

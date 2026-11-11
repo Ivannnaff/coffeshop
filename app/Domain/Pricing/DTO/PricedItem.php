@@ -26,5 +26,7 @@ final readonly class PricedItem
         public ?string $note = null,
         public bool $priceClamped = false,
         public ?int $cartItemId = null,
+        public bool $isAvailable = true,
+        public ?string $unavailableReason = null,
     ) {}
 }

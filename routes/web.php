@@ -13,6 +13,10 @@ Route::get('/', function () {
 Route::get('/health', HealthController::class)->name('health');
 
 Route::get('/api-docs', function () {
+    if (app()->environment('production')) {
+        abort(404);
+    }
+
     return view('api-docs');
 });
 

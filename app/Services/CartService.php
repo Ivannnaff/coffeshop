@@ -151,6 +151,23 @@ class CartService
         $inputs = [];
 
         foreach ($cart->items as $item) {
+            $inputs[] = $this->mapper->toDisplayInput($item);
+        }
+
+        return $this->priceCalculator->calculateDisplay($inputs, $this->storeSettings->minItemPrice());
+    }
+
+    public function calculateStrict(Cart $cart): PricingResult
+    {
+        $cart->load([
+            'items.product.variants',
+            'items.product.addonGroups',
+            'items.addons',
+        ]);
+
+        $inputs = [];
+
+        foreach ($cart->items as $item) {
             $inputs[] = $this->mapper->toInput($item);
         }
 

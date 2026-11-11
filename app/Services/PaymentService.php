@@ -77,8 +77,9 @@ class PaymentService
         $signatureValid = $this->gateway->verifySignature($payload);
         $notification = $this->gateway->parseNotification($payload);
 
+        $statusValue = $notification->status->value;
         $eventId = $notification->transactionId !== ''
-            ? $notification->transactionId
+            ? $notification->transactionId.':'.$statusValue
             : hash('sha256', json_encode($payload) ?: '');
 
         if (! $signatureValid) {
