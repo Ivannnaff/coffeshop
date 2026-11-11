@@ -33,9 +33,9 @@ class ProductResource extends JsonResource
             'is_active' => $product->is_active,
             'badge' => $product->badge?->value,
             'sort_order' => $product->sort_order,
-            'category' => new CategoryResource($this->whenLoaded('category')),
-            'variants' => ProductVariantResource::collection($this->whenLoaded('variants')),
-            'addon_groups' => AddonGroupResource::collection($this->whenLoaded('addonGroups')),
+            'category' => $this->whenLoaded('category', fn () => (new CategoryResource($this->resource->category))->resolve($request)),
+            'variants' => $this->whenLoaded('variants', fn () => ProductVariantResource::collection($this->resource->variants)->resolve($request)),
+            'addon_groups' => $this->whenLoaded('addonGroups', fn () => AddonGroupResource::collection($this->resource->addonGroups)->resolve($request)),
         ];
     }
 }

@@ -27,7 +27,7 @@ return [
     /*
     | URL halaman menu frontend setelah pelanggan memindai QR meja.
     */
-    'menu_url' => env('MENU_URL', '/api/public/menu'),
+    'menu_url' => env('MENU_URL', '/'),
 
     /*
     | URL publik Reverb/WebSocket untuk CSP connect-src di production.

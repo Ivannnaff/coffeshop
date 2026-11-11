@@ -3,9 +3,90 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
-@source '../**/*.js';
+@source '../**/*.tsx';
+@source '../**/*.ts';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-brand: #1e5b3e;
+    --color-brand-hover: #184a32;
+    --color-brand-soft: #e3ede6;
+    --color-canvas: #f7f3ea;
+    --color-surface: #ffffff;
+    --color-ink: #1c2420;
+    --color-ink-muted: #5f6b65;
+    --color-accent: #5c4330;
+    --color-line: #e4ded1;
+    --color-danger: #b42318;
+    --color-warning: #b54708;
+    --color-success: #2e7d4f;
+
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Fraunces', ui-serif, Georgia, serif;
+
+    --radius-card: 12px;
+    --radius-sheet: 16px;
+    --shadow-card: 0 1px 2px rgb(28 36 32 / 0.06);
+
+    --animate-sheet-up: sheet-up 180ms ease-out;
+}
+
+@keyframes sheet-up {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        background-color: var(--color-canvas);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    :where(a[href], button:not(:disabled), summary, select, label[for], input[type='checkbox'], input[type='radio'], [role='button']) {
+        cursor: pointer;
+    }
+
+    :where(button:disabled, input:disabled, select:disabled) {
+        cursor: not-allowed;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 2px;
+    }
+
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
