@@ -12,7 +12,7 @@ export function SearchField({ value, onChange }: SearchFieldProps) {
                 Cari menu
             </label>
             <Search
-                className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-muted transition-colors group-focus-within:text-brand"
+                className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted transition-colors"
                 aria-hidden="true"
             />
             <input
@@ -20,17 +20,17 @@ export function SearchField({ value, onChange }: SearchFieldProps) {
                 type="search"
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
-                placeholder="Cari kopi atau cemilan favorit..."
-                className="min-h-14 w-full rounded-2xl border border-line bg-surface pl-12 pr-12 text-[15px] shadow-sm transition-all placeholder:text-ink-muted/60 focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/10 focus-visible:outline-none"
+                placeholder="Cari minuman atau snack..."
+                className="min-h-14 w-full rounded-xl border border-line bg-surface pl-11 pr-11 text-[15px] transition-all placeholder:text-ink-muted/50 focus-visible:border-brand focus-visible:ring-1 focus-visible:ring-brand/20 focus-visible:outline-none"
             />
             {value !== '' && (
                 <button
                     type="button"
                     onClick={() => onChange('')}
                     aria-label="Hapus pencarian"
-                    className="absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl text-ink-muted hover:bg-canvas transition-colors"
+                    className="absolute right-3 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-ink-muted hover:bg-canvas/30 transition-colors"
                 >
-                    <X className="h-5 w-5" aria-hidden="true" />
+                    <X className="h-4 w-4" aria-hidden="true" />
                 </button>
             )}
         </div>
