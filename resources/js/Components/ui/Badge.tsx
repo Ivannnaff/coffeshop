@@ -3,10 +3,10 @@ import { cn } from '@/lib/cn';
 type BadgeTone = 'best_seller' | 'promo' | 'sold_out' | 'new';
 
 const tones: Record<BadgeTone, string> = {
-    best_seller: 'bg-brand text-surface',
-    promo: 'bg-accent text-surface',
-    sold_out: 'bg-ink text-surface',
-    new: 'bg-warning-soft text-warning',
+    best_seller: 'bg-brand-soft text-brand',
+    promo: 'bg-accent-soft text-accent',
+    sold_out: 'bg-ink/10 text-ink-muted',
+    new: 'bg-brand-mist text-brand-deep',
 };
 
 const labels: Record<BadgeTone, string> = {
@@ -28,7 +28,7 @@ export function Badge({
     return (
         <span
             className={cn(
-                'inline-flex items-center rounded-[4px] px-1.5 py-0.5 text-[9.5px] font-bold tracking-[0.06em] uppercase',
+                'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold',
                 tones[tone],
                 className,
             )}
