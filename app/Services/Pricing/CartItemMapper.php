@@ -125,15 +125,18 @@ final class CartItemMapper
      */
     private function addonChoices(CartItem $item): array
     {
-        $addonIds = DB::table('cart_item_addons')
+        /** @var array<int, int> $addonQtys */
+        $addonQtys = DB::table('cart_item_addons')
             ->where('cart_item_id', $item->id)
-            ->pluck('addon_id')
+            ->pluck('qty', 'addon_id')
+            ->map(fn ($qty): int => max(1, (int) $qty))
             ->all();
 
-        if ($addonIds === []) {
+        if ($addonQtys === []) {
             return [[], 0];
         }
 
+        $addonIds = array_keys($addonQtys);
         $selectedAddons = Addon::query()->withTrashed()->whereIn('id', $addonIds)->get();
         $addons = [];
 
@@ -145,6 +148,7 @@ final class CartItemMapper
                 priceDelta: $addon->price_delta,
                 isActive: $addon->is_active && ! $addon->trashed(),
                 isSoldOut: $addon->is_sold_out,
+                qty: $addonQtys[$addon->id] ?? 1,
             );
         }
 

@@ -59,6 +59,7 @@ class CartItem extends Model
      */
     public function addons(): BelongsToMany
     {
-        return $this->belongsToMany(Addon::class, 'cart_item_addons');
+        return $this->belongsToMany(Addon::class, 'cart_item_addons')
+            ->withPivot('qty');
     }
 }

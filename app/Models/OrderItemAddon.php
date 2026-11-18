@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $addon_id
  * @property string $addon_name
  * @property int $price_delta
+ * @property int $qty
  * @property-read OrderItem|null $orderItem
  * @property-read Addon|null $addon
  */
@@ -23,12 +24,14 @@ class OrderItemAddon extends Model
         'addon_id',
         'addon_name',
         'price_delta',
+        'qty',
     ];
 
     protected function casts(): array
     {
         return [
             'price_delta' => 'integer',
+            'qty' => 'integer',
         ];
     }
 

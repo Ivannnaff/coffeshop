@@ -104,7 +104,7 @@ class CartAndCheckoutFeatureTest extends TestCase
         $cartToken = $response->json('data.token');
 
         // Add item
-        $addResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $addResponse = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/cart/items', [
                 'product_id' => $this->product->id,
                 'variant_ids' => [$this->variant->id],
@@ -119,7 +119,7 @@ class CartAndCheckoutFeatureTest extends TestCase
         $itemId = $addResponse->json('data.items.0.id');
 
         // Update item qty
-        $updateResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $updateResponse = $this->withCookie('cart_token', $cartToken)
             ->patchJson("/api/public/cart/items/{$itemId}", [
                 'qty' => 1,
             ]);
@@ -128,11 +128,53 @@ class CartAndCheckoutFeatureTest extends TestCase
             ->assertJsonPath('data.subtotal', 25000);
 
         // Remove item
-        $deleteResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $deleteResponse = $this->withCookie('cart_token', $cartToken)
             ->deleteJson("/api/public/cart/items/{$itemId}");
 
         $deleteResponse->assertOk()
             ->assertJsonPath('data.subtotal', 0);
+    }
+
+    public function test_addon_quantity_can_apply_to_only_some_cups(): void
+    {
+        $cartResponse = $this->getJson('/api/public/cart');
+        $cartToken = $cartResponse->json('data.token');
+
+        $addResponse = $this->withCookie('cart_token', $cartToken)
+            ->postJson('/api/public/cart/items', [
+                'product_id' => $this->product->id,
+                'variant_ids' => [$this->variant->id],
+                'qty' => 2,
+            ]);
+
+        $addResponse->assertOk()->assertJsonPath('data.subtotal', 40000);
+        $itemId = $addResponse->json('data.items.0.id');
+
+        $updateResponse = $this->withCookie('cart_token', $cartToken)
+            ->patchJson("/api/public/cart/items/{$itemId}", [
+                'addons' => [
+                    ['addon_id' => $this->addon->id, 'qty' => 1],
+                ],
+            ]);
+
+        // 2 x 20.000 + 1 x 5.000, add-on hanya untuk satu cup.
+        $updateResponse->assertOk()
+            ->assertJsonPath('data.subtotal', 45000)
+            ->assertJsonPath('data.items.0.addons.0.qty', 1);
+
+        $checkoutResponse = $this->withCookie('cart_token', $cartToken)
+            ->postJson('/api/public/checkout', [
+                'customer_name' => 'Budi Santoso',
+                'customer_phone' => '081234567891',
+                'mode' => 'takeaway',
+            ]);
+
+        $checkoutResponse->assertStatus(201)->assertJsonPath('data.total', 45000);
+        $this->assertDatabaseHas('order_item_addons', [
+            'addon_name' => 'Extra Espresso',
+            'price_delta' => 5000,
+            'qty' => 1,
+        ]);
     }
 
     public function test_checkout_preview_and_checkout_takeaway(): void
@@ -140,7 +182,7 @@ class CartAndCheckoutFeatureTest extends TestCase
         $cartResponse = $this->getJson('/api/public/cart');
         $cartToken = $cartResponse->json('data.token');
 
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/cart/items', [
                 'product_id' => $this->product->id,
                 'variant_ids' => [$this->variant->id],
@@ -148,7 +190,7 @@ class CartAndCheckoutFeatureTest extends TestCase
             ]);
 
         // Preview
-        $previewResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $previewResponse = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout/preview', [
                 'mode' => 'takeaway',
             ]);
@@ -159,7 +201,7 @@ class CartAndCheckoutFeatureTest extends TestCase
             ->assertJsonPath('data.total', 40000);
 
         // Checkout
-        $checkoutResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $checkoutResponse = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout', [
                 'customer_name' => 'Budi Santoso',
                 'customer_phone' => '081234567890',
@@ -196,7 +238,7 @@ class CartAndCheckoutFeatureTest extends TestCase
         $cartResponse = $this->getJson('/api/public/cart');
         $cartToken = $cartResponse->json('data.token');
 
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/cart/items', [
                 'product_id' => $this->product->id,
                 'variant_ids' => [$this->variant->id],
@@ -204,7 +246,7 @@ class CartAndCheckoutFeatureTest extends TestCase
             ]);
 
         // Lat/Lon close to store (-6.2000, 106.8166) -> e.g. (-6.2020, 106.8180)
-        $previewResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $previewResponse = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout/preview', [
                 'mode' => 'delivery',
                 'latitude' => -6.2020,
@@ -215,7 +257,7 @@ class CartAndCheckoutFeatureTest extends TestCase
             ->assertJsonPath('data.delivery_fee', 10000)
             ->assertJsonPath('data.total', 30000); // 20k + 10k fee
 
-        $checkoutResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $checkoutResponse = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout', [
                 'customer_name' => 'Siti Aminah',
                 'customer_phone' => '081987654321',
@@ -242,14 +284,14 @@ class CartAndCheckoutFeatureTest extends TestCase
         $cartResponse = $this->getJson('/api/public/cart');
         $cartToken = $cartResponse->json('data.token');
 
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/cart/items', [
                 'product_id' => $this->product->id,
                 'variant_ids' => [$this->variant->id],
                 'qty' => 1,
             ]);
 
-        $response = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $response = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout', [
                 'customer_name' => 'Budi',
                 'customer_phone' => '081234567890',
@@ -287,14 +329,14 @@ class CartAndCheckoutFeatureTest extends TestCase
         $cartResponse = $this->getJson('/api/public/cart');
         $cartToken = $cartResponse->json('data.token');
 
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/cart/items', [
                 'product_id' => $this->product->id,
                 'variant_ids' => [$this->variant->id],
                 'qty' => 1,
             ]);
 
-        $response = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $response = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout', [
                 'customer_name' => 'Test',
                 'customer_phone' => $phone,

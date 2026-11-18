@@ -7,6 +7,7 @@ namespace App\Http\Resources;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin Product
@@ -29,6 +30,9 @@ class ProductResource extends JsonResource
             'description' => $product->description,
             'base_price' => $product->base_price,
             'image_path' => $product->image_path,
+            'image_url' => $product->image_path !== null
+                ? Storage::disk((string) config('filesystems.default'))->url($product->image_path)
+                : null,
             'is_sold_out' => $product->is_sold_out,
             'is_active' => $product->is_active,
             'badge' => $product->badge?->value,

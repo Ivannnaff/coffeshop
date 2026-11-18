@@ -8,6 +8,7 @@ final readonly class PricedItem
 {
     /**
      * @param  list<AddonChoice>  $addons
+     * @param  int  $addonsTotal  Total add-on satu baris (sudah dikalikan qty add-on).
      */
     public function __construct(
         public int $productId,

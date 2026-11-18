@@ -113,7 +113,7 @@ class PublicApiAndRegressionFeatureTest extends TestCase
         $cartRes = $this->getJson('/api/public/cart');
         $cartToken = $cartRes->json('data.token');
 
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/cart/items', [
                 'product_id' => $product->id,
                 'variant_ids' => [$variant->id],
@@ -125,7 +125,7 @@ class PublicApiAndRegressionFeatureTest extends TestCase
         $product->update(['is_sold_out' => true]);
 
         // Preview should also reject with 422 PRODUCT_UNAVAILABLE
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout/preview', [
                 'mode' => 'takeaway',
             ])
@@ -133,7 +133,7 @@ class PublicApiAndRegressionFeatureTest extends TestCase
             ->assertJsonPath('code', 'PRODUCT_UNAVAILABLE');
 
         // Attempt checkout should fail with 422 PRODUCT_UNAVAILABLE
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout', [
                 'customer_name' => 'Budi',
                 'customer_phone' => '081234567890',

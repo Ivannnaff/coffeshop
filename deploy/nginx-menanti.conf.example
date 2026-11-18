@@ -1,0 +1,55 @@
+# Nginx untuk Menanti (Laravel + Inertia).
+# Ganti domain, path, dan versi PHP-FPM sesuai server.
+
+server {
+    listen 80;
+    server_name menanti.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name menanti.example.com;
+
+    root /var/www/menanti/public;
+    index index.php;
+
+    ssl_certificate     /etc/letsencrypt/live/menanti.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/menanti.example.com/privkey.pem;
+
+    client_max_body_size 4m;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+
+    location ~* \.(?:css|js|jpg|jpeg|png|webp|svg|woff2?)$ {
+        expires 7d;
+        access_log off;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Opsional: Reverb websocket (jika dipakai)
+    # location /app {
+    #     proxy_pass http://127.0.0.1:8080;
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "upgrade";
+    #     proxy_set_header Host $host;
+    # }
+}

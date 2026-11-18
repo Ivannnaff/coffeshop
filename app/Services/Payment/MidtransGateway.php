@@ -111,8 +111,8 @@ class MidtransGateway implements PaymentGateway
 
     public function verifySignature(array $payload): bool
     {
-        $serverKey = $this->serverKey();
-        if ($serverKey === '') {
+        $signatureSecret = $this->signatureSecret();
+        if ($signatureSecret === '') {
             return false;
         }
 
@@ -125,7 +125,7 @@ class MidtransGateway implements PaymentGateway
             return false;
         }
 
-        $expected = hash('sha512', $orderId.$statusCode.$grossAmount.$serverKey);
+        $expected = hash('sha512', $orderId.$statusCode.$grossAmount.$signatureSecret);
 
         return hash_equals($expected, $signature);
     }
@@ -158,6 +158,18 @@ class MidtransGateway implements PaymentGateway
     private function serverKey(): string
     {
         return (string) config('menanti.payment.midtrans.server_key', '');
+    }
+
+    /**
+     * Sejak 28 Oktober 2026 Midtrans memakai Signature Secret Key terpisah
+     * untuk memverifikasi signature_key pada notifikasi HTTP. Integrasi lama
+     * memakai Server Key, jadi nilai itu dipakai sebagai fallback.
+     */
+    private function signatureSecret(): string
+    {
+        $secret = (string) config('menanti.payment.midtrans.signature_secret_key', '');
+
+        return $secret !== '' ? $secret : $this->serverKey();
     }
 
     private function snapUrl(): string

@@ -6,7 +6,7 @@ use App\Http\Controllers\Kds\KdsOrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('kds')
-    ->middleware(['auth', 'role:barista,admin'])
+    ->middleware(['auth', 'role:barista'])
     ->group(function (): void {
         Route::get('/orders', [KdsOrderController::class, 'index']);
         Route::post('/orders/{order}/start', [KdsOrderController::class, 'start']);

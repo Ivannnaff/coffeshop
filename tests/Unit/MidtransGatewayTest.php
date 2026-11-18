@@ -20,6 +20,7 @@ class MidtransGatewayTest extends TestCase
         parent::setUp();
 
         config(['menanti.payment.midtrans.server_key' => 'server-key-test']);
+        config(['menanti.payment.midtrans.signature_secret_key' => 'server-key-test']);
         $this->gateway = new MidtransGateway;
     }
 

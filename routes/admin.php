@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Admin\AddonController;
 use App\Http\Controllers\Admin\AddonGroupController;
+use App\Http\Controllers\Admin\AdminPageController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DeliveryFeeRuleController;
 use App\Http\Controllers\Admin\DeliveryZoneController;
@@ -19,6 +20,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')
     ->middleware(['auth', 'role:admin', 'audit.admin'])
     ->group(function (): void {
+        Route::get('/', [AdminPageController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/produk', [AdminPageController::class, 'products'])->name('admin.products');
+        Route::get('/kategori', [AdminPageController::class, 'categories'])->name('admin.categories');
+        Route::get('/addon', [AdminPageController::class, 'addons'])->name('admin.addons');
+        Route::get('/meja', [AdminPageController::class, 'tables'])->name('admin.tables');
+        Route::get('/toko', [AdminPageController::class, 'store'])->name('admin.store');
+        Route::get('/pengantaran', [AdminPageController::class, 'delivery'])->name('admin.delivery');
+
         Route::apiResource('categories', CategoryController::class)->except(['show']);
         Route::apiResource('products', ProductController::class)->except(['show']);
         Route::patch('products/{product}/sold-out', [ProductController::class, 'toggleSoldOut']);

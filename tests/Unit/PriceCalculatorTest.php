@@ -57,8 +57,51 @@ class PriceCalculatorTest extends TestCase
 
         $result = $this->calculator->calculateItem($item, $this->minItemPrice);
 
-        $this->assertEquals(19000, $result->unitPrice);
+        $this->assertEquals(14000, $result->unitPrice);
+        $this->assertEquals(5000, $result->addonsTotal);
+        $this->assertEquals(19000, $result->lineTotal);
         $this->assertTrue($result->isDeliveryEligible);
+    }
+
+    public function test_addon_qty_smaller_than_line_qty_is_charged_partially(): void
+    {
+        $group = new AddonGroupRule(id: 1, name: 'Topping', selectionType: AddonSelectionType::Multiple, minSelect: 0, maxSelect: 2);
+        $addon = new AddonChoice(id: 1, groupId: 1, name: 'Extra Shot', priceDelta: 5000, qty: 1);
+
+        $item = new CartItemInput(
+            productId: 1,
+            productName: 'Es Kopi Susu',
+            basePrice: 20000,
+            qty: 2,
+            addons: [$addon],
+            addonGroups: [$group],
+        );
+
+        $result = $this->calculator->calculateItem($item, $this->minItemPrice);
+
+        $this->assertEquals(40000, $result->unitPrice * $result->qty);
+        $this->assertEquals(5000, $result->addonsTotal);
+        $this->assertEquals(45000, $result->lineTotal);
+    }
+
+    public function test_addon_qty_equal_to_line_qty_is_charged_for_every_cup(): void
+    {
+        $group = new AddonGroupRule(id: 1, name: 'Topping', selectionType: AddonSelectionType::Multiple, minSelect: 0, maxSelect: 2);
+        $addon = new AddonChoice(id: 1, groupId: 1, name: 'Extra Shot', priceDelta: 5000, qty: 2);
+
+        $item = new CartItemInput(
+            productId: 1,
+            productName: 'Es Kopi Susu',
+            basePrice: 20000,
+            qty: 2,
+            addons: [$addon],
+            addonGroups: [$group],
+        );
+
+        $result = $this->calculator->calculateItem($item, $this->minItemPrice);
+
+        $this->assertEquals(10000, $result->addonsTotal);
+        $this->assertEquals(50000, $result->lineTotal);
     }
 
     public function test_case_3_qty_does_not_affect_eligibility(): void

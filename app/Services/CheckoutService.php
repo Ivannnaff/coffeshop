@@ -160,6 +160,7 @@ class CheckoutService
                         'addon_id' => $addon->id,
                         'addon_name' => $addon->name,
                         'price_delta' => $addon->priceDelta,
+                        'qty' => $addon->qty,
                     ]);
                 }
             }

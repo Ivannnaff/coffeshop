@@ -120,12 +120,12 @@ class KdsAndAdminFeatureTest extends TestCase
         $this->assertEquals(OrderStatus::Preparing, $this->order->fresh()->status);
     }
 
-    public function test_admin_can_access_admin_and_kds(): void
+    public function test_admin_cannot_access_kds_but_can_access_admin(): void
     {
         $this->actingAs($this->admin);
 
-        // Admin can access KDS
-        $this->getJson('/kds/orders')->assertOk();
+        // KDS hanya untuk barista; admin tidak boleh masuk.
+        $this->getJson('/kds/orders')->assertStatus(403);
 
         // Admin can access Store Settings
         $this->getJson('/admin/store-settings')->assertOk()

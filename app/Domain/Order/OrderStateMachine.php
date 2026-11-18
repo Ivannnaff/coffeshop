@@ -24,7 +24,12 @@ class OrderStateMachine
 
         return match ($from) {
             OrderStatus::PendingPayment => match ($to) {
-                OrderStatus::Paid => $actorType === StatusActorType::Webhook,
+                // Pembayaran tunai di kasir dicatat oleh staf yang menerima uang.
+                OrderStatus::Paid => in_array(
+                    $actorType,
+                    [StatusActorType::Webhook, StatusActorType::Cashier],
+                    true
+                ),
                 OrderStatus::Expired => $actorType === StatusActorType::System,
                 default => false,
             },

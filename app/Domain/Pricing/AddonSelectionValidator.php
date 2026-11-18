@@ -41,11 +41,29 @@ final class AddonSelectionValidator
                 );
             }
 
+            if ($addon->qty < 1) {
+                throw AddonInvalidException::because(
+                    "add-on '{$addon->name}' memiliki jumlah tidak valid."
+                );
+            }
+
+            if ($addon->qty > $item->qty) {
+                throw AddonInvalidException::because(
+                    "add-on '{$addon->name}' melebihi jumlah item ({$item->qty})."
+                );
+            }
+
             $group = $groups[$addon->groupId] ?? null;
 
             if ($group === null) {
                 throw AddonInvalidException::because(
                     "add-on '{$addon->name}' tidak termasuk grup add-on produk '{$item->productName}'."
+                );
+            }
+
+            if ($group->minSelect > 0 && $addon->qty !== $item->qty) {
+                throw AddonInvalidException::because(
+                    "grup '{$group->name}' wajib berlaku untuk seluruh {$item->qty} item."
                 );
             }
 

@@ -59,6 +59,7 @@ class OrderStateMachineTest extends TestCase
 
         $shared = [
             [OrderStatus::PendingPayment, OrderStatus::Paid, StatusActorType::Webhook],
+            [OrderStatus::PendingPayment, OrderStatus::Paid, StatusActorType::Cashier],
             [OrderStatus::PendingPayment, OrderStatus::Expired, StatusActorType::System],
             [OrderStatus::Paid, OrderStatus::Preparing, StatusActorType::User],
             [OrderStatus::Preparing, OrderStatus::Ready, StatusActorType::User],
