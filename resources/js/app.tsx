@@ -3,8 +3,12 @@ import type { ComponentType } from 'react';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import { CartProvider } from '@/Context/CartContext';
+import { ToastProvider } from '@/Context/ToastContext';
+import type { Cart } from '@/types';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Menanti Pagi';
+const configuredName = import.meta.env.VITE_APP_NAME;
+const appName = configuredName && !configuredName.includes('${') ? configuredName : 'Menanti Pagi';
 
 createInertiaApp({
     title: (title) => `${title ? `${title} | ` : ''}${appName}`,
@@ -17,8 +21,17 @@ createInertiaApp({
         return page.default;
     },
     setup({ el, App, props }) {
+        const initialCart =
+            ((props.initialPage.props as { cart?: Cart | null }).cart ?? null) as Cart | null;
+
         const root = createRoot(el);
-        root.render(<App {...props} />);
+        root.render(
+            <ToastProvider>
+                <CartProvider initialCart={initialCart}>
+                    <App {...props} />
+                </CartProvider>
+            </ToastProvider>,
+        );
     },
     progress: {
         color: '#1E5B3E',

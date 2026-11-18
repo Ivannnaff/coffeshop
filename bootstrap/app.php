@@ -18,6 +18,8 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\ResolveCart;
 use App\Http\Middleware\SecurityHeaders;
 use App\Models\Order;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -52,11 +54,21 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
         ]);
 
+        // Rute API pelanggan membaca cookie cart_token yang di-set oleh request
+        // web. Tanpa EncryptCookies, cookie terenkripsi tidak bisa didekripsi dan
+        // ResolveCart membuat keranjang baru setiap request API.
+        $middleware->api(prepend: [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+        ]);
+
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
             'resolve.cart' => ResolveCart::class,
             'audit.admin' => AuditAdminRequests::class,
         ]);
+
+        $middleware->redirectGuestsTo('/masuk');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, Request $request) {

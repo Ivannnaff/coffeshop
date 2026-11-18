@@ -42,6 +42,7 @@ class PublicOrderResource extends JsonResource
                 'addons' => $item->addons->map(fn (OrderItemAddon $addon): array => [
                     'name' => $addon->addon_name,
                     'price_delta' => $addon->price_delta,
+                    'qty' => $addon->qty,
                 ]),
                 'unit_price' => $item->unit_price,
                 'qty' => $item->qty,

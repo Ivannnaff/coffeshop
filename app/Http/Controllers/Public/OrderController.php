@@ -75,14 +75,14 @@ class OrderController extends Controller
             }
 
             $variantIds = $this->variantIdsFor($product, $item);
-            $addonIds = $this->addonIdsFor($product, $item);
+            $addonQtys = $this->addonQuantitiesFor($product, $item, $item->qty);
 
             try {
                 $this->cartService->addItem(
                     $cart,
                     $product->id,
                     $variantIds,
-                    $addonIds,
+                    $addonQtys,
                     $item->qty,
                     $item->note,
                 );
@@ -154,16 +154,16 @@ class OrderController extends Controller
     }
 
     /**
-     * @return list<int>
+     * @return array<int, int> addon id => jumlah cup yang memakai add-on
      */
-    private function addonIdsFor(Product $product, OrderItem $item): array
+    private function addonQuantitiesFor(Product $product, OrderItem $item, int $qty): array
     {
         /** @var Collection<int, Addon> $availableAddons */
         $availableAddons = $product->addonGroups->flatMap(
             fn ($group) => $group->addons
         );
 
-        $ids = [];
+        $quantities = [];
 
         foreach ($item->addons as $orderAddon) {
             $addon = $availableAddons->first(
@@ -173,10 +173,10 @@ class OrderController extends Controller
             );
 
             if ($addon !== null) {
-                $ids[] = $addon->id;
+                $quantities[$addon->id] = max(1, min((int) ($orderAddon->qty ?? $qty), $qty));
             }
         }
 
-        return $ids;
+        return $quantities;
     }
 }

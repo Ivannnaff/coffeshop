@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Auth\StaffAuthController;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\Kasir\KasirOrderController;
+use App\Http\Controllers\Kasir\KasirPageController;
+use App\Http\Controllers\Kds\KdsPageController;
 use App\Http\Controllers\Public\CheckoutPageController;
 use App\Http\Controllers\Public\MenuPageController;
 use App\Http\Controllers\Public\OrderPageController;
@@ -39,9 +42,20 @@ Route::get('/meja/{qrToken}', [TableModeController::class, 'showTable'])
     ->name('table.resolve');
 
 // Login staf (admin dan barista) dengan session, tanpa halaman Inertia.
+Route::get('/masuk', [StaffAuthController::class, 'showLogin'])->name('staff.login');
 Route::post('/login', [StaffAuthController::class, 'login'])
     ->middleware('throttle:login')
     ->name('login');
+Route::get('/kds', KdsPageController::class)
+    ->middleware(['auth', 'role:barista'])
+    ->name('kds');
+
+Route::get('/kasir', KasirPageController::class)
+    ->middleware(['auth', 'role:barista,admin'])
+    ->name('kasir');
+Route::post('/kasir/orders', [KasirOrderController::class, 'store'])
+    ->middleware(['auth', 'role:barista,admin', 'throttle:cart-items'])
+    ->name('kasir.orders');
 
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [StaffAuthController::class, 'logout'])->name('logout');

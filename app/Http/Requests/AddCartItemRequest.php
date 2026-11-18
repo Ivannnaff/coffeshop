@@ -33,6 +33,9 @@ class AddCartItemRequest extends FormRequest
             ],
             'addon_ids' => ['sometimes', 'array'],
             'addon_ids.*' => ['integer', Rule::exists('addons', 'id')],
+            'addons' => ['sometimes', 'array'],
+            'addons.*.addon_id' => ['required', 'integer', 'distinct', Rule::exists('addons', 'id')],
+            'addons.*.qty' => ['sometimes', 'integer', 'min:1', 'max:99'],
             'qty' => ['required', 'integer', 'min:1', 'max:99'],
             'note' => ['nullable', 'string', 'max:140'],
         ];
@@ -50,7 +53,13 @@ class AddCartItemRequest extends FormRequest
                 }
 
                 $productId = (int) $this->input('product_id');
-                $addonIds = $this->input('addon_ids', []);
+                $addonIds = array_merge(
+                    array_map('intval', (array) $this->input('addon_ids', [])),
+                    array_map(
+                        'intval',
+                        array_column((array) $this->input('addons', []), 'addon_id')
+                    ),
+                );
 
                 if ($addonIds !== []) {
                     $attached = Addon::query()

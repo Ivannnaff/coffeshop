@@ -1,101 +1,89 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { cn } from '@/lib/cn';
 
 interface SheetProps {
     open: boolean;
     onClose: () => void;
-    title: string;
+    title?: string;
+    subtitle?: string;
     children: ReactNode;
     footer?: ReactNode;
+    className?: string;
 }
 
-const FOCUSABLE =
-    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-export function Sheet({ open, onClose, title, children, footer }: SheetProps) {
-    const panelRef = useRef<HTMLDivElement>(null);
-    const onCloseRef = useRef(onClose);
-    onCloseRef.current = onClose;
-
+export function Sheet({ open, onClose, title, subtitle, children, footer, className }: SheetProps) {
     useEffect(() => {
         if (!open) return;
 
-        const previous = document.activeElement as HTMLElement | null;
-        const panel = panelRef.current;
-        const getFocusable = () =>
-            Array.from(panel?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
-
-        const first = getFocusable()[0];
-        first?.focus();
-
-        const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                onCloseRef.current();
-                return;
-            }
-
-            if (event.key !== 'Tab') return;
-
-            const items = getFocusable();
-            if (items.length === 0) return;
-
-            const firstItem = items[0];
-            const lastItem = items[items.length - 1];
-
-            if (event.shiftKey && document.activeElement === firstItem) {
-                event.preventDefault();
-                lastItem.focus();
-            } else if (!event.shiftKey && document.activeElement === lastItem) {
-                event.preventDefault();
-                firstItem.focus();
-            }
+        const handleKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') onClose();
         };
 
-        document.addEventListener('keydown', onKeyDown);
         const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', handleKey);
 
         return () => {
-            document.removeEventListener('keydown', onKeyDown);
             document.body.style.overflow = previousOverflow;
-            previous?.focus();
+            document.removeEventListener('keydown', handleKey);
         };
-    }, [open]);
+    }, [open, onClose]);
 
     if (!open) return null;
 
-    return (
-        <div className="fixed inset-0 z-40">
+    return createPortal(
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6">
             <button
                 type="button"
                 aria-label="Tutup panel"
                 onClick={onClose}
-                className="absolute inset-0 h-full w-full cursor-pointer bg-ink/40"
+                className="animate-fade-in bg-ink/40 absolute inset-0 h-full w-full cursor-default"
             />
             <div
-                ref={panelRef}
                 role="dialog"
                 aria-modal="true"
-                aria-labelledby="sheet-title"
-                className="absolute inset-x-0 bottom-0 flex max-h-[92dvh] flex-col rounded-t-2xl bg-surface shadow-card animate-sheet-up lg:inset-y-0 lg:left-auto lg:right-0 lg:max-h-none lg:w-[440px] lg:rounded-none"
+                aria-label={title ?? 'Panel'}
+                className={cn(
+                    'animate-sheet-up bg-surface relative flex max-h-[92dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-2xl shadow-[0_-8px_40px_-20px_rgba(36,33,27,0.45)] sm:rounded-2xl',
+                    className,
+                )}
             >
-                <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
-                    <h2 id="sheet-title" className="font-display text-xl font-semibold">
-                        {title}
-                    </h2>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        aria-label="Tutup"
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-ink-muted hover:bg-canvas"
-                    >
-                        <X className="h-5 w-5" aria-hidden="true" />
-                    </button>
+                <div className="flex justify-center pt-2.5">
+                    <span className="bg-line h-1 w-9 rounded-full" aria-hidden="true" />
                 </div>
-                <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
-                {footer && <div className="border-t border-line px-5 py-4">{footer}</div>}
+
+                {(title || subtitle) && (
+                    <div className="flex items-start justify-between gap-3 px-5 pt-2 pb-1">
+                        <div>
+                            {title && <h2 className="text-ink text-xl">{title}</h2>}
+                            {subtitle && (
+                                <p className="text-ink-muted mt-0.5 text-[13px]">{subtitle}</p>
+                            )}
+                        </div>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            aria-label="Tutup"
+                            className="tap-target text-ink-muted hover:bg-canvas-deep -mr-1 grid size-10 shrink-0 place-items-center rounded-full transition-colors"
+                        >
+                            <X className="size-5" />
+                        </button>
+                    </div>
+                )}
+
+                <div className="flex-1 overflow-y-auto overscroll-contain px-5 pt-2 pb-4">
+                    {children}
+                </div>
+
+                {footer && (
+                    <div className="border-line bg-surface pb-safe border-t border-dashed px-5 pt-3">
+                        {footer}
+                    </div>
+                )}
             </div>
-        </div>
+        </div>,
+        document.body,
     );
 }

@@ -22,6 +22,13 @@ class UpdateCartItemRequest extends FormRequest
         return [
             'qty' => ['sometimes', 'required', 'integer', 'min:1', 'max:99'],
             'note' => ['sometimes', 'nullable', 'string', 'max:140'],
+            'variant_ids' => ['sometimes', 'array'],
+            'variant_ids.*' => ['integer', 'exists:product_variants,id'],
+            'addon_ids' => ['sometimes', 'array'],
+            'addon_ids.*' => ['integer', 'exists:addons,id'],
+            'addons' => ['sometimes', 'array'],
+            'addons.*.addon_id' => ['required', 'integer', 'distinct', 'exists:addons,id'],
+            'addons.*.qty' => ['sometimes', 'integer', 'min:1', 'max:99'],
         ];
     }
 
@@ -32,9 +39,15 @@ class UpdateCartItemRequest extends FormRequest
     {
         return [
             function (Validator $validator): void {
-                if (! $this->has('qty') && ! $this->has('note')) {
-                    $validator->errors()->add('qty', 'Isi qty atau note.');
+                $fields = ['qty', 'note', 'variant_ids', 'addon_ids', 'addons'];
+
+                foreach ($fields as $field) {
+                    if ($this->has($field)) {
+                        return;
+                    }
                 }
+
+                $validator->errors()->add('qty', 'Isi qty, note, varian, atau add-on.');
             },
         ];
     }

@@ -1,44 +1,61 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { forwardRef, type ButtonHTMLAttributes } from 'react';
+import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
-type Size = 'md' | 'sm';
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: Variant;
-    size?: Size;
+    variant?: ButtonVariant;
+    size?: ButtonSize;
     loading?: boolean;
+    fullWidth?: boolean;
 }
 
-const base =
-    'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed';
-
-const variants: Record<Variant, string> = {
-    primary: 'bg-brand text-white hover:bg-brand-hover active:bg-brand-hover',
-    secondary: 'border border-brand bg-surface text-brand hover:bg-brand-soft',
-    ghost: 'text-brand hover:bg-brand-soft',
-    danger: 'text-danger hover:bg-danger/10',
+const variants: Record<ButtonVariant, string> = {
+    primary: 'bg-brand text-surface hover:bg-brand-hover',
+    secondary: 'bg-brand-soft text-brand-deep hover:bg-brand-mist',
+    outline: 'border border-line bg-transparent text-ink hover:bg-surface',
+    ghost: 'text-ink-muted hover:bg-canvas-deep/60 hover:text-ink',
+    danger: 'bg-danger-soft text-danger hover:bg-danger/15',
 };
 
-const sizes: Record<Size, string> = {
-    md: 'min-h-12 px-5 text-[15px]',
-    sm: 'min-h-11 px-3 text-sm',
+const sizes: Record<ButtonSize, string> = {
+    sm: 'min-h-9 rounded-lg px-3.5 text-[13px]',
+    md: 'min-h-11 rounded-[10px] px-5 text-sm',
+    lg: 'min-h-12 rounded-[12px] px-6 text-[15px]',
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-    { variant = 'primary', size = 'md', loading = false, className, children, disabled, ...props },
-    ref,
-) {
-    return (
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+    (
+        {
+            className,
+            variant = 'primary',
+            size = 'md',
+            loading,
+            fullWidth,
+            disabled,
+            children,
+            ...props
+        },
+        ref,
+    ) => (
         <button
             ref={ref}
-            type={props.type ?? 'button'}
-            className={cn(base, variants[variant], sizes[size], className)}
             disabled={disabled || loading}
-            aria-busy={loading || undefined}
+            className={cn(
+                'no-tap-highlight inline-flex items-center justify-center gap-2 font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-45',
+                variants[variant],
+                sizes[size],
+                fullWidth && 'w-full',
+                className,
+            )}
             {...props}
         >
-            {loading ? 'Memproses...' : children}
+            {loading && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+            {children}
         </button>
-    );
-});
+    ),
+);
+
+Button.displayName = 'Button';

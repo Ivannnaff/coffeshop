@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         StoreSetting::updateOrCreate(
             ['store_id' => 1],
             [
-                'name' => 'Coffee Shop Menanti',
+                'name' => 'Menanti Pagi',
                 'address' => 'Jl. Contoh No. 123, Semarang',
                 'latitude' => -6.9932,
                 'longitude' => 110.4203,
@@ -134,5 +134,8 @@ class DatabaseSeeder extends Seeder
         }
 
         DeliveryZone::create(['store_id' => 1, 'name' => 'Zona 1', 'max_distance_km' => 3.00, 'base_fee' => 10000, 'free_fee_min_subtotal' => 50000, 'sort_order' => 1, 'is_active' => true]);
+
+        // Data menu asli Menanti Pagi.
+        $this->call(MenantiMenuSeeder::class);
     }
 }

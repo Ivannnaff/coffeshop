@@ -134,22 +134,23 @@ final class PriceCalculator
 
         $addonsTotal = 0;
         foreach ($item->addons as $addon) {
-            $addonsTotal += $addon->priceDelta;
+            $addonsTotal += $addon->priceDelta * max(0, $addon->qty);
         }
 
-        $grossPrice = $item->basePrice + $variantDelta + $addonsTotal;
+        $unitBasePrice = $item->basePrice + $variantDelta;
         $discountAmount = max(0, $item->promoDiscountPerUnit);
+        $priceClamped = $isAvailable && $unitBasePrice - $item->promoDiscountPerUnit < 0;
 
-        $unitPrice = $isAvailable ? ($grossPrice - $discountAmount) : 0;
-        $priceClamped = false;
-
-        if ($isAvailable && $grossPrice - $item->promoDiscountPerUnit < 0) {
-            $discountAmount = $grossPrice;
-            $unitPrice = 0;
-            $priceClamped = true;
+        if ($priceClamped) {
+            $discountAmount = $unitBasePrice;
         }
 
-        $lineTotal = $isAvailable ? ($unitPrice * $item->qty) : 0;
+        $unitPrice = $isAvailable ? ($unitBasePrice - $discountAmount) : 0;
+        $lineTotal = $isAvailable ? ($unitPrice * $item->qty + $addonsTotal) : 0;
+
+        // Add-on bisa berlaku hanya untuk sebagian cup, jadi kelayakan minimal
+        // dinilai dari harga rata-rata per unit pada baris ini.
+        $averageUnitPrice = $item->qty > 0 ? intdiv($lineTotal, $item->qty) : 0;
 
         return new PricedItem(
             productId: $item->productId,
@@ -163,7 +164,7 @@ final class PriceCalculator
             unitPrice: $unitPrice,
             qty: $item->qty,
             lineTotal: $lineTotal,
-            isDeliveryEligible: $isAvailable && $this->isDeliveryEligible($unitPrice, $deliveryMinItemPrice),
+            isDeliveryEligible: $isAvailable && $this->isDeliveryEligible($averageUnitPrice, $deliveryMinItemPrice),
             addons: $item->addons,
             note: $item->note,
             priceClamped: $priceClamped,
@@ -195,7 +196,8 @@ final class PriceCalculator
                 $eligibleSubtotal += $pricedItem->lineTotal;
             }
 
-            $grossPrice = $pricedItem->basePrice + $pricedItem->variantDelta + $pricedItem->addonsTotal;
+            $grossPrice = $pricedItem->basePrice + $pricedItem->variantDelta
+                + ($item->qty > 0 ? intdiv($pricedItem->addonsTotal, $item->qty) : 0);
 
             if ($item->promoDiscountPerUnit > $grossPrice) {
                 $anomalies[] = "Harga unit produk '{$item->productName}' negatif, di-clamp ke 0.";

@@ -24,6 +24,7 @@ class OrderResource extends JsonResource
         $order = $this->resource;
 
         return [
+            'id' => $order->id,
             'order_number' => $order->order_number,
             'public_token' => $order->public_token,
             'status' => $order->status->value,
@@ -43,6 +44,7 @@ class OrderResource extends JsonResource
                 'addons' => $item->addons->map(fn (OrderItemAddon $addon): array => [
                     'name' => $addon->addon_name,
                     'price_delta' => $addon->price_delta,
+                    'qty' => $addon->qty,
                 ]),
                 'unit_price' => $item->unit_price,
                 'qty' => $item->qty,

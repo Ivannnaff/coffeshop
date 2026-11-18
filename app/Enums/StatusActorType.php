@@ -8,5 +8,6 @@ enum StatusActorType: string
 {
     case System = 'system';
     case User = 'user';
+    case Cashier = 'cashier';
     case Webhook = 'webhook';
 }

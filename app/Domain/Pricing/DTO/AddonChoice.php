@@ -13,6 +13,7 @@ final readonly class AddonChoice
         public int $priceDelta,
         public bool $isActive = true,
         public bool $isSoldOut = false,
+        public int $qty = 1,
     ) {}
 
     public function isAvailable(): bool

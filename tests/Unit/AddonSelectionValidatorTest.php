@@ -109,4 +109,52 @@ class AddonSelectionValidatorTest extends TestCase
 
         $this->validator->validate($this->makeItem([$addon, $addon], [$group]));
     }
+
+    public function test_addon_qty_above_line_qty_is_rejected(): void
+    {
+        $group = new AddonGroupRule(1, 'Topping', AddonSelectionType::Multiple, 0, 3);
+        $addon = new AddonChoice(1, 1, 'Extra Shot', 5000, qty: 3);
+
+        $this->expectException(AddonInvalidException::class);
+
+        $this->validator->validate($this->makeItem([$addon], [$group]));
+    }
+
+    public function test_required_group_must_apply_to_all_cups(): void
+    {
+        $group = new AddonGroupRule(1, 'Sugar', AddonSelectionType::Single, 1, 1);
+        $addon = new AddonChoice(1, 1, 'Normal Sugar', 0, qty: 1);
+
+        $item = new CartItemInput(
+            productId: 1,
+            productName: 'Kopi',
+            basePrice: 15000,
+            qty: 2,
+            addons: [$addon],
+            addonGroups: [$group],
+        );
+
+        $this->expectException(AddonInvalidException::class);
+
+        $this->validator->validate($item);
+    }
+
+    public function test_required_group_with_full_qty_passes(): void
+    {
+        $group = new AddonGroupRule(1, 'Sugar', AddonSelectionType::Single, 1, 1);
+        $addon = new AddonChoice(1, 1, 'Normal Sugar', 0, qty: 2);
+
+        $item = new CartItemInput(
+            productId: 1,
+            productName: 'Kopi',
+            basePrice: 15000,
+            qty: 2,
+            addons: [$addon],
+            addonGroups: [$group],
+        );
+
+        $this->validator->validate($item);
+
+        $this->addToAssertionCount(1);
+    }
 }

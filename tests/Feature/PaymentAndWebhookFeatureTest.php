@@ -41,6 +41,7 @@ class PaymentAndWebhookFeatureTest extends TestCase
 
         config(['services.midtrans.server_key' => $this->serverKey]);
         config(['menanti.payment.midtrans.server_key' => $this->serverKey]);
+        config(['menanti.payment.midtrans.signature_secret_key' => $this->serverKey]);
 
         $this->storeSetting = StoreSetting::create([
             'store_id' => 1,
@@ -85,14 +86,14 @@ class PaymentAndWebhookFeatureTest extends TestCase
         $cartResponse = $this->getJson('/api/public/cart');
         $cartToken = $cartResponse->json('data.token');
 
-        $this->withUnencryptedCookie('cart_token', $cartToken)
+        $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/cart/items', [
                 'product_id' => $this->product->id,
                 'variant_ids' => [$this->variant->id],
                 'qty' => 2,
             ]);
 
-        $checkoutResponse = $this->withUnencryptedCookie('cart_token', $cartToken)
+        $checkoutResponse = $this->withCookie('cart_token', $cartToken)
             ->postJson('/api/public/checkout', [
                 'customer_name' => 'Budi Santoso',
                 'customer_phone' => '081234567890',
