@@ -37,10 +37,7 @@ export function AppShell({ children, nav = true, className }: AppShellProps) {
             <DesktopHeader onOpenStore={() => setStoreOpen(true)} onOpenCart={openCart} />
 
             <div
-                className={cn(
-                    'bg-canvas relative mx-auto w-full max-w-[520px] md:max-w-3xl lg:min-h-[calc(100dvh-68px)] lg:max-w-7xl lg:px-8',
-                    className,
-                )}
+                className={cn('bg-canvas relative w-full lg:min-h-[calc(100dvh-68px)]', className)}
             >
                 <div className={nav ? 'pb-28 lg:pb-0' : 'pb-8 lg:pb-12'}>{children}</div>
 
@@ -154,7 +151,7 @@ function DesktopHeader({
 
     return (
         <header className="border-line bg-surface sticky top-0 z-40 hidden border-b lg:block">
-            <div className="mx-auto flex h-[68px] max-w-7xl items-center gap-9 px-8">
+            <div className="mx-auto flex h-[68px] w-full max-w-[1560px] items-center gap-9 px-4 lg:px-10">
                 <Link
                     href="/"
                     className="flex items-center gap-3"

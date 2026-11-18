@@ -10,6 +10,7 @@ interface SearchFieldProps extends Omit<
     onChange: (value: string) => void;
     onFilterClick?: () => void;
     onClear?: () => void;
+    variant?: 'default' | 'embedded';
 }
 
 export function SearchField({
@@ -18,6 +19,7 @@ export function SearchField({
     onFilterClick,
     onClear,
     placeholder = 'Cari kopi favoritmu',
+    variant = 'default',
     className,
     ...props
 }: SearchFieldProps) {
@@ -33,7 +35,12 @@ export function SearchField({
                 onChange={(event) => onChange(event.target.value)}
                 placeholder={placeholder}
                 aria-label={placeholder}
-                className="border-line bg-surface text-ink placeholder:text-ink-muted/80 focus:border-brand/60 focus:ring-brand/20 min-h-11 w-full appearance-none rounded-[10px] border py-2.5 pr-11 pl-10 text-sm transition-colors outline-none focus:ring-2 [&::-webkit-search-cancel-button]:hidden"
+                className={cn(
+                    'text-ink placeholder:text-ink-muted/80 min-h-11 w-full appearance-none rounded-[10px] py-2.5 pr-11 pl-10 text-sm transition-colors outline-none [&::-webkit-search-cancel-button]:hidden',
+                    variant === 'embedded'
+                        ? 'bg-canvas focus:ring-brand/25 border-0 focus:ring-2 focus:ring-inset'
+                        : 'border-line bg-surface focus:border-brand/60 focus:ring-brand/20 border focus:ring-2',
+                )}
                 {...props}
             />
             {value ? (

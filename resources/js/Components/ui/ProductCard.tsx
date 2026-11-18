@@ -19,7 +19,7 @@ export function ProductCard({ product, onSelect, onQuickAdd, layout = 'grid' }: 
     const imageUrl = resolveProductImage(product);
     const orderable = isProductOrderable(product);
     const showImage = Boolean(imageUrl) && !imageFailed;
-    const description = product.description ?? 'Kopi pilihan Menanti';
+    const description = product.description ?? '';
 
     const image = (compact: boolean) =>
         showImage ? (
@@ -28,11 +28,15 @@ export function ProductCard({ product, onSelect, onQuickAdd, layout = 'grid' }: 
                 alt={product.name}
                 loading="lazy"
                 onError={() => setImageFailed(true)}
+                width={compact ? 64 : 320}
+                height={compact ? 64 : 240}
                 className="h-full w-full object-cover"
             />
         ) : (
             <CoffeeArt seed={product.name} compact={compact} />
         );
+
+    const hasPaidVariant = product.variants.some((variant) => variant.price_delta > 0);
 
     if (layout === 'menu') {
         return (
@@ -56,10 +60,12 @@ export function ProductCard({ product, onSelect, onQuickAdd, layout = 'grid' }: 
                                 </span>
                                 {product.badge && orderable && <Badge tone={product.badge} />}
                             </span>
-                            <span className="text-ink-muted mt-0.5 block truncate text-[11px] leading-snug">
-                                {description}
-                            </span>
-                            <span className="mt-1 block text-[12.5px] font-semibold tabular text-ink">
+                            {description && (
+                                <span className="text-ink-muted mt-0.5 block truncate text-[11px] leading-snug">
+                                    {description}
+                                </span>
+                            )}
+                            <span className="tabular text-ink mt-1 block text-[12.5px] font-semibold">
                                 {formatRupiah(product.base_price)}
                             </span>
                             {!orderable && (
@@ -158,7 +164,7 @@ export function ProductCard({ product, onSelect, onQuickAdd, layout = 'grid' }: 
     return (
         <article
             className={cn(
-                'group border-line bg-surface relative flex w-full flex-col overflow-hidden rounded-[10px] border transition-colors',
+                'group border-line bg-surface relative flex w-full flex-col overflow-hidden rounded-[12px] border transition-colors',
                 orderable ? 'hover:border-brand/50' : 'opacity-70',
             )}
         >
@@ -168,53 +174,66 @@ export function ProductCard({ product, onSelect, onQuickAdd, layout = 'grid' }: 
                     onClick={() => onSelect(product)}
                     disabled={!orderable}
                     aria-label={`Lihat ${product.name}`}
-                    className="block aspect-square w-full"
+                    className="block aspect-[4/3] w-full"
                 >
                     {image(false)}
                 </button>
 
                 {product.badge && orderable && (
-                    <span className="absolute top-1.5 left-1.5">
+                    <span className="absolute top-2 left-2">
                         <Badge tone={product.badge} />
                     </span>
                 )}
 
                 {!orderable && (
                     <div className="bg-ink/40 absolute inset-0 grid place-items-center">
-                        <span className="bg-surface text-ink rounded-[4px] px-2 py-0.5 text-[10px] font-bold">
+                        <span className="bg-surface text-ink rounded-full px-2.5 py-1 text-[10px] font-bold">
                             Habis
                         </span>
                     </div>
                 )}
-
-                {onQuickAdd && orderable && (
-                    <button
-                        type="button"
-                        onClick={() => onQuickAdd(product)}
-                        aria-label={`Tambah ${product.name} ke keranjang`}
-                        className="bg-brand text-surface hover:bg-brand-hover absolute right-1.5 bottom-1.5 grid size-11 place-items-center rounded-[10px] transition-colors"
-                    >
-                        <Plus className="size-5" />
-                    </button>
-                )}
             </div>
 
-            <button
-                type="button"
-                onClick={() => onSelect(product)}
-                disabled={!orderable}
-                aria-label={`Lihat ${product.name}`}
-                className="block w-full flex-1 px-2.5 pt-2 pb-2.5 text-left"
-            >
-                <h3 className="text-ink line-clamp-1 font-sans text-[13px] leading-snug font-semibold">
-                    {product.name}
-                </h3>
-                <div className="mt-1 flex items-baseline gap-1.5">
-                    <span className="tabular text-ink text-[13px] font-semibold">
-                        {formatRupiah(product.base_price)}
-                    </span>
+            <div className="flex flex-1 flex-col p-3">
+                <button
+                    type="button"
+                    onClick={() => onSelect(product)}
+                    disabled={!orderable}
+                    aria-label={`Lihat ${product.name}`}
+                    className="block text-left"
+                >
+                    <h3 className="text-ink line-clamp-1 font-sans text-[14px] leading-snug font-semibold">
+                        {product.name}
+                    </h3>
+                    {description && (
+                        <p className="text-ink-muted mt-1 line-clamp-2 min-h-[2.4em] text-[11px] leading-snug">
+                            {description}
+                        </p>
+                    )}
+                </button>
+
+                <div className="mt-auto pt-3">
+                    {hasPaidVariant && (
+                        <span className="text-ink-muted block text-[10px]">Mulai dari</span>
+                    )}
+                    <div className="mt-1 flex items-center justify-between gap-2">
+                        <span className="tabular text-brand text-[15px] font-semibold">
+                            {formatRupiah(product.base_price)}
+                        </span>
+
+                        {onQuickAdd && orderable && (
+                            <button
+                                type="button"
+                                onClick={() => onQuickAdd(product)}
+                                aria-label={`Tambah ${product.name} ke keranjang`}
+                                className="bg-brand text-surface hover:bg-brand-hover grid size-9 shrink-0 place-items-center rounded-[8px] transition-colors"
+                            >
+                                <Plus className="size-5" aria-hidden="true" />
+                            </button>
+                        )}
+                    </div>
                 </div>
-            </button>
+            </div>
         </article>
     );
 }
