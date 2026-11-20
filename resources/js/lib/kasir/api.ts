@@ -32,7 +32,9 @@ export interface CashierOrderResult {
     status: string;
 }
 
-export async function createCashierOrder(payload: CashierOrderPayload): Promise<CashierOrderResult> {
+export async function createCashierOrder(
+    payload: CashierOrderPayload,
+): Promise<CashierOrderResult> {
     const response = await client.post<{ data: CashierOrderResult }>('/orders', payload);
 
     return response.data.data;

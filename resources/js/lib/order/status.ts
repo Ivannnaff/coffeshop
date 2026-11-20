@@ -33,7 +33,10 @@ export function timelineFor(status: OrderStatus, mode: string): StoreStep[] {
         { key: 'PENDING_PAYMENT', label: 'Pembayaran' },
         { key: 'PAID', label: 'Dikonfirmasi' },
         { key: 'PREPARING', label: 'Disiapkan' },
-        { key: mode === 'delivery' ? 'OUT_FOR_DELIVERY' : 'READY', label: mode === 'delivery' ? 'Diantar' : 'Siap' },
+        {
+            key: mode === 'delivery' ? 'OUT_FOR_DELIVERY' : 'READY',
+            label: mode === 'delivery' ? 'Diantar' : 'Siap',
+        },
         { key: 'COMPLETED', label: 'Selesai' },
     ];
 

@@ -4,7 +4,7 @@ type BadgeTone = 'best_seller' | 'promo' | 'sold_out' | 'new';
 
 const tones: Record<BadgeTone, string> = {
     best_seller: 'bg-brand-soft text-brand',
-    promo: 'bg-accent-soft text-accent',
+    promo: 'bg-espresso text-surface',
     sold_out: 'bg-ink/10 text-ink-muted',
     new: 'bg-brand-mist text-brand-deep',
 };
@@ -28,7 +28,7 @@ export function Badge({
     return (
         <span
             className={cn(
-                'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold',
+                'inline-flex items-center rounded-[6px] px-2 py-1 text-[11px] font-semibold',
                 tones[tone],
                 className,
             )}

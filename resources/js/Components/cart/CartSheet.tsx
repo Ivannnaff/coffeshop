@@ -1,10 +1,10 @@
 import { Link } from '@inertiajs/react';
-import { ShoppingBag, Trash2 } from 'lucide-react';
+import { ArrowRight, ShoppingBag, Trash2 } from 'lucide-react';
 import { Sheet } from '@/Components/ui/Sheet';
 import { Button } from '@/Components/ui/Button';
 import { QtyStepper } from '@/Components/ui/QtyStepper';
 import { ModeBar } from '@/Components/ui/ModeBar';
-import { CoffeeArt } from '@/Components/ui/CoffeeArt';
+import { ProductThumb } from '@/Components/ui/ProductThumb';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { useCart } from '@/Context/CartContext';
 import { CartItemExtras } from '@/Components/cart/CartItemExtras';
@@ -29,25 +29,38 @@ export function CartSheet() {
         <Sheet
             open={isOpen}
             onClose={closeCart}
-            title="Keranjang"
+            title="Keranjang Pesanan"
             subtitle={
-                itemCount > 0 ? `${itemCount} item · ${MODE_LABEL[cart.mode]}` : 'Belum ada item'
+                itemCount > 0
+                    ? `#${cart.token.slice(-6).toUpperCase()} · ${MODE_LABEL[cart.mode]}`
+                    : 'Belum ada item'
             }
             footer={
                 cart.items.length > 0 ? (
-                    <div className="space-y-2 pb-1">
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-ink-muted text-[13px]">Subtotal</span>
-                            <span className="leader" aria-hidden="true" />
-                            <span className="tabular text-ink text-[18px] font-semibold">
-                                {formatRupiah(cart.subtotal)}
-                            </span>
+                    <div className="pb-1">
+                        <div className="text-brand-muted space-y-2 text-xs">
+                            <div className="flex justify-between font-medium">
+                                <span>Jumlah Item ({itemCount} item)</span>
+                                <span className="text-brand-text font-semibold">
+                                    {formatRupiah(cart.subtotal)}
+                                </span>
+                            </div>
+                            <div className="border-line flex items-baseline justify-between border-t border-dashed pt-2">
+                                <span className="text-brand-text text-sm font-bold">Total Bayar</span>
+                                <span className="tabular text-brand text-xl font-extrabold">
+                                    {formatRupiah(cart.subtotal)}
+                                </span>
+                            </div>
                         </div>
-                        <Link href="/checkout" onClick={closeCart} className="block">
-                            <Button size="lg" fullWidth>
-                                Lanjut ke pembayaran
-                            </Button>
+                        <Link href="/checkout" onClick={closeCart} className="mt-4 block">
+                            <span className="bg-brand hover:bg-brand-hover flex min-h-12 items-center justify-center gap-2 rounded-full text-sm font-extrabold text-white shadow-warm-md transition-all active:scale-[0.98]">
+                                Pesan Sekarang
+                                <ArrowRight className="size-4" aria-hidden="true" />
+                            </span>
                         </Link>
+                        <p className="text-brand-muted mt-2.5 text-center text-[10px]">
+                            Pesanan diteruskan langsung ke Barista &amp; Dapur
+                        </p>
                     </div>
                 ) : undefined
             }
@@ -129,9 +142,7 @@ function CartRow({
             )}
         >
             <div className="flex gap-3">
-                <div className="border-line/80 bg-canvas-deep size-16 shrink-0 overflow-hidden rounded-lg border">
-                    <CoffeeArt seed={item.product_name} compact />
-                </div>
+                <ProductThumb name={item.product_name} size={56} />
                 <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">

@@ -13,17 +13,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<ButtonVariant, string> = {
-    primary: 'bg-brand text-surface hover:bg-brand-hover',
-    secondary: 'bg-brand-soft text-brand-deep hover:bg-brand-mist',
-    outline: 'border border-line bg-transparent text-ink hover:bg-surface',
-    ghost: 'text-ink-muted hover:bg-canvas-deep/60 hover:text-ink',
-    danger: 'bg-danger-soft text-danger hover:bg-danger/15',
+    primary: 'rounded-full bg-brand text-surface hover:bg-brand-hover',
+    secondary: 'rounded-[8px] bg-brand-soft text-brand-deep hover:bg-brand-mist',
+    outline: 'rounded-[8px] border border-line bg-transparent text-ink hover:bg-surface',
+    ghost: 'rounded-[8px] text-ink-muted hover:bg-canvas-deep/60 hover:text-ink',
+    danger: 'rounded-[8px] bg-danger-soft text-danger hover:bg-danger/15',
 };
 
 const sizes: Record<ButtonSize, string> = {
-    sm: 'min-h-9 rounded-lg px-3.5 text-[13px]',
-    md: 'min-h-11 rounded-[10px] px-5 text-sm',
-    lg: 'min-h-12 rounded-[12px] px-6 text-[15px]',
+    sm: 'min-h-9 px-4 text-[13px]',
+    md: 'min-h-11 px-6 text-[14px]',
+    lg: 'min-h-12 px-7 text-[15px]',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

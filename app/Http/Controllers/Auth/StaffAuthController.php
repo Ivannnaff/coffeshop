@@ -28,10 +28,10 @@ class StaffAuthController extends Controller
         return Inertia::render('Auth/Login', [
             'demo' => app()->environment('local')
                 ? [
-                      'admin' => 'admin@menanti.test',
-                      'barista' => 'barista@menanti.test',
-                      'password' => 'password12345',
-                  ]
+                    'admin' => 'admin@menanti.test',
+                    'barista' => 'barista@menanti.test',
+                    'password' => 'password12345',
+                ]
                 : null,
         ]);
     }

@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
                 'sort_order' => 1,
             ]);
-            
+
             // Add variants
             ProductVariant::create(['product_id' => $prod->id, 'type' => 'size', 'name' => 'Regular', 'price_delta' => 0, 'is_default' => true, 'sort_order' => 1]);
             ProductVariant::create(['product_id' => $prod->id, 'type' => 'size', 'name' => 'Large', 'price_delta' => 4000, 'is_default' => false, 'sort_order' => 2]);
@@ -98,7 +98,7 @@ class DatabaseSeeder extends Seeder
             ['cat' => $catNonCoffee, 'name' => 'Matchalicious', 'slug' => 'matchalicious', 'desc' => 'Matcha premium dengan susu segar.', 'price' => 20000, 'badge' => null, 'sold' => false],
             ['cat' => $catNonCoffee, 'name' => 'Chocolate', 'slug' => 'chocolate', 'desc' => 'Coklat belgian pilihan.', 'price' => 19000, 'badge' => 'best_seller', 'sold' => false],
         ];
-        
+
         foreach ($ncProducts as $p) {
             Product::create([
                 'category_id' => $p['cat']->id,

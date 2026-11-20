@@ -1,12 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Head } from '@inertiajs/react';
-import {
-    Banknote,
-    CheckCircle2,
-    ShoppingBag,
-    Trash2,
-    UtensilsCrossed,
-} from 'lucide-react';
+import { Banknote, CheckCircle2, ShoppingBag, Trash2, UtensilsCrossed } from 'lucide-react';
 import { StaffLayout } from '@/Components/layouts/StaffLayout';
 import { SearchField } from '@/Components/ui/SearchField';
 import { CategoryTabs } from '@/Components/ui/CategoryTabs';
@@ -91,15 +85,14 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
             .filter((addon) => addonIds.includes(addon.id))
             .map((addon) => addon.name);
 
-        const meta = [...selectedVariants.map((variant) => variant.name), ...addonNames].join(' · ');
+        const meta = [...selectedVariants.map((variant) => variant.name), ...addonNames].join(
+            ' · ',
+        );
         const unitPrice = priceWithExtras(product, variantIds, addonIds);
         const trimmedNote = payload.note?.trim() || null;
-        const key = [
-            product.id,
-            variantIds.join('.'),
-            addonIds.join('.'),
-            trimmedNote ?? '',
-        ].join('|');
+        const key = [product.id, variantIds.join('.'), addonIds.join('.'), trimmedNote ?? ''].join(
+            '|',
+        );
 
         setLines((current) => {
             const existing = current.find((line) => line.key === key);
@@ -191,20 +184,25 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
     };
 
     return (
-        <StaffLayout staff={staff} context="Kasir" title="Kasir" subtitle="Pesanan langsung di kasir">
+        <StaffLayout
+            staff={staff}
+            context="Kasir"
+            title="Kasir"
+            subtitle="Pesanan langsung di kasir"
+        >
             <Head title="Kasir" />
 
             <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-6">
                 <div className="min-w-0">
                     <div className="flex flex-wrap items-end justify-between gap-3">
                         <div>
-                            <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-brand">
+                            <p className="text-brand text-[10.5px] font-bold tracking-[0.18em] uppercase">
                                 Kasir
                             </p>
-                            <h1 className="mt-1 text-2xl font-bold text-ink md:text-[30px]">
+                            <h1 className="text-ink mt-1 text-2xl font-bold md:text-[30px]">
                                 Pilih menu
                             </h1>
-                            <p className="mt-1 text-[12px] text-ink-muted">
+                            <p className="text-ink-muted mt-1 text-[12px]">
                                 Tambahkan item, lalu bayar tunai dan kirim ke dapur.
                             </p>
                         </div>
@@ -230,7 +228,7 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
 
                     {visibleProducts.length === 0 ? (
                         <EmptyState
-                            className="mt-4 rounded-2xl bg-surface"
+                            className="bg-surface mt-4 rounded-2xl"
                             title="Menu tidak ditemukan"
                             description="Coba kata kunci atau kategori lain."
                         />
@@ -248,12 +246,12 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                     )}
                 </div>
 
-                <aside id="current-order" className="mt-5 lg:mt-0 lg:sticky lg:top-24">
-                    <section className="rounded-2xl border border-line/70 bg-surface p-4">
+                <aside id="current-order" className="mt-5 lg:sticky lg:top-24 lg:mt-0">
+                    <section className="border-line/70 bg-surface rounded-2xl border p-4">
                         <div className="flex items-start justify-between gap-2">
                             <div>
-                                <h2 className="text-[15px] font-bold text-ink">Pesanan saat ini</h2>
-                                <p className="text-[11px] text-ink-muted">
+                                <h2 className="text-ink text-[15px] font-bold">Pesanan saat ini</h2>
+                                <p className="text-ink-muted text-[11px]">
                                     {itemCount} item · {formatRupiah(total)}
                                 </p>
                             </div>
@@ -261,7 +259,7 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                                 <button
                                     type="button"
                                     onClick={() => setLines([])}
-                                    className="text-[11px] font-semibold text-ink-muted hover:text-danger"
+                                    className="text-ink-muted hover:text-danger text-[11px] font-semibold"
                                 >
                                     Kosongkan
                                 </button>
@@ -269,20 +267,20 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                         </div>
 
                         {lastOrder && (
-                            <div className="mt-3 flex items-start gap-2 rounded-xl bg-brand-soft px-3 py-2.5 text-[11.5px] text-brand-hover">
+                            <div className="bg-brand-soft text-brand-hover mt-3 flex items-start gap-2 rounded-xl px-3 py-2.5 text-[11.5px]">
                                 <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
                                 <div>
                                     <p className="font-semibold">
                                         Pesanan {lastOrder.number} terkirim ke dapur.
                                     </p>
-                                    <p className="mt-0.5 text-brand-hover/80">
+                                    <p className="text-brand-hover/80 mt-0.5">
                                         Total {formatRupiah(lastOrder.total)}.
                                     </p>
                                 </div>
                             </div>
                         )}
 
-                        <div className="mt-3 grid grid-cols-2 gap-1.5 rounded-xl bg-canvas p-1">
+                        <div className="bg-canvas mt-3 grid grid-cols-2 gap-1.5 rounded-xl p-1">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -318,9 +316,13 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                             <select
                                 value={tableId ?? ''}
                                 onChange={(event) =>
-                                    setTableId(event.target.value === '' ? null : Number(event.target.value))
+                                    setTableId(
+                                        event.target.value === ''
+                                            ? null
+                                            : Number(event.target.value),
+                                    )
                                 }
-                                className="mt-2 w-full rounded-xl border border-line bg-surface px-3 py-2 text-[12.5px] text-ink outline-none focus:border-brand"
+                                className="border-line bg-surface text-ink focus:border-brand mt-2 w-full rounded-xl border px-3 py-2 text-[12.5px] outline-none"
                             >
                                 <option value="">Pilih meja</option>
                                 {tables.map((table) => (
@@ -335,13 +337,13 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                             value={customerName}
                             onChange={(event) => setCustomerName(event.target.value)}
                             placeholder="Nama pelanggan (opsional)"
-                            className="mt-2 w-full rounded-xl border border-line bg-surface px-3 py-2 text-[12.5px] text-ink outline-none focus:border-brand"
+                            className="border-line bg-surface text-ink focus:border-brand mt-2 w-full rounded-xl border px-3 py-2 text-[12.5px] outline-none"
                         />
 
                         {lines.length === 0 ? (
-                            <div className="mt-4 rounded-xl border border-dashed border-line px-3 py-8 text-center">
-                                <p className="text-[12px] font-semibold text-ink">Belum ada item</p>
-                                <p className="mt-1 text-[11px] text-ink-muted">
+                            <div className="border-line mt-4 rounded-xl border border-dashed px-3 py-8 text-center">
+                                <p className="text-ink text-[12px] font-semibold">Belum ada item</p>
+                                <p className="text-ink-muted mt-1 text-[11px]">
                                     Ketuk menu di sebelah kiri untuk menambah pesanan.
                                 </p>
                             </div>
@@ -350,15 +352,15 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                                 {lines.map((line) => (
                                     <li
                                         key={line.key}
-                                        className="rounded-xl border border-line/70 p-2.5"
+                                        className="border-line/70 rounded-xl border p-2.5"
                                     >
                                         <div className="flex gap-2">
-                                            <div className="size-11 shrink-0 overflow-hidden rounded-lg bg-canvas-deep">
+                                            <div className="bg-canvas-deep size-11 shrink-0 overflow-hidden rounded-lg">
                                                 <CoffeeArt seed={line.name} compact />
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-start justify-between gap-2">
-                                                    <p className="truncate text-[12.5px] font-semibold text-ink">
+                                                    <p className="text-ink truncate text-[12.5px] font-semibold">
                                                         {line.name}
                                                     </p>
                                                     <button
@@ -371,18 +373,18 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                                                             )
                                                         }
                                                         aria-label={`Hapus ${line.name}`}
-                                                        className="grid size-6 shrink-0 place-items-center rounded-full text-ink-muted hover:bg-danger-soft hover:text-danger"
+                                                        className="text-ink-muted hover:bg-danger-soft hover:text-danger grid size-6 shrink-0 place-items-center rounded-full"
                                                     >
                                                         <Trash2 className="size-3" />
                                                     </button>
                                                 </div>
                                                 {line.meta && (
-                                                    <p className="truncate text-[10.5px] text-ink-muted">
+                                                    <p className="text-ink-muted truncate text-[10.5px]">
                                                         {line.meta}
                                                     </p>
                                                 )}
                                                 {line.note && (
-                                                    <p className="mt-0.5 text-[10.5px] italic text-ink-muted">
+                                                    <p className="text-ink-muted mt-0.5 text-[10.5px] italic">
                                                         “{line.note}”
                                                     </p>
                                                 )}
@@ -393,7 +395,7 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                                                         onDecrease={() => changeQty(line.key, -1)}
                                                         onIncrease={() => changeQty(line.key, 1)}
                                                     />
-                                                    <span className="text-[12.5px] font-bold tabular text-brand">
+                                                    <span className="tabular text-brand text-[12.5px] font-bold">
                                                         {formatRupiah(line.unitPrice * line.qty)}
                                                     </span>
                                                 </div>
@@ -408,19 +410,19 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                             value={note}
                             onChange={(event) => setNote(event.target.value)}
                             placeholder="Catatan pesanan (opsional)"
-                            className="mt-3 w-full rounded-xl border border-line bg-surface px-3 py-2 text-[12.5px] text-ink outline-none focus:border-brand"
+                            className="border-line bg-surface text-ink focus:border-brand mt-3 w-full rounded-xl border px-3 py-2 text-[12.5px] outline-none"
                         />
 
-                        <div className="mt-3 space-y-1 border-t border-line/70 pt-3 text-[12.5px]">
+                        <div className="border-line/70 mt-3 space-y-1 border-t pt-3 text-[12.5px]">
                             <div className="flex items-center justify-between">
                                 <span className="text-ink-muted">Subtotal</span>
-                                <span className="font-semibold tabular text-ink">
+                                <span className="tabular text-ink font-semibold">
                                     {formatRupiah(total)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="font-semibold text-ink">Total</span>
-                                <span className="text-lg font-bold tabular text-brand">
+                                <span className="text-ink font-semibold">Total</span>
+                                <span className="tabular text-brand text-lg font-bold">
                                     {formatRupiah(total)}
                                 </span>
                             </div>
@@ -431,13 +433,15 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                             fullWidth
                             className="mt-3"
                             loading={submitting}
-                            disabled={lines.length === 0 || (mode === 'dine_in' && tableId === null)}
+                            disabled={
+                                lines.length === 0 || (mode === 'dine_in' && tableId === null)
+                            }
                             onClick={submit}
                         >
                             <Banknote className="size-4" />
                             Bayar tunai &amp; kirim
                         </Button>
-                        <p className="mt-2 text-center text-[10.5px] text-ink-muted">
+                        <p className="text-ink-muted mt-2 text-center text-[10.5px]">
                             Pembayaran tunai diterima di kasir. Pesanan langsung masuk ke KDS.
                         </p>
                     </section>
@@ -452,10 +456,10 @@ export default function KasirIndex({ staff, categories, tables }: KasirPageProps
                             .getElementById('current-order')
                             ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                     }
-                    className="fixed inset-x-4 bottom-24 z-30 flex items-center justify-between rounded-xl bg-brand px-4 py-3 text-white shadow-lg lg:hidden"
+                    className="bg-brand fixed inset-x-4 bottom-24 z-30 flex items-center justify-between rounded-xl px-4 py-3 text-white shadow-lg lg:hidden"
                 >
                     <span className="text-[12.5px] font-semibold">{itemCount} item</span>
-                    <span className="text-[13px] font-bold tabular">{formatRupiah(total)}</span>
+                    <span className="tabular text-[13px] font-bold">{formatRupiah(total)}</span>
                 </button>
             )}
 

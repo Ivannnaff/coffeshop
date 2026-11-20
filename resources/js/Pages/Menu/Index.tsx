@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ChevronDown, Coffee, MapPin } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { ArrowRight, Check, ChevronDown, Coffee, MapPin, SlidersHorizontal } from 'lucide-react';
 import { AppShell } from '@/Components/layouts/AppShell';
 import { CartPanel } from '@/Components/cart/CartPanel';
 import { SearchField } from '@/Components/ui/SearchField';
-import { CategoryTabs } from '@/Components/ui/CategoryTabs';
 import { ProductCard } from '@/Components/ui/ProductCard';
 import { EmptyState } from '@/Components/ui/EmptyState';
 import { StoreSheet } from '@/Components/store/StoreSheet';
@@ -11,8 +11,7 @@ import { ProductSheet } from '@/Components/menu/ProductSheet';
 import { SearchOverlay } from '@/Components/menu/SearchOverlay';
 import { useCart } from '@/Context/CartContext';
 import { formatRupiah } from '@/lib/format/currency';
-import { greeting } from '@/lib/utils';
-import { defaultVariantIds, needsChoices } from '@/lib/menu/product';
+import { defaultVariantIds, requiredAddonGroups } from '@/lib/menu/product';
 import { useStore } from '@/lib/useStore';
 import { cn } from '@/lib/cn';
 import type { Category, MenuPageProps, Product } from '@/types';
@@ -23,8 +22,8 @@ const SORTS: { value: Sort; label: string }[] = [
     { value: 'featured', label: 'Rekomendasi' },
     { value: 'best_seller', label: 'Terlaris' },
     { value: 'promo', label: 'Promo' },
-    { value: 'price_asc', label: 'Harga Terendah' },
-    { value: 'price_desc', label: 'Harga Tertinggi' },
+    { value: 'price_asc', label: 'Harga terendah' },
+    { value: 'price_desc', label: 'Harga tertinggi' },
 ];
 
 function clock(value?: string | null): string | null {
@@ -93,22 +92,26 @@ export default function MenuIndex({
         window.setTimeout(scrollToMenu, 30);
     };
 
-    const handleQuickAdd = async (product: Product) => {
-        if (needsChoices(product)) {
+    const handleQuickAdd = async (
+        product: Product,
+        variantIds: number[] = defaultVariantIds(product),
+        qty = 1,
+    ) => {
+        if (requiredAddonGroups(product).length > 0) {
             setActiveProduct(product);
             return;
         }
 
         await addItem({
             product_id: product.id,
-            qty: 1,
-            variant_ids: defaultVariantIds(product),
+            qty,
+            variant_ids: variantIds,
         });
     };
 
     const openHour = clock(store?.opening_time);
     const closeHour = clock(store?.closing_time);
-    const hours = openHour && closeHour ? `${openHour} - ${closeHour}` : null;
+    const hours = openHour && closeHour ? `${openHour}–${closeHour}` : null;
     const openState =
         store?.is_accepting_orders === true
             ? 'Buka sekarang'
@@ -118,154 +121,162 @@ export default function MenuIndex({
 
     return (
         <AppShell>
-            <div className="mx-auto w-full max-w-[1560px] px-4 pt-3 lg:px-10 lg:pt-5">
-                <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(340px,440px)] lg:items-start lg:gap-6 xl:gap-8">
-                    <div className="min-w-0">
-                        <header className="border-line bg-surface overflow-hidden rounded-[18px] border">
-                            <div className="px-4 pt-4 pb-3.5 lg:px-6 lg:py-5">
-                                <p className="font-display text-ink-muted text-[12.5px] leading-none italic">
-                                    {greeting()}
-                                </p>
+            <div className="mx-auto flex w-full max-w-[1720px] flex-col lg:flex-row">
+                <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-7">
+                    <header className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex max-w-xl flex-1 items-center gap-3">
+                            <SearchField
+                                variant="pill"
+                                value={query}
+                                onChange={setQuery}
+                                onFocus={() => setSearchOpen(true)}
+                                placeholder="Cari kopi, pastry, makanan..."
+                                className="min-w-0 flex-1"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setSearchOpen(true)}
+                                className="bg-brand hover:bg-brand-hover inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full px-5 text-sm font-semibold text-white shadow-warm-sm transition-all active:scale-95"
+                            >
+                                <SlidersHorizontal className="size-3.5" aria-hidden="true" />
+                                Filter
+                            </button>
+                        </div>
 
-                                <h1 className="font-display text-ink mt-1.5 text-[27px] leading-[1.06] md:text-[33px]">
-                                    Kopi apa hari ini?
-                                </h1>
-
-                                <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[11.5px]">
-                                    <button
-                                        type="button"
-                                        onClick={() => setStoreOpen(true)}
-                                        className="group text-ink inline-flex items-center gap-1.5 font-semibold"
-                                    >
-                                        <MapPin
-                                            className="text-brand size-3.5 shrink-0"
-                                            aria-hidden="true"
-                                        />
-                                        <span className="max-w-[190px] truncate">
-                                            {store?.name ?? 'Menanti Pagi'}
-                                        </span>
-                                        <ChevronDown
-                                            className="text-ink-muted size-3.5 shrink-0 transition-transform group-hover:translate-y-0.5"
-                                            aria-hidden="true"
-                                        />
-                                    </button>
-
-                                    <span className="bg-line h-3 w-px" aria-hidden="true" />
-
-                                    <span className="text-ink-muted">
-                                        {table
-                                            ? `Meja ${table.number} · makan di tempat`
-                                            : (store?.address ?? 'Lokasi toko')}
-                                    </span>
-
-                                    {openState && (
-                                        <>
-                                            <span className="bg-line h-3 w-px" aria-hidden="true" />
-                                            <span className="text-brand inline-flex items-center gap-1.5 font-semibold">
-                                                <span
-                                                    className="bg-brand size-1.5 rounded-full"
-                                                    aria-hidden="true"
-                                                />
-                                                {openState}
-                                                {hours && (
-                                                    <span className="text-ink-muted font-normal">
-                                                        {hours}
-                                                    </span>
-                                                )}
-                                            </span>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                        </header>
-
-                        <section
-                            aria-label="Cari dan filter menu"
-                            className="border-line bg-surface mt-3 rounded-[16px] border"
+                        <button
+                            type="button"
+                            onClick={() => setStoreOpen(true)}
+                            className="flex items-center gap-3 self-end rounded-full border border-line/80 bg-white px-3.5 py-2 text-left shadow-warm-sm sm:self-auto"
                         >
-                            <div className="flex items-center gap-1.5 p-1.5">
-                                <SearchField
-                                    variant="embedded"
-                                    value={query}
-                                    onChange={setQuery}
-                                    onFocus={() => setSearchOpen(true)}
-                                    placeholder="Cari kopi, matcha, camilan"
-                                    className="min-w-0 flex-1"
-                                />
-                                <SortMenu value={sort} onChange={setSort} />
-                            </div>
-
-                            <div className="border-line/80 border-t px-1.5 py-1.5">
-                                <CategoryTabs
-                                    variant="embedded"
-                                    categories={filledCategories}
-                                    selectedId={selectedCategory}
-                                    onSelect={selectCategory}
-                                    showAll
-                                />
-                            </div>
-                        </section>
-
-                        <section id="menu" className="mt-4 scroll-mt-4 lg:scroll-mt-24">
-                            <h2 className="font-display text-ink text-[20px]">
-                                {selectedCategory === null
-                                    ? 'Semua Menu'
-                                    : (currentCategory?.name ?? 'Menu')}
-                                <span className="text-ink-muted ml-2 font-sans text-[11px] font-normal">
-                                    {menuProducts.length} menu
+                            <span className="bg-brand-mist text-brand grid size-8 shrink-0 place-items-center rounded-full">
+                                <MapPin className="size-4" aria-hidden="true" />
+                            </span>
+                            <span className="leading-tight">
+                                <span className="text-brand-text block text-xs font-bold">
+                                    {table ? `Meja ${table.number}` : (store?.name ?? 'Menanti Pagi')}
                                 </span>
-                            </h2>
+                                <span className="text-brand flex items-center gap-1.5 text-[11px] font-semibold">
+                                    <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+                                    {openState ?? 'Menu'}
+                                    {hours ? ` · ${hours}` : ''}
+                                </span>
+                            </span>
+                        </button>
+                    </header>
 
-                            {menuProducts.length === 0 ? (
-                                <EmptyState
-                                    className="border-line bg-surface mt-3 rounded-[14px] border"
-                                    icon={<Coffee className="size-6" />}
-                                    title="Belum ada menu di sini"
-                                    description="Coba kategori lain atau pilih urutan/filter lainnya."
-                                />
-                            ) : (
-                                <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-[repeat(auto-fill,minmax(176px,1fr))]">
-                                    {menuProducts.map((product) => (
-                                        <ProductCard
-                                            key={product.id}
-                                            product={product}
-                                            onSelect={setActiveProduct}
-                                            onQuickAdd={handleQuickAdd}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </section>
+                    <section aria-labelledby="catalog-heading" className="mb-5">
+                        <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+                            <h1
+                                id="catalog-heading"
+                                className="text-brand-text text-2xl font-extrabold tracking-tight sm:text-3xl"
+                            >
+                                Menu Kopi &amp; Eatery
+                            </h1>
+                            <p className="text-brand-muted text-xs sm:text-sm">
+                                Racikan biji kopi pilihan nusantara ditemani santapan hangat setiap pagi.
+                            </p>
+                        </div>
+                    </section>
 
-                        <p className="text-ink-muted pt-6 pb-2 text-[11px] leading-relaxed">
-                            Harga sudah termasuk pajak. Pesanan diproses setelah pembayaran
-                            diterima.
-                        </p>
+                    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <nav aria-label="Kategori Menu" className="scrollbar-hide flex items-center gap-2 overflow-x-auto pb-1">
+                            <button
+                                type="button"
+                                onClick={() => selectCategory(null)}
+                                className={cn(
+                                    'shrink-0 rounded-full px-5 py-2 text-xs font-semibold transition-colors sm:text-sm',
+                                    selectedCategory === null
+                                        ? 'bg-brand text-white shadow-warm-sm'
+                                        : 'hover:bg-brand-mist border-line bg-white text-brand-text border font-medium',
+                                )}
+                                aria-current={selectedCategory === null ? 'page' : undefined}
+                            >
+                                Semua
+                            </button>
+                            {filledCategories.map((category) => {
+                                const active = selectedCategory === category.id;
+                                return (
+                                    <button
+                                        key={category.id}
+                                        type="button"
+                                        onClick={() => selectCategory(category.id)}
+                                        className={cn(
+                                            'shrink-0 rounded-full px-5 py-2 text-xs font-semibold transition-colors sm:text-sm',
+                                            active
+                                                ? 'bg-brand text-white shadow-warm-sm'
+                                                : 'hover:bg-brand-mist border-line bg-white text-brand-muted hover:text-brand-text border font-medium',
+                                        )}
+                                        aria-current={active ? 'page' : undefined}
+                                    >
+                                        {category.name}
+                                    </button>
+                                );
+                            })}
+                        </nav>
+                        <SortMenu value={sort} onChange={setSort} />
                     </div>
 
-                    <div className="hidden lg:sticky lg:top-24 lg:block">
-                        <CartPanel />
-                    </div>
+                    <section id="menu" className="scroll-mt-6">
+                        {menuProducts.length === 0 ? (
+                            <EmptyState
+                                className="rule pt-8"
+                                icon={<Coffee className="size-6" />}
+                                title="Belum ada menu di sini"
+                                description="Coba kategori lain atau pilih urutan/filter lainnya."
+                            />
+                        ) : (
+                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                                {menuProducts.map((product) => (
+                                    <ProductCard
+                                        key={product.id}
+                                        product={product}
+                                        onSelect={setActiveProduct}
+                                        onAdd={handleQuickAdd}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                </main>
+
+                <div className="hidden w-[350px] shrink-0 lg:block">
+                    <CartPanel table={table} />
                 </div>
             </div>
 
             {itemCount > 0 && (
-                <div className="pointer-events-none fixed inset-x-0 bottom-[76px] z-30 mx-auto w-full max-w-[520px] px-4 lg:hidden">
-                    <button
-                        type="button"
-                        onClick={openCart}
-                        className="bg-brand text-surface pointer-events-auto flex w-full items-center justify-between gap-3 rounded-[12px] px-4 py-3.5 shadow-[0_10px_24px_-16px_rgba(16,48,31,0.9)]"
-                    >
-                        <span className="flex items-center gap-2 text-sm font-semibold">
-                            <span className="bg-surface/20 tabular grid size-6 place-items-center rounded-full text-[11px] font-bold">
-                                {itemCount}
+                <div className="pointer-events-none fixed inset-x-0 bottom-[68px] z-30 mx-auto w-full max-w-[520px] px-4 lg:hidden">
+                    <div className="bg-surface/95 border-line pointer-events-auto rounded-2xl border p-3 shadow-warm-md backdrop-blur-md">
+                        <button
+                            type="button"
+                            onClick={openCart}
+                            className="flex w-full items-center justify-between gap-3 text-left"
+                        >
+                            <span className="flex items-center gap-2.5">
+                                <span className="bg-brand tabular grid size-7 place-items-center rounded-full text-[11px] font-bold text-white">
+                                    {itemCount}
+                                </span>
+                                <span className="leading-tight">
+                                    <span className="text-ink block text-[12.5px] font-bold">
+                                        Keranjang Pesanan
+                                    </span>
+                                    <span className="text-ink-muted block text-[10.5px]">
+                                        {itemCount} item dipilih
+                                    </span>
+                                </span>
                             </span>
-                            Lihat keranjang
-                        </span>
-                        <span className="tabular text-sm font-semibold">
-                            {formatRupiah(cart.subtotal)}
-                        </span>
-                    </button>
+                            <span className="tabular text-brand text-[15px] font-bold">
+                                {formatRupiah(cart.subtotal)}
+                            </span>
+                        </button>
+                        <Link
+                            href="/checkout"
+                            className="bg-brand hover:bg-brand-hover mt-2.5 flex min-h-10 items-center justify-center gap-2 rounded-full text-[12px] font-bold text-white transition-colors"
+                        >
+                            Pesan Sekarang
+                            <ArrowRight className="size-3.5" aria-hidden="true" />
+                        </Link>
+                    </div>
                 </div>
             )}
 
@@ -304,7 +315,6 @@ function SortMenu({ value, onChange }: { value: Sort; onChange: (value: Sort) =>
                 setOpen(false);
             }
         };
-
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 setOpen(false);
@@ -354,14 +364,11 @@ function SortMenu({ value, onChange }: { value: Sort; onChange: (value: Sort) =>
                 aria-haspopup="listbox"
                 aria-expanded={open}
                 onClick={() => setOpen((current) => !current)}
-                className="text-ink hover:bg-canvas inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-[9px] px-3 text-[11.5px] font-semibold transition-colors"
+                className="text-ink-muted hover:text-ink inline-flex min-h-11 shrink-0 items-center gap-2 px-1 text-[13px] font-medium transition-colors"
             >
                 {SORTS[selectedIndex]?.label ?? 'Urutkan'}
                 <ChevronDown
-                    className={cn(
-                        'text-ink-muted size-3.5 transition-transform',
-                        open && 'rotate-180',
-                    )}
+                    className={cn('size-4 transition-transform', open && 'rotate-180')}
                     aria-hidden="true"
                 />
             </button>
@@ -370,7 +377,7 @@ function SortMenu({ value, onChange }: { value: Sort; onChange: (value: Sort) =>
                 <ul
                     role="listbox"
                     aria-label="Urutkan menu"
-                    className="border-line bg-surface absolute top-full right-0 z-30 mt-1.5 w-[180px] overflow-hidden rounded-[10px] border py-1 shadow-[0_16px_40px_-24px_rgba(36,33,27,0.55)]"
+                    className="bg-surface border-line absolute top-full right-0 z-30 mt-2 w-[190px] border py-1"
                 >
                     {SORTS.map((option, index) => {
                         const active = option.value === value;
@@ -400,14 +407,14 @@ function SortMenu({ value, onChange }: { value: Sort; onChange: (value: Sort) =>
                                         }
                                     }}
                                     className={cn(
-                                        'flex min-h-10 w-full items-center justify-between gap-2 px-3 text-left text-[12px] transition-colors',
+                                        'flex min-h-10 w-full items-center justify-between gap-2 px-3 text-left text-[13px] transition-colors',
                                         active
-                                            ? 'bg-brand-soft text-brand-deep font-semibold'
+                                            ? 'bg-brand-soft text-brand font-semibold'
                                             : 'text-ink hover:bg-canvas',
                                     )}
                                 >
                                     {option.label}
-                                    {active && <Check className="size-3.5" aria-hidden="true" />}
+                                    {active && <Check className="size-4" aria-hidden="true" />}
                                 </button>
                             </li>
                         );

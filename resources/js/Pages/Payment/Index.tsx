@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import {
-    ArrowLeft,
     ArrowRight,
     CheckCircle2,
     Clock3,
@@ -12,8 +11,9 @@ import {
     XCircle,
 } from 'lucide-react';
 import { AppShell } from '@/Components/layouts/AppShell';
+import { PublicPageHeader } from '@/Components/layouts/PublicPageHeader';
 import { Button } from '@/Components/ui/Button';
-import { CoffeeArt } from '@/Components/ui/CoffeeArt';
+import { ProductThumb } from '@/Components/ui/ProductThumb';
 import { useToast } from '@/Context/ToastContext';
 import { retryPayment } from '@/lib/api/endpoints';
 import { toApiError } from '@/lib/api/client';
@@ -67,44 +67,28 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
 
     return (
         <AppShell nav={false}>
-            <header className="flex items-center gap-3 px-4 pb-4 pt-5 md:px-6 lg:mx-auto lg:max-w-5xl lg:pb-6 lg:pt-8">
-                <Link
-                    href="/"
-                    aria-label="Kembali ke menu"
-                    className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-surface text-ink"
-                >
-                    <ArrowLeft className="size-5" />
-                </Link>
-                <div>
-                    <h1 className="text-xl font-semibold text-ink">Pembayaran</h1>
-                    <p className="text-[11.5px] text-ink-muted">
-                        Langkah 2 dari 2 · #{order.order_number}
-                    </p>
-                </div>
-            </header>
+            <PublicPageHeader
+                title="Pembayaran"
+                meta={`Langkah 2 dari 2 · #${order.order_number}`}
+            />
 
             <div className="space-y-4 px-4 pb-10 md:px-6 lg:mx-auto lg:grid lg:max-w-5xl lg:grid-cols-2 lg:items-start lg:gap-6 lg:pb-16">
-                <section
-                    className={cn(
-                        'overflow-hidden rounded-[24px] p-5 text-white lg:col-span-2 lg:p-6',
-                        awaiting ? 'bg-brand' : 'bg-ink',
-                    )}
-                >
+                <section className="rule pt-5 lg:col-span-2">
                     <div className="flex items-start justify-between gap-3">
                         <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/60">
+                            <p className="text-ink-muted text-[13px] font-medium">
                                 {awaiting ? 'Selesaikan dalam' : 'Status pesanan'}
                             </p>
                             {awaiting && remaining !== null ? (
-                                <p className="mt-1 font-display text-[46px] font-semibold leading-none tabular">
+                                <p className="font-display tabular text-ink mt-1 text-[46px] leading-none font-semibold">
                                     {formatCountdown(remaining)}
                                 </p>
                             ) : (
-                                <p className="mt-1 font-display text-[30px] font-semibold leading-tight">
+                                <p className="font-display text-ink mt-1 text-[30px] leading-tight font-semibold">
                                     {expired ? 'Waktu habis' : meta.label}
                                 </p>
                             )}
-                            <p className="mt-2 text-[12px] text-white/70">
+                            <p className="text-ink-muted mt-2 text-[12px]">
                                 {awaiting
                                     ? 'Pesanan otomatis dibatalkan bila pembayaran lewat batas waktu.'
                                     : expired
@@ -116,7 +100,7 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                         <span
                             className={cn(
                                 'grid size-12 shrink-0 place-items-center rounded-full',
-                                awaiting ? 'bg-white/15' : 'bg-white/10',
+                                awaiting ? 'bg-brand-soft text-brand' : toneClasses[meta.tone],
                             )}
                         >
                             {awaiting ? (
@@ -129,30 +113,40 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                         </span>
                     </div>
 
-                    <div className="mt-5 flex items-end justify-between border-t border-white/15 pt-4">
+                    <div className="slip mt-4 flex flex-wrap items-end justify-between gap-3 px-4 py-3">
                         <div>
-                            <p className="text-[11px] uppercase tracking-wide text-white/50">Total tagihan</p>
-                            <p className="text-xl font-bold tabular">{formatRupiah(order.total)}</p>
+                            <p className="text-surface/60 text-[12px]">Total tagihan</p>
+                            <p className="tabular text-surface text-xl font-bold">
+                                {formatRupiah(order.total)}
+                            </p>
                         </div>
-                        <span className={cn('rounded-full px-3 py-1 text-[11px] font-bold', toneClasses[meta.tone])}>
+                        <span
+                            className={cn(
+                                'rounded-full px-3 py-1 text-[11px] font-bold',
+                                toneClasses[meta.tone],
+                            )}
+                        >
                             {meta.label}
                         </span>
                     </div>
                 </section>
 
                 {awaiting && (
-                    <section className="rounded-2xl border border-line/60 bg-surface p-4">
+                    <section className="rule pt-5">
                         <div className="flex items-start gap-3">
-                            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-brand">
+                            <span className="bg-brand-soft text-brand grid size-10 shrink-0 place-items-center rounded-full">
                                 <CreditCard className="size-5" />
                             </span>
                             <div className="min-w-0">
-                                <p className="text-[13px] font-semibold text-ink">Metode pembayaran</p>
-                                <p className="mt-0.5 text-[11.5px] leading-relaxed text-ink-muted">
-                                    QRIS, virtual account, dan e-wallet dipilih di halaman gateway yang aman.
+                                <p className="text-ink text-[13px] font-semibold">
+                                    Metode pembayaran
+                                </p>
+                                <p className="text-ink-muted mt-0.5 text-[13px] leading-relaxed">
+                                    QRIS, virtual account, dan e-wallet dipilih di halaman gateway
+                                    yang aman.
                                 </p>
                                 {payment?.payment_method && (
-                                    <p className="mt-1 text-[11.5px] font-semibold text-brand">
+                                    <p className="text-brand mt-1 text-[13px] font-semibold">
                                         {payment.payment_method}
                                     </p>
                                 )}
@@ -168,7 +162,12 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                                     </Button>
                                 </a>
                             ) : (
-                                <Button size="lg" fullWidth loading={retrying} onClick={handleRetry}>
+                                <Button
+                                    size="lg"
+                                    fullWidth
+                                    loading={retrying}
+                                    onClick={handleRetry}
+                                >
                                     Buat tautan pembayaran
                                 </Button>
                             )}
@@ -176,7 +175,9 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                             <div className="grid grid-cols-2 gap-2">
                                 <Button
                                     variant="outline"
-                                    onClick={() => router.reload({ only: ['order', 'server_time'] })}
+                                    onClick={() =>
+                                        router.reload({ only: ['order', 'server_time'] })
+                                    }
                                 >
                                     <RefreshCw className="size-4" />
                                     Cek status
@@ -189,7 +190,7 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                             </div>
                         </div>
 
-                        <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[10.5px] text-ink-muted">
+                        <p className="text-ink-muted mt-3 flex items-center justify-center gap-1.5 text-center text-[12px]">
                             <ShieldCheck className="size-3" />
                             Transaksi diproses oleh gateway pembayaran resmi.
                         </p>
@@ -197,14 +198,15 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                 )}
 
                 {!awaiting && (
-                    <section className="rounded-2xl border border-line/60 bg-surface p-4">
+                    <section className="rule pt-5">
                         {order.status === 'PENDING_PAYMENT' && expired ? (
-                            <p className="text-[13px] leading-relaxed text-ink-muted">
-                                Batas waktu pembayaran sudah lewat. Silakan buat pesanan baru dari menu.
+                            <p className="text-ink-muted text-[13px] leading-relaxed">
+                                Batas waktu pembayaran sudah lewat. Silakan buat pesanan baru dari
+                                menu.
                             </p>
                         ) : (
-                            <p className="flex items-start gap-2 text-[13px] leading-relaxed text-ink-muted">
-                                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" />
+                            <p className="text-ink-muted flex items-start gap-2 text-[13px] leading-relaxed">
+                                <CheckCircle2 className="text-success mt-0.5 size-4 shrink-0" />
                                 Pembayaran sudah diterima. Pesanan akan diproses oleh barista.
                             </p>
                         )}
@@ -216,37 +218,39 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                     </section>
                 )}
 
-                <section className="rounded-2xl border border-line/60 bg-surface p-4">
-                    <h2 className="flex items-center gap-2 text-[15px] font-semibold text-ink">
-                        <ReceiptText className="size-4 text-brand" />
+                <section className="rule pt-5">
+                    <h2 className="text-ink flex items-center gap-2 text-[15px] font-semibold">
+                        <ReceiptText className="text-brand size-4" />
                         Detail pesanan
                     </h2>
 
                     <ul className="mt-3 space-y-2.5">
                         {order.items.map((item, index) => (
-                            <li key={`${item.product_name}-${index}`} className="flex items-center gap-3">
-                                <div className="size-11 shrink-0 overflow-hidden rounded-xl bg-canvas-deep">
-                                    <CoffeeArt seed={item.product_name} compact />
-                                </div>
+                            <li
+                                key={`${item.product_name}-${index}`}
+                                className="flex items-center gap-3"
+                            >
+                                <ProductThumb name={item.product_name} size={44} />
                                 <div className="min-w-0 flex-1">
-                                    <p className="truncate text-[13px] font-semibold text-ink">
+                                    <p className="text-ink truncate text-[13px] font-semibold">
                                         {item.product_name}
                                     </p>
-                                    <p className="text-[11.5px] text-ink-muted">
-                                        {[item.size_name, item.temperature_name].filter(Boolean).join(' · ') ||
-                                            'Regular'}
+                                    <p className="text-ink-muted text-[13px]">
+                                        {[item.size_name, item.temperature_name]
+                                            .filter(Boolean)
+                                            .join(' · ') || 'Regular'}
                                         {' · '}
                                         {item.qty}x
                                     </p>
                                 </div>
-                                <span className="text-[13px] font-semibold tabular text-ink">
+                                <span className="tabular text-ink text-[13px] font-semibold">
                                     {formatRupiah(item.line_total)}
                                 </span>
                             </li>
                         ))}
                     </ul>
 
-                    <div className="mt-3 space-y-1.5 border-t border-line/70 pt-3 text-[13px]">
+                    <div className="border-line/70 mt-3 space-y-1.5 border-t pt-3 text-[13px]">
                         <div className="flex justify-between">
                             <span className="text-ink-muted">Subtotal</span>
                             <span className="tabular text-ink">{formatRupiah(order.subtotal)}</span>
@@ -254,7 +258,9 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                         {order.delivery_fee > 0 && (
                             <div className="flex justify-between">
                                 <span className="text-ink-muted">Biaya antar</span>
-                                <span className="tabular text-ink">{formatRupiah(order.delivery_fee)}</span>
+                                <span className="tabular text-ink">
+                                    {formatRupiah(order.delivery_fee)}
+                                </span>
                             </div>
                         )}
                         {order.delivery_discount > 0 && (
@@ -266,14 +272,18 @@ export default function PaymentIndex({ order, server_time }: PaymentPageProps) {
                             </div>
                         )}
                         <div className="flex justify-between pt-1">
-                            <span className="font-semibold text-ink">Total</span>
-                            <span className="font-bold tabular text-brand">{formatRupiah(order.total)}</span>
+                            <span className="text-ink font-semibold">Total</span>
+                            <span className="tabular text-brand font-bold">
+                                {formatRupiah(order.total)}
+                            </span>
                         </div>
                     </div>
 
-                    <p className="mt-3 text-[11px] text-ink-muted">
+                    <p className="text-ink-muted mt-3 text-[11px]">
                         Dibuat {formatDateTime(order.created_at)}
-                        {order.expires_at && awaiting && ` · kedaluwarsa ${formatDateTime(order.expires_at)}`}
+                        {order.expires_at &&
+                            awaiting &&
+                            ` · kedaluwarsa ${formatDateTime(order.expires_at)}`}
                     </p>
                 </section>
             </div>

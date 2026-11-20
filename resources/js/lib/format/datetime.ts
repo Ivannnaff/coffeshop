@@ -18,7 +18,10 @@ export function formatClock(value: string | null | undefined): string {
     }).format(new Date(value));
 }
 
-export function formatHours(opening: string | null | undefined, closing: string | null | undefined): string {
+export function formatHours(
+    opening: string | null | undefined,
+    closing: string | null | undefined,
+): string {
     if (!opening || !closing) return '';
 
     return `${opening.slice(0, 5)} - ${closing.slice(0, 5)}`;

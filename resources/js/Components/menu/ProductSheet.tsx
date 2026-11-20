@@ -294,7 +294,7 @@ function AddonGroupSection({
                 <h3 className="text-ink flex items-center gap-1.5 text-[13px] font-semibold">
                     {group.name}
                     {required && (
-                        <span className="bg-accent-soft text-accent rounded-[4px] px-1.5 py-0.5 text-[9px] font-bold tracking-[0.06em] uppercase">
+                        <span className="bg-brand-soft text-brand rounded-full px-2.5 py-1 text-[11px] font-semibold">
                             Wajib
                         </span>
                     )}

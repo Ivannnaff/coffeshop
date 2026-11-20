@@ -6,37 +6,51 @@
 @source '../**/*.tsx';
 @source '../**/*.ts';
 
+/*
+  Arah visual: kafe hangat sesuai referensi Stitch "Menanti Pagi Menu Redesign".
+  Terracotta sebagai aksi, krim sebagai kanvas, teks cokelat tua.
+  Satu keluarga font (Plus Jakarta Sans) untuk seluruh permukaan.
+*/
 @theme {
-    /* Hijau diambil dari logo Menanti Pagi, bukan hijau UI generik. */
-    --color-brand: #1b4a32;
-    --color-brand-deep: #10301f;
-    --color-brand-hover: #143a27;
-    --color-brand-soft: #dfe8da;
-    --color-brand-mist: #eef3e9;
+    --color-brand: #b35a22;
+    --color-brand-deep: #7a3a14;
+    --color-brand-hover: #9c4c1c;
+    --color-brand-soft: #fbe3d0;
+    --color-brand-mist: #fff3ea;
 
-    /* Kertas, karena produknya menu fisik dan nota, bukan dashboard SaaS. */
-    --color-canvas: #f4efe4;
-    --color-canvas-deep: #e7dfd0;
-    --color-surface: #fffcf5;
+    --color-canvas: #fff7f1;
+    --color-canvas-deep: #f7e8dd;
+    --color-surface: #fff8f5;
 
-    --color-ink: #24211b;
-    --color-ink-muted: #6b6355;
-    --color-line: #d9cfbd;
+    --color-espresso: #2b2420;
+    --color-espresso-soft: #55433a;
+    --color-espresso-line: #887368;
 
-    /* Satu aksen hangat untuk status, tidak dipakai di mana-mana. */
-    --color-accent: #a8541f;
-    --color-accent-soft: #f3e2d4;
+    --color-ink: #2b2420;
+    --color-ink-muted: #8a7f76;
+    --color-line: #f0dccb;
 
-    --color-danger: #9e2b25;
-    --color-danger-soft: #f6e0dc;
+    --color-accent: #b35a22;
+    --color-accent-soft: #fbe3d0;
+
+    --color-danger: #ba1a1a;
+    --color-danger-soft: #ffdad6;
     --color-warning: #8a5a12;
-    --color-warning-soft: #f4e8ce;
-    --color-success: #1b4a32;
-    --color-success-soft: #dfe8da;
-    --color-rating: #a8541f;
+    --color-warning-soft: #f1e4c8;
+    --color-success: #3f6212;
+    --color-success-soft: #eaf3d8;
+    --color-rating: #b35a22;
 
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Fraunces', ui-serif, Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+    --radius-media: 12px;
+
+    --shadow-warm-sm:
+        0 2px 8px -2px rgba(179, 90, 34, 0.08), 0 1px 4px -1px rgba(43, 36, 32, 0.04);
+    --shadow-warm-md:
+        0 8px 20px -4px rgba(179, 90, 34, 0.12), 0 3px 8px -2px rgba(43, 36, 32, 0.04);
+    --shadow-warm-lg: 0 16px 32px -6px rgba(179, 90, 34, 0.16);
 }
 
 @layer base {
@@ -52,7 +66,7 @@
         color: var(--color-ink);
         font-family: var(--font-sans);
         font-size: 15px;
-        line-height: 1.55;
+        line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
     }
@@ -61,17 +75,14 @@
     h2,
     h3 {
         font-family: var(--font-display);
-        font-weight: 600;
-        letter-spacing: -0.015em;
-        line-height: 1.12;
-        font-variation-settings:
-            'SOFT' 40,
-            'WONK' 0;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.15;
     }
 
     ::selection {
-        background-color: var(--color-brand-soft);
-        color: var(--color-brand-deep);
+        background-color: var(--color-brand);
+        color: var(--color-surface);
     }
 
     :where(
@@ -87,13 +98,13 @@
         cursor: pointer;
     }
 
-    :where(button:disabled, input:disabled, select:disabled, [aria-disabled='true']) {
+    :where(button:disabled, input:disabled, [aria-disabled='true']) {
         cursor: not-allowed;
     }
 
     :focus-visible {
         outline: 2px solid var(--color-brand);
-        outline-offset: 2px;
+        outline-offset: 3px;
     }
 
     input,
@@ -104,6 +115,7 @@
 
     .tabular {
         font-variant-numeric: tabular-nums;
+        font-feature-settings: 'tnum';
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -119,6 +131,40 @@
 }
 
 @layer utilities {
+    /* Garis pemisah menggantikan kartu. */
+    .rule {
+        border-top: 1px solid var(--color-line);
+    }
+
+    .rule-strong {
+        border-top: 2px solid var(--color-ink);
+    }
+
+    /* Dotted leader untuk daftar harga, seperti menu cetak. */
+    .leader {
+        flex: 1 1 0%;
+        border-bottom: 1px dotted var(--color-line);
+        transform: translateY(-0.3em);
+    }
+
+    /* Panel aksen: permukaan terracotta untuk ringkasan dan CTA. */
+    .slip {
+        background-color: var(--color-brand);
+        color: #fff;
+    }
+
+    .slip-line {
+        border-top: 1px dashed rgb(255 255 255 / 35%);
+    }
+
+    /* Judul kecil yang menyebut isi, bukan label hiasan. */
+    .section-label {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--color-brand);
+    }
+
     .scrollbar-hide::-webkit-scrollbar {
         display: none;
     }
@@ -144,23 +190,12 @@
         -webkit-tap-highlight-color: transparent;
     }
 
-    /* Nota: garis putus-putus sebagai pemisah, bukan kartu bertumpuk. */
-    .rule-dashed {
-        border-bottom: 1px dashed var(--color-line);
-    }
-
-    .leader {
-        flex: 1 1 0%;
-        border-bottom: 1px dotted var(--color-line);
-        transform: translateY(-0.28em);
-    }
-
     .animate-sheet-up {
         animation: sheet-up 0.28s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .animate-fade-in {
-        animation: fade-in 0.22s ease-out;
+    .animate-ink-in {
+        animation: ink-in 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
     }
 }
 
@@ -173,11 +208,13 @@
     }
 }
 
-@keyframes fade-in {
+@keyframes ink-in {
     from {
         opacity: 0;
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
+        transform: translateY(0);
     }
 }

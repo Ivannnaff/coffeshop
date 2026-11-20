@@ -6,20 +6,22 @@ interface ModeBarProps {
     mode: OrderMode;
     onChange: (mode: OrderMode) => void;
     locked?: boolean;
+    dark?: boolean;
     className?: string;
 }
 
 const MODES: { value: OrderMode; label: string; icon: typeof ShoppingBag }[] = [
-    { value: 'dine_in', label: 'Dine in', icon: UtensilsCrossed },
-    { value: 'takeaway', label: 'Takeaway', icon: ShoppingBag },
     { value: 'delivery', label: 'Delivery', icon: Truck },
+    { value: 'dine_in', label: 'Dine in', icon: UtensilsCrossed },
+    { value: 'takeaway', label: 'Take away', icon: ShoppingBag },
 ];
 
-export function ModeBar({ mode, onChange, locked, className }: ModeBarProps) {
+export function ModeBar({ mode, onChange, locked, dark = false, className }: ModeBarProps) {
     return (
         <div
             className={cn(
-                'border-line bg-canvas-deep/60 inline-flex w-full gap-1 rounded-[10px] border p-1 sm:w-auto',
+                'inline-flex w-full gap-1 rounded-full p-1 sm:w-auto',
+                dark ? 'bg-espresso-soft' : 'border-line bg-canvas-deep/60 border',
                 className,
             )}
             role="radiogroup"
@@ -37,12 +39,18 @@ export function ModeBar({ mode, onChange, locked, className }: ModeBarProps) {
                         aria-checked={active}
                         disabled={disabled}
                         onClick={() => onChange(value)}
-                        title={disabled && value === 'dine_in' ? 'Scan QR meja untuk dine in' : undefined}
+                        title={
+                            disabled && value === 'dine_in'
+                                ? 'Scan QR meja untuk dine in'
+                                : undefined
+                        }
                         className={cn(
-                            'no-tap-highlight inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-[7px] px-3 text-[12.5px] font-semibold transition-colors sm:flex-none',
+                            'no-tap-highlight inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-[12.5px] font-semibold transition-colors sm:flex-none',
                             active
                                 ? 'bg-brand text-surface'
-                                : 'text-ink-muted hover:bg-surface hover:text-ink',
+                                : dark
+                                  ? 'text-surface/60 hover:text-surface'
+                                  : 'text-ink-muted hover:bg-surface hover:text-ink',
                             disabled && 'opacity-50 hover:bg-transparent',
                         )}
                     >

@@ -63,47 +63,51 @@ export default function AdminDashboard({ staff }: AdminPageProps) {
 
             <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-brand">Admin</p>
-                    <h1 className="mt-1 text-2xl font-semibold text-ink md:text-[30px]">Ringkasan toko</h1>
-                    <p className="mt-1 text-[12px] text-ink-muted">
+                    <p className="text-brand text-[10.5px] font-bold tracking-[0.18em] uppercase">
+                        Admin
+                    </p>
+                    <h1 className="text-ink mt-1 text-2xl font-semibold md:text-[30px]">
+                        Ringkasan toko
+                    </h1>
+                    <p className="text-ink-muted mt-1 text-[12px]">
                         Penjualan dari pesanan yang sudah dibayar.
                     </p>
                 </div>
 
                 <div className="flex flex-wrap items-end gap-2">
                     <label className="block">
-                        <span className="mb-1 block text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted">
+                        <span className="text-ink-muted mb-1 block text-[10.5px] font-semibold tracking-wide uppercase">
                             Dari
                         </span>
                         <input
                             type="date"
                             value={from}
                             onChange={(event) => setFrom(event.target.value)}
-                            className="rounded-xl border border-line bg-surface px-3 py-2 text-[12.5px] text-ink outline-none focus:border-brand"
+                            className="border-line bg-surface text-ink focus:border-brand rounded-xl border px-3 py-2 text-[12.5px] outline-none"
                         />
                     </label>
                     <label className="block">
-                        <span className="mb-1 block text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted">
+                        <span className="text-ink-muted mb-1 block text-[10.5px] font-semibold tracking-wide uppercase">
                             Sampai
                         </span>
                         <input
                             type="date"
                             value={to}
                             onChange={(event) => setTo(event.target.value)}
-                            className="rounded-xl border border-line bg-surface px-3 py-2 text-[12.5px] text-ink outline-none focus:border-brand"
+                            className="border-line bg-surface text-ink focus:border-brand rounded-xl border px-3 py-2 text-[12.5px] outline-none"
                         />
                     </label>
                 </div>
             </div>
 
             {error && (
-                <p className="mt-4 rounded-xl bg-danger-soft px-3.5 py-2.5 text-[12px] font-medium text-danger">
+                <p className="bg-danger-soft text-danger mt-4 rounded-xl px-3.5 py-2.5 text-[12px] font-medium">
                     {error}
                 </p>
             )}
 
             {loading && !summary ? (
-                <div className="flex items-center justify-center gap-2 py-24 text-sm text-ink-muted">
+                <div className="text-ink-muted flex items-center justify-center gap-2 py-24 text-sm">
                     <Loader2 className="size-4 animate-spin" />
                     Memuat ringkasan...
                 </div>
@@ -131,17 +135,21 @@ export default function AdminDashboard({ staff }: AdminPageProps) {
                         />
                         <StatCard
                             label="Rata-rata / pesanan"
-                            value={formatRupiah(orderCount > 0 ? Math.round(revenue / orderCount) : 0)}
+                            value={formatRupiah(
+                                orderCount > 0 ? Math.round(revenue / orderCount) : 0,
+                            )}
                             hint="Pendapatan ÷ pesanan"
                             icon={<ArrowUpRight className="size-4" />}
                         />
                     </div>
 
                     <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-start">
-                        <section className="rounded-2xl border border-line/70 bg-surface p-4">
+                        <section className="border-line/70 bg-surface rounded-2xl border p-4">
                             <div className="flex items-center justify-between">
-                                <h2 className="text-[15px] font-semibold text-ink">Produk terlaris</h2>
-                                <span className="text-[11px] text-ink-muted">5 teratas</span>
+                                <h2 className="text-ink text-[15px] font-semibold">
+                                    Produk terlaris
+                                </h2>
+                                <span className="text-ink-muted text-[11px]">5 teratas</span>
                             </div>
 
                             {summary && summary.top_products.length > 0 ? (
@@ -149,14 +157,16 @@ export default function AdminDashboard({ staff }: AdminPageProps) {
                                     {summary.top_products.map((product) => (
                                         <li key={product.name}>
                                             <div className="flex items-center justify-between gap-3 text-[12.5px]">
-                                                <span className="truncate font-medium text-ink">{product.name}</span>
-                                                <span className="shrink-0 font-bold tabular text-brand">
+                                                <span className="text-ink truncate font-medium">
+                                                    {product.name}
+                                                </span>
+                                                <span className="tabular text-brand shrink-0 font-bold">
                                                     {product.qty} pcs
                                                 </span>
                                             </div>
-                                            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-canvas-deep">
+                                            <div className="bg-canvas-deep mt-1 h-1.5 overflow-hidden rounded-full">
                                                 <div
-                                                    className="h-full rounded-full bg-brand"
+                                                    className="bg-brand h-full rounded-full"
                                                     style={{
                                                         width: `${Math.max(
                                                             6,
@@ -169,18 +179,33 @@ export default function AdminDashboard({ staff }: AdminPageProps) {
                                     ))}
                                 </ul>
                             ) : (
-                                <p className="mt-4 rounded-xl border border-dashed border-line px-3 py-8 text-center text-[12px] text-ink-muted">
+                                <p className="border-line text-ink-muted mt-4 rounded-xl border border-dashed px-3 py-8 text-center text-[12px]">
                                     Belum ada penjualan pada periode ini.
                                 </p>
                             )}
                         </section>
 
-                        <section className="rounded-2xl border border-line/70 bg-surface p-4">
-                            <h2 className="text-[15px] font-semibold text-ink">Akses cepat</h2>
+                        <section className="border-line/70 bg-surface rounded-2xl border p-4">
+                            <h2 className="text-ink text-[15px] font-semibold">Akses cepat</h2>
                             <div className="mt-3 grid gap-2">
-                                <QuickLink href="/admin/produk" icon={<Coffee className="size-4" />} title="Kelola produk" subtitle="Harga, varian, add-on" />
-                                <QuickLink href="/admin/meja" icon={<QrCode className="size-4" />} title="Meja & QR" subtitle="Token meja untuk dine-in" />
-                                <QuickLink href="/admin/toko" icon={<Store className="size-4" />} title="Pengaturan toko" subtitle="Jam buka, ongkir, pembayaran" />
+                                <QuickLink
+                                    href="/admin/produk"
+                                    icon={<Coffee className="size-4" />}
+                                    title="Kelola produk"
+                                    subtitle="Harga, varian, add-on"
+                                />
+                                <QuickLink
+                                    href="/admin/meja"
+                                    icon={<QrCode className="size-4" />}
+                                    title="Meja & QR"
+                                    subtitle="Token meja untuk dine-in"
+                                />
+                                <QuickLink
+                                    href="/admin/toko"
+                                    icon={<Store className="size-4" />}
+                                    title="Pengaturan toko"
+                                    subtitle="Jam buka, ongkir, pembayaran"
+                                />
                             </div>
                         </section>
                     </div>
@@ -207,16 +232,16 @@ function StatCard({
         <div
             className={
                 emphasis
-                    ? 'rounded-2xl bg-brand p-4 text-white shadow-[0_18px_32px_-22px_rgba(22,163,74,1)]'
-                    : 'rounded-2xl border border-line/70 bg-surface p-4'
+                    ? 'bg-brand rounded-2xl p-4 text-white shadow-[0_18px_32px_-22px_rgba(179,90,34,0.85)]'
+                    : 'border-line/70 bg-surface rounded-2xl border p-4'
             }
         >
             <div className="flex items-center justify-between">
                 <span
                     className={
                         emphasis
-                            ? 'text-[10.5px] font-bold uppercase tracking-[0.12em] text-white/75'
-                            : 'text-[10.5px] font-bold uppercase tracking-[0.12em] text-ink-muted'
+                            ? 'text-[10.5px] font-bold tracking-[0.12em] text-white/75 uppercase'
+                            : 'text-ink-muted text-[10.5px] font-bold tracking-[0.12em] uppercase'
                     }
                 >
                     {label}
@@ -225,7 +250,7 @@ function StatCard({
                     className={
                         emphasis
                             ? 'grid size-8 place-items-center rounded-full bg-white/15 text-white'
-                            : 'grid size-8 place-items-center rounded-full bg-brand-soft text-brand'
+                            : 'bg-brand-soft text-brand grid size-8 place-items-center rounded-full'
                     }
                 >
                     {icon}
@@ -234,8 +259,8 @@ function StatCard({
             <p
                 className={
                     emphasis
-                        ? 'mt-3 text-[26px] font-bold tabular leading-none'
-                        : 'mt-3 text-[24px] font-bold tabular leading-none text-ink'
+                        ? 'tabular mt-3 text-[26px] leading-none font-bold'
+                        : 'tabular text-ink mt-3 text-[24px] leading-none font-bold'
                 }
             >
                 {value}
@@ -244,7 +269,7 @@ function StatCard({
                 className={
                     emphasis
                         ? 'mt-1.5 text-[10.5px] text-white/75'
-                        : 'mt-1.5 text-[10.5px] text-ink-muted'
+                        : 'text-ink-muted mt-1.5 text-[10.5px]'
                 }
             >
                 {hint}
@@ -267,16 +292,16 @@ function QuickLink({
     return (
         <Link
             href={href}
-            className="flex items-center gap-3 rounded-xl border border-line/70 px-3 py-2.5 transition-colors hover:border-brand/30 hover:bg-brand-mist"
+            className="border-line/70 hover:border-brand/30 hover:bg-brand-mist flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors"
         >
-            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-soft text-brand">
+            <span className="bg-brand-soft text-brand grid size-8 shrink-0 place-items-center rounded-full">
                 {icon}
             </span>
             <span className="min-w-0 flex-1">
-                <span className="block text-[12.5px] font-semibold text-ink">{title}</span>
-                <span className="block truncate text-[10.5px] text-ink-muted">{subtitle}</span>
+                <span className="text-ink block text-[12.5px] font-semibold">{title}</span>
+                <span className="text-ink-muted block truncate text-[10.5px]">{subtitle}</span>
             </span>
-            <ArrowUpRight className="size-3.5 text-ink-muted" />
+            <ArrowUpRight className="text-ink-muted size-3.5" />
         </Link>
     );
 }

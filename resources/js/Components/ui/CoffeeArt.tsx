@@ -48,24 +48,24 @@ export function CoffeeArt({ seed, className, compact }: CoffeeArtProps) {
                     cy="100"
                     r="74"
                     fill="none"
-                    stroke="#1B4A32"
+                    stroke="#B35A22"
                     strokeWidth="1"
                     opacity="0.16"
                 />
 
-                <ellipse cx="100" cy="154" rx="46" ry="8" fill="#1B4A32" opacity="0.08" />
+                <ellipse cx="100" cy="154" rx="46" ry="8" fill="#B35A22" opacity="0.08" />
 
                 <path
                     d="M139 94 q19 2 16 20 q-3 16 -20 16"
                     fill="none"
-                    stroke="#1B4A32"
+                    stroke="#B35A22"
                     strokeWidth="3.4"
                     strokeLinecap="round"
                 />
                 <path
                     d="M62 90 h76 l-6 44 q-2 14 -18 14 h-26 q-16 0 -18 -14 Z"
                     fill="#FFFCF5"
-                    stroke="#1B4A32"
+                    stroke="#B35A22"
                     strokeWidth="3.4"
                     strokeLinejoin="round"
                 />
@@ -75,25 +75,25 @@ export function CoffeeArt({ seed, className, compact }: CoffeeArtProps) {
                     rx="38"
                     ry="8.5"
                     fill="#FFFCF5"
-                    stroke="#1B4A32"
+                    stroke="#B35A22"
                     strokeWidth="3.4"
                 />
                 <path
                     d="M74 90 q12 -6 26 0 q12 5 26 0"
                     fill="none"
-                    stroke="#1B4A32"
+                    stroke="#B35A22"
                     strokeWidth="2.2"
                     strokeLinecap="round"
                     opacity="0.45"
                 />
 
-                <g fill="none" stroke="#1B4A32" strokeWidth="3" strokeLinecap="round" opacity="0.7">
+                <g fill="none" stroke="#B35A22" strokeWidth="3" strokeLinecap="round" opacity="0.7">
                     <path d="M86 62 q-7 11 0 20" />
                     <path d="M108 58 q-7 12 0 22" />
                 </g>
 
                 {!compact && (
-                    <g fill="#1B4A32" opacity="0.28">
+                    <g fill="#B35A22" opacity="0.28">
                         <ellipse cx="38" cy="52" rx="8" ry="4.6" transform="rotate(-28 38 52)" />
                         <ellipse cx="160" cy="62" rx="7" ry="4" transform="rotate(24 160 62)" />
                         <ellipse

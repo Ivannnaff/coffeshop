@@ -34,7 +34,7 @@ export function Sheet({ open, onClose, title, subtitle, children, footer, classN
     if (!open) return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-end justify-center">
             <button
                 type="button"
                 aria-label="Tutup panel"
@@ -46,7 +46,7 @@ export function Sheet({ open, onClose, title, subtitle, children, footer, classN
                 aria-modal="true"
                 aria-label={title ?? 'Panel'}
                 className={cn(
-                    'animate-sheet-up bg-surface relative flex max-h-[92dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-2xl shadow-[0_-8px_40px_-20px_rgba(36,33,27,0.45)] sm:rounded-2xl',
+                    'animate-sheet-up bg-white relative flex max-h-[92dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-2xl shadow-warm-lg sm:max-w-[720px]',
                     className,
                 )}
             >

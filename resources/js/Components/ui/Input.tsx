@@ -26,7 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     aria-invalid={error ? true : undefined}
                     aria-describedby={describedBy}
                     className={cn(
-                        'border-line bg-surface text-ink placeholder:text-ink-muted/70 w-full rounded-[10px] border px-3.5 py-2.5 text-sm transition-colors',
+                        'border-line bg-surface text-ink placeholder:text-ink-muted/70 rounded-media w-full border px-3.5 py-2.5 text-[14px] transition-colors',
                         'focus:border-brand focus:ring-brand/15 focus:ring-2 focus:outline-none',
                         'disabled:bg-canvas-deep disabled:text-ink-muted',
                         error && 'border-danger/60 focus:border-danger focus:ring-danger/15',
