@@ -105,7 +105,11 @@ export default function AdminTables({ staff }: AdminPageProps) {
     };
 
     const handleRegenerate = async (table: AdminTable) => {
-        if (!window.confirm(`Buat token QR baru untuk meja ${table.number}? Token lama langsung tidak berlaku.`)) {
+        if (
+            !window.confirm(
+                `Buat token QR baru untuk meja ${table.number}? Token lama langsung tidak berlaku.`,
+            )
+        ) {
             return;
         }
 
@@ -113,7 +117,9 @@ export default function AdminTables({ staff }: AdminPageProps) {
 
         try {
             const updated = await regenerateTableToken(table.id);
-            setTables((current) => current.map((item) => (item.id === updated.id ? updated : item)));
+            setTables((current) =>
+                current.map((item) => (item.id === updated.id ? updated : item)),
+            );
             toast.push(`Token meja ${table.number} diperbarui`);
         } catch (requestError) {
             toast.push(toApiError(requestError).message, 'error');
@@ -149,9 +155,13 @@ export default function AdminTables({ staff }: AdminPageProps) {
 
             <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-brand">Layanan</p>
-                    <h1 className="mt-1 text-2xl font-semibold text-ink md:text-[30px]">Meja & QR</h1>
-                    <p className="mt-1 text-[12px] text-ink-muted">
+                    <p className="text-brand text-[10.5px] font-bold tracking-[0.18em] uppercase">
+                        Layanan
+                    </p>
+                    <h1 className="text-ink mt-1 text-2xl font-semibold md:text-[30px]">
+                        Meja & QR
+                    </h1>
+                    <p className="text-ink-muted mt-1 text-[12px]">
                         Setiap meja punya token QR untuk membuka menu dalam mode dine-in.
                     </p>
                 </div>
@@ -162,13 +172,13 @@ export default function AdminTables({ staff }: AdminPageProps) {
             </div>
 
             {error && (
-                <p className="mt-4 rounded-xl bg-danger-soft px-3.5 py-2.5 text-[12px] font-medium text-danger">
+                <p className="bg-danger-soft text-danger mt-4 rounded-xl px-3.5 py-2.5 text-[12px] font-medium">
                     {error}
                 </p>
             )}
 
             {loading ? (
-                <div className="flex items-center justify-center gap-2 py-24 text-sm text-ink-muted">
+                <div className="text-ink-muted flex items-center justify-center gap-2 py-24 text-sm">
                     <Loader2 className="size-4 animate-spin" />
                     Memuat meja...
                 </div>
@@ -177,18 +187,18 @@ export default function AdminTables({ staff }: AdminPageProps) {
                     {sorted.map((table) => (
                         <article
                             key={table.id}
-                            className="rounded-2xl border border-line/70 bg-surface p-4"
+                            className="border-line/70 bg-surface rounded-2xl border p-4"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-2.5">
-                                    <span className="grid size-11 place-items-center rounded-2xl bg-brand-soft text-brand">
+                                    <span className="bg-brand-soft text-brand grid size-11 place-items-center rounded-2xl">
                                         <QrCode className="size-5" />
                                     </span>
                                     <div>
-                                        <p className="font-display text-xl font-semibold leading-none text-ink">
+                                        <p className="font-display text-ink text-xl leading-none font-semibold">
                                             Meja {table.number}
                                         </p>
-                                        <p className="mt-1 text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted">
+                                        <p className="text-ink-muted mt-1 text-[10.5px] font-semibold tracking-wide uppercase">
                                             {table.is_active ? 'Aktif' : 'Nonaktif'}
                                         </p>
                                     </div>
@@ -198,7 +208,7 @@ export default function AdminTables({ staff }: AdminPageProps) {
                                         type="button"
                                         onClick={() => openEdit(table)}
                                         aria-label={`Edit meja ${table.number}`}
-                                        className="grid size-8 place-items-center rounded-full text-ink-muted hover:bg-brand-soft hover:text-brand"
+                                        className="text-ink-muted hover:bg-brand-soft hover:text-brand grid size-8 place-items-center rounded-full"
                                     >
                                         <Pencil className="size-3.5" />
                                     </button>
@@ -206,14 +216,14 @@ export default function AdminTables({ staff }: AdminPageProps) {
                                         type="button"
                                         onClick={() => handleDelete(table)}
                                         aria-label={`Hapus meja ${table.number}`}
-                                        className="grid size-8 place-items-center rounded-full text-ink-muted hover:bg-danger-soft hover:text-danger"
+                                        className="text-ink-muted hover:bg-danger-soft hover:text-danger grid size-8 place-items-center rounded-full"
                                     >
                                         <Trash2 className="size-3.5" />
                                     </button>
                                 </div>
                             </div>
 
-                            <p className="mt-3 truncate rounded-lg bg-canvas px-2.5 py-2 font-mono text-[10px] text-ink-muted">
+                            <p className="bg-canvas text-ink-muted mt-3 truncate rounded-lg px-2.5 py-2 font-mono text-[10px]">
                                 {tableUrl(table.qr_token)}
                             </p>
 
@@ -221,7 +231,7 @@ export default function AdminTables({ staff }: AdminPageProps) {
                                 <button
                                     type="button"
                                     onClick={() => handleCopy(table)}
-                                    className="inline-flex items-center gap-1 rounded-full border border-line px-2.5 py-1.5 text-[10.5px] font-semibold text-ink-muted hover:border-brand/30 hover:text-brand"
+                                    className="border-line text-ink-muted hover:border-brand/30 hover:text-brand inline-flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[10.5px] font-semibold"
                                 >
                                     <Copy className="size-3" />
                                     Salin
@@ -230,7 +240,7 @@ export default function AdminTables({ staff }: AdminPageProps) {
                                     href={tableUrl(table.qr_token)}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-1 rounded-full border border-line px-2.5 py-1.5 text-[10.5px] font-semibold text-ink-muted hover:border-brand/30 hover:text-brand"
+                                    className="border-line text-ink-muted hover:border-brand/30 hover:text-brand inline-flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[10.5px] font-semibold"
                                 >
                                     <ExternalLink className="size-3" />
                                     Buka
@@ -239,7 +249,7 @@ export default function AdminTables({ staff }: AdminPageProps) {
                                     type="button"
                                     onClick={() => handleRegenerate(table)}
                                     disabled={busyId === table.id}
-                                    className="inline-flex items-center gap-1 rounded-full border border-line px-2.5 py-1.5 text-[10.5px] font-semibold text-ink-muted hover:border-warning/40 hover:text-warning disabled:opacity-50"
+                                    className="border-line text-ink-muted hover:border-warning/40 hover:text-warning inline-flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[10.5px] font-semibold disabled:opacity-50"
                                 >
                                     {busyId === table.id ? (
                                         <Loader2 className="size-3 animate-spin" />
@@ -253,14 +263,14 @@ export default function AdminTables({ staff }: AdminPageProps) {
                     ))}
 
                     {sorted.length === 0 && (
-                        <p className="rounded-2xl border border-dashed border-line px-4 py-16 text-center text-[12px] text-ink-muted sm:col-span-2 xl:col-span-3">
+                        <p className="border-line text-ink-muted rounded-2xl border border-dashed px-4 py-16 text-center text-[12px] sm:col-span-2 xl:col-span-3">
                             Belum ada meja. Tambahkan meja untuk membuat QR dine-in.
                         </p>
                     )}
                 </div>
             )}
 
-            <p className="mt-4 text-[11px] text-ink-muted">
+            <p className="text-ink-muted mt-4 text-[11px]">
                 Cetak QR dari link di atas. Pelanggan yang memindai QR akan otomatis masuk mode
                 dine-in pada meja tersebut.
             </p>
@@ -286,19 +296,19 @@ export default function AdminTables({ staff }: AdminPageProps) {
                         value={form.number}
                         onChange={(event) => setForm({ ...form, number: event.target.value })}
                     />
-                    <label className="flex items-center gap-2 text-[12.5px] font-medium text-ink">
+                    <label className="text-ink flex items-center gap-2 text-[12.5px] font-medium">
                         <input
                             type="checkbox"
                             checked={form.is_active}
                             onChange={(event) =>
                                 setForm({ ...form, is_active: event.target.checked })
                             }
-                            className="size-4 accent-[#1E5B3E]"
+                            className="size-4 accent-brand"
                         />
                         Aktif
                     </label>
                     {!editing && (
-                        <p className="rounded-xl bg-canvas px-3 py-2 text-[11px] text-ink-muted">
+                        <p className="bg-canvas text-ink-muted rounded-xl px-3 py-2 text-[11px]">
                             Token QR dibuat otomatis oleh server.
                         </p>
                     )}

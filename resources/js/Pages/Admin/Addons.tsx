@@ -218,9 +218,11 @@ export default function AdminAddons({ staff }: AdminPageProps) {
 
             <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-brand">Menu</p>
-                    <h1 className="mt-1 text-2xl font-semibold text-ink md:text-[30px]">Add-on</h1>
-                    <p className="mt-1 text-[12px] text-ink-muted">
+                    <p className="text-brand text-[10.5px] font-bold tracking-[0.18em] uppercase">
+                        Menu
+                    </p>
+                    <h1 className="text-ink mt-1 text-2xl font-semibold md:text-[30px]">Add-on</h1>
+                    <p className="text-ink-muted mt-1 text-[12px]">
                         Grup pilihan seperti level gula atau topping tambahan.
                     </p>
                 </div>
@@ -231,25 +233,25 @@ export default function AdminAddons({ staff }: AdminPageProps) {
             </div>
 
             {error && (
-                <p className="mt-4 rounded-xl bg-danger-soft px-3.5 py-2.5 text-[12px] font-medium text-danger">
+                <p className="bg-danger-soft text-danger mt-4 rounded-xl px-3.5 py-2.5 text-[12px] font-medium">
                     {error}
                 </p>
             )}
 
             {loading ? (
-                <div className="flex items-center justify-center gap-2 py-24 text-sm text-ink-muted">
+                <div className="text-ink-muted flex items-center justify-center gap-2 py-24 text-sm">
                     <Loader2 className="size-4 animate-spin" />
                     Memuat add-on...
                 </div>
             ) : (
                 <div className="mt-5 grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
-                    <section className="rounded-2xl border border-line/70 bg-surface p-2.5">
-                        <h2 className="px-2 py-1 text-[12px] font-bold uppercase tracking-[0.1em] text-ink-muted">
+                    <section className="border-line/70 bg-surface rounded-2xl border p-2.5">
+                        <h2 className="text-ink-muted px-2 py-1 text-[12px] font-bold tracking-[0.1em] uppercase">
                             Grup add-on
                         </h2>
                         <div className="mt-1 space-y-1.5">
                             {groups.length === 0 && (
-                                <p className="rounded-xl border border-dashed border-line px-3 py-8 text-center text-[11.5px] text-ink-muted">
+                                <p className="border-line text-ink-muted rounded-xl border border-dashed px-3 py-8 text-center text-[11.5px]">
                                     Belum ada grup add-on.
                                 </p>
                             )}
@@ -282,7 +284,8 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                                     : 'text-ink-muted',
                                             )}
                                         >
-                                            {group.selection_type} · {group.addons?.length ?? 0} add-on
+                                            {group.selection_type} · {group.addons?.length ?? 0}{' '}
+                                            add-on
                                         </span>
                                     </button>
                                     <button
@@ -316,13 +319,15 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                         </div>
                     </section>
 
-                    <section className="rounded-2xl border border-line/70 bg-surface p-4">
+                    <section className="border-line/70 bg-surface rounded-2xl border p-4">
                         {selected ? (
                             <>
                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                     <div>
-                                        <h2 className="text-[15px] font-semibold text-ink">{selected.name}</h2>
-                                        <p className="text-[11px] text-ink-muted">
+                                        <h2 className="text-ink text-[15px] font-semibold">
+                                            {selected.name}
+                                        </h2>
+                                        <p className="text-ink-muted text-[11px]">
                                             {selected.selection_type === 'single'
                                                 ? 'Pilih satu'
                                                 : `Pilih ${selected.min_select}–${selected.max_select ?? '∞'}`}
@@ -338,20 +343,20 @@ export default function AdminAddons({ staff }: AdminPageProps) {
 
                                 <div className="mt-4 space-y-2">
                                     {addons.length === 0 && (
-                                        <p className="rounded-xl border border-dashed border-line px-3 py-8 text-center text-[11.5px] text-ink-muted">
+                                        <p className="border-line text-ink-muted rounded-xl border border-dashed px-3 py-8 text-center text-[11.5px]">
                                             Belum ada add-on di grup ini.
                                         </p>
                                     )}
                                     {addons.map((addon) => (
                                         <div
                                             key={addon.id}
-                                            className="flex items-center gap-2 rounded-xl border border-line/70 px-3 py-2.5"
+                                            className="border-line/70 flex items-center gap-2 rounded-xl border px-3 py-2.5"
                                         >
                                             <div className="min-w-0 flex-1">
-                                                <p className="truncate text-[12.5px] font-semibold text-ink">
+                                                <p className="text-ink truncate text-[12.5px] font-semibold">
                                                     {addon.name}
                                                 </p>
-                                                <p className="text-[10.5px] text-ink-muted">
+                                                <p className="text-ink-muted text-[10.5px]">
                                                     {addon.price_delta > 0
                                                         ? `+${formatRupiah(addon.price_delta)}`
                                                         : 'Gratis'}
@@ -372,7 +377,7 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                                     })
                                                 }
                                                 aria-label={`Edit ${addon.name}`}
-                                                className="grid size-8 place-items-center rounded-full text-ink-muted hover:bg-brand-soft hover:text-brand"
+                                                className="text-ink-muted hover:bg-brand-soft hover:text-brand grid size-8 place-items-center rounded-full"
                                             >
                                                 <Pencil className="size-3.5" />
                                             </button>
@@ -380,7 +385,7 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                                 type="button"
                                                 onClick={() => handleAddonDelete(addon)}
                                                 aria-label={`Hapus ${addon.name}`}
-                                                className="grid size-8 place-items-center rounded-full text-ink-muted hover:bg-danger-soft hover:text-danger"
+                                                className="text-ink-muted hover:bg-danger-soft hover:text-danger grid size-8 place-items-center rounded-full"
                                             >
                                                 <Trash2 className="size-3.5" />
                                             </button>
@@ -388,18 +393,21 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                     ))}
                                 </div>
 
-                                <div className="mt-4 rounded-xl bg-canvas p-3">
-                                    <p className="text-[11.5px] font-bold uppercase tracking-wide text-ink-muted">
+                                <div className="bg-canvas mt-4 rounded-xl p-3">
+                                    <p className="text-ink-muted text-[11.5px] font-bold tracking-wide uppercase">
                                         {addonForm.id ? 'Edit add-on' : 'Tambah add-on'}
                                     </p>
                                     <div className="mt-2 grid gap-2 sm:grid-cols-[1fr_120px_110px]">
                                         <input
                                             value={addonForm.name}
                                             onChange={(event) =>
-                                                setAddonForm({ ...addonForm, name: event.target.value })
+                                                setAddonForm({
+                                                    ...addonForm,
+                                                    name: event.target.value,
+                                                })
                                             }
                                             placeholder="Nama add-on"
-                                            className="rounded-lg border border-line bg-surface px-3 py-2 text-[12px] text-ink outline-none focus:border-brand"
+                                            className="border-line bg-surface text-ink focus:border-brand rounded-lg border px-3 py-2 text-[12px] outline-none"
                                         />
                                         <input
                                             type="number"
@@ -411,7 +419,7 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                                 })
                                             }
                                             placeholder="+Harga"
-                                            className="rounded-lg border border-line bg-surface px-3 py-2 text-[12px] text-ink outline-none focus:border-brand"
+                                            className="border-line bg-surface text-ink focus:border-brand rounded-lg border px-3 py-2 text-[12px] outline-none"
                                         />
                                         <input
                                             type="number"
@@ -423,11 +431,11 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                                 })
                                             }
                                             placeholder="Urutan"
-                                            className="rounded-lg border border-line bg-surface px-3 py-2 text-[12px] text-ink outline-none focus:border-brand"
+                                            className="border-line bg-surface text-ink focus:border-brand rounded-lg border px-3 py-2 text-[12px] outline-none"
                                         />
                                     </div>
                                     <div className="mt-2 flex flex-wrap items-center gap-4">
-                                        <label className="flex items-center gap-1.5 text-[11.5px] text-ink-muted">
+                                        <label className="text-ink-muted flex items-center gap-1.5 text-[11.5px]">
                                             <input
                                                 type="checkbox"
                                                 checked={addonForm.is_active}
@@ -437,11 +445,11 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                                         is_active: event.target.checked,
                                                     })
                                                 }
-                                                className="size-3.5 accent-[#1E5B3E]"
+                                                className="size-3.5 accent-brand"
                                             />
                                             Aktif
                                         </label>
-                                        <label className="flex items-center gap-1.5 text-[11.5px] text-ink-muted">
+                                        <label className="text-ink-muted flex items-center gap-1.5 text-[11.5px]">
                                             <input
                                                 type="checkbox"
                                                 checked={addonForm.is_sold_out}
@@ -451,18 +459,22 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                                                         is_sold_out: event.target.checked,
                                                     })
                                                 }
-                                                className="size-3.5 accent-[#1E5B3E]"
+                                                className="size-3.5 accent-brand"
                                             />
                                             Habis
                                         </label>
-                                        <Button size="sm" loading={addonSaving} onClick={handleAddonSubmit}>
+                                        <Button
+                                            size="sm"
+                                            loading={addonSaving}
+                                            onClick={handleAddonSubmit}
+                                        >
                                             {addonForm.id ? 'Simpan' : 'Tambah'}
                                         </Button>
                                         {addonForm.id !== null && (
                                             <button
                                                 type="button"
                                                 onClick={() => setAddonForm(emptyAddon())}
-                                                className="text-[11px] font-semibold text-ink-muted hover:text-ink"
+                                                className="text-ink-muted hover:text-ink text-[11px] font-semibold"
                                             >
                                                 Batal
                                             </button>
@@ -472,9 +484,11 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                             </>
                         ) : (
                             <div className="flex flex-col items-center justify-center py-16 text-center">
-                                <Layers className="size-8 text-ink-muted" />
-                                <p className="mt-3 text-sm font-semibold text-ink">Pilih grup add-on</p>
-                                <p className="mt-1 text-[12px] text-ink-muted">
+                                <Layers className="text-ink-muted size-8" />
+                                <p className="text-ink mt-3 text-sm font-semibold">
+                                    Pilih grup add-on
+                                </p>
+                                <p className="text-ink-muted mt-1 text-[12px]">
                                     Atau buat grup baru untuk mulai.
                                 </p>
                             </div>
@@ -502,19 +516,24 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                     <Input
                         label="Nama grup"
                         value={groupForm.name}
-                        onChange={(event) => setGroupForm({ ...groupForm, name: event.target.value })}
+                        onChange={(event) =>
+                            setGroupForm({ ...groupForm, name: event.target.value })
+                        }
                     />
                     <label className="block space-y-1.5">
-                        <span className="block text-[13px] font-semibold text-ink">Tipe pilihan</span>
+                        <span className="text-ink block text-[13px] font-semibold">
+                            Tipe pilihan
+                        </span>
                         <select
                             value={groupForm.selection_type}
                             onChange={(event) =>
                                 setGroupForm({
                                     ...groupForm,
-                                    selection_type: event.target.value as GroupForm['selection_type'],
+                                    selection_type: event.target
+                                        .value as GroupForm['selection_type'],
                                 })
                             }
-                            className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-brand"
+                            className="border-line bg-surface text-ink focus:border-brand w-full rounded-xl border px-4 py-3 text-sm outline-none"
                         >
                             <option value="single">Pilih satu</option>
                             <option value="multiple">Pilih banyak</option>
@@ -527,7 +546,10 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                             min={0}
                             value={groupForm.min_select}
                             onChange={(event) =>
-                                setGroupForm({ ...groupForm, min_select: Number(event.target.value) })
+                                setGroupForm({
+                                    ...groupForm,
+                                    min_select: Number(event.target.value),
+                                })
                             }
                         />
                         <Input
@@ -536,18 +558,21 @@ export default function AdminAddons({ staff }: AdminPageProps) {
                             min={0}
                             value={groupForm.max_select}
                             onChange={(event) =>
-                                setGroupForm({ ...groupForm, max_select: Number(event.target.value) })
+                                setGroupForm({
+                                    ...groupForm,
+                                    max_select: Number(event.target.value),
+                                })
                             }
                         />
                     </div>
-                    <label className="flex items-center gap-2 text-[12.5px] font-medium text-ink">
+                    <label className="text-ink flex items-center gap-2 text-[12.5px] font-medium">
                         <input
                             type="checkbox"
                             checked={groupForm.is_active}
                             onChange={(event) =>
                                 setGroupForm({ ...groupForm, is_active: event.target.checked })
                             }
-                            className="size-4 accent-[#1E5B3E]"
+                            className="size-4 accent-brand"
                         />
                         Aktif
                     </label>

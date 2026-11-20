@@ -1,13 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Head } from '@inertiajs/react';
-import {
-    ImageUp,
-    Loader2,
-    Pencil,
-    Plus,
-    Search,
-    Trash2,
-} from 'lucide-react';
+import { ImageUp, Loader2, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { AdminLayout } from '@/Components/layouts/AdminLayout';
 import { Badge } from '@/Components/ui/Badge';
 import { Button } from '@/Components/ui/Button';
@@ -131,7 +124,8 @@ export default function AdminProducts({ staff }: AdminPageProps) {
         const term = search.trim().toLowerCase();
 
         return products.filter((product) => {
-            const matchesCategory = categoryFilter === 'all' || product.category_id === categoryFilter;
+            const matchesCategory =
+                categoryFilter === 'all' || product.category_id === categoryFilter;
             const matchesSearch = term === '' || product.name.toLowerCase().includes(term);
 
             return matchesCategory && matchesSearch;
@@ -313,9 +307,11 @@ export default function AdminProducts({ staff }: AdminPageProps) {
 
             <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-brand">Menu</p>
-                    <h1 className="mt-1 text-2xl font-semibold text-ink md:text-[30px]">Produk</h1>
-                    <p className="mt-1 text-[12px] text-ink-muted">
+                    <p className="text-brand text-[10.5px] font-bold tracking-[0.18em] uppercase">
+                        Menu
+                    </p>
+                    <h1 className="text-ink mt-1 text-2xl font-semibold md:text-[30px]">Produk</h1>
+                    <p className="text-ink-muted mt-1 text-[12px]">
                         {products.length} produk · atur harga, varian, add-on, dan ketersediaan.
                     </p>
                 </div>
@@ -327,12 +323,12 @@ export default function AdminProducts({ staff }: AdminPageProps) {
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
                 <div className="relative min-w-[220px] flex-1 sm:max-w-[320px]">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
+                    <Search className="text-ink-muted pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                     <input
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         placeholder="Cari produk..."
-                        className="w-full rounded-xl border border-line bg-surface py-2.5 pl-9 pr-3 text-[12.5px] text-ink outline-none focus:border-brand"
+                        className="border-line bg-surface text-ink focus:border-brand w-full rounded-xl border py-2.5 pr-3 pl-9 text-[12.5px] outline-none"
                     />
                 </div>
                 <select
@@ -342,7 +338,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                             event.target.value === 'all' ? 'all' : Number(event.target.value),
                         )
                     }
-                    className="rounded-xl border border-line bg-surface px-3 py-2.5 text-[12.5px] text-ink outline-none focus:border-brand"
+                    className="border-line bg-surface text-ink focus:border-brand rounded-xl border px-3 py-2.5 text-[12.5px] outline-none"
                 >
                     <option value="all">Semua kategori</option>
                     {categories.map((category) => (
@@ -354,21 +350,21 @@ export default function AdminProducts({ staff }: AdminPageProps) {
             </div>
 
             {error && (
-                <p className="mt-4 rounded-xl bg-danger-soft px-3.5 py-2.5 text-[12px] font-medium text-danger">
+                <p className="bg-danger-soft text-danger mt-4 rounded-xl px-3.5 py-2.5 text-[12px] font-medium">
                     {error}
                 </p>
             )}
 
             {loading ? (
-                <div className="flex items-center justify-center gap-2 py-24 text-sm text-ink-muted">
+                <div className="text-ink-muted flex items-center justify-center gap-2 py-24 text-sm">
                     <Loader2 className="size-4 animate-spin" />
                     Memuat produk...
                 </div>
             ) : (
-                <div className="mt-4 overflow-hidden rounded-2xl border border-line/70 bg-surface">
+                <div className="border-line/70 bg-surface mt-4 overflow-hidden rounded-2xl border">
                     <div className="overflow-x-auto">
                         <table className="w-full min-w-[760px] text-left text-[12.5px]">
-                            <thead className="bg-canvas text-[10px] font-bold uppercase tracking-[0.08em] text-ink-muted">
+                            <thead className="bg-canvas text-ink-muted text-[10px] font-bold tracking-[0.08em] uppercase">
                                 <tr>
                                     <th className="px-4 py-3">Produk</th>
                                     <th className="px-4 py-3">Kategori</th>
@@ -377,9 +373,10 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                     <th className="px-4 py-3 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-line/60">
+                            <tbody className="divide-line/60 divide-y">
                                 {filtered.map((product) => {
-                                    const image = product.image_url ?? resolveImageUrl(product.image_path);
+                                    const image =
+                                        product.image_url ?? resolveImageUrl(product.image_path);
                                     const category = categories.find(
                                         (item) => item.id === product.category_id,
                                     );
@@ -388,7 +385,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                         <tr key={product.id} className="align-middle">
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="size-10 shrink-0 overflow-hidden rounded-xl bg-canvas-deep">
+                                                    <div className="bg-canvas-deep size-10 shrink-0 overflow-hidden rounded-xl">
                                                         {image ? (
                                                             <img
                                                                 src={image}
@@ -396,30 +393,39 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                                 className="h-full w-full object-cover"
                                                             />
                                                         ) : (
-                                                            <CoffeeArt seed={product.name} compact />
+                                                            <CoffeeArt
+                                                                seed={product.name}
+                                                                compact
+                                                            />
                                                         )}
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p className="truncate font-semibold text-ink">
+                                                        <p className="text-ink truncate font-semibold">
                                                             {product.name}
                                                         </p>
-                                                        <p className="truncate text-[10.5px] text-ink-muted">
+                                                        <p className="text-ink-muted truncate text-[10.5px]">
                                                             {product.slug}
                                                         </p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 text-ink-muted">
+                                            <td className="text-ink-muted px-4 py-3">
                                                 {category?.name ?? '—'}
                                             </td>
-                                            <td className="px-4 py-3 font-semibold tabular text-ink">
+                                            <td className="tabular text-ink px-4 py-3 font-semibold">
                                                 {formatRupiah(product.base_price)}
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex flex-wrap gap-1">
                                                     <Badge
-                                                        tone={product.is_active ? 'best_seller' : 'sold_out'}
-                                                        label={product.is_active ? 'Aktif' : 'Nonaktif'}
+                                                        tone={
+                                                            product.is_active
+                                                                ? 'best_seller'
+                                                                : 'sold_out'
+                                                        }
+                                                        label={
+                                                            product.is_active ? 'Aktif' : 'Nonaktif'
+                                                        }
                                                     />
                                                     {product.is_sold_out && (
                                                         <Badge tone="sold_out" label="Habis" />
@@ -428,7 +434,10 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                         <Badge tone="promo" label="Promo" />
                                                     )}
                                                     {product.badge === 'best_seller' && (
-                                                        <Badge tone="best_seller" label="Terlaris" />
+                                                        <Badge
+                                                            tone="best_seller"
+                                                            label="Terlaris"
+                                                        />
                                                     )}
                                                 </div>
                                             </td>
@@ -438,15 +447,17 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                         type="button"
                                                         onClick={() => handleToggleSoldOut(product)}
                                                         disabled={togglingId === product.id}
-                                                        className="rounded-full border border-line px-2.5 py-1 text-[10.5px] font-semibold text-ink-muted transition-colors hover:border-brand/30 hover:text-brand disabled:opacity-50"
+                                                        className="border-line text-ink-muted hover:border-brand/30 hover:text-brand rounded-full border px-2.5 py-1 text-[10.5px] font-semibold transition-colors disabled:opacity-50"
                                                     >
-                                                        {product.is_sold_out ? 'Tersedia' : 'Habiskan'}
+                                                        {product.is_sold_out
+                                                            ? 'Tersedia'
+                                                            : 'Habiskan'}
                                                     </button>
                                                     <button
                                                         type="button"
                                                         onClick={() => openEdit(product)}
                                                         aria-label={`Edit ${product.name}`}
-                                                        className="grid size-8 place-items-center rounded-full text-ink-muted transition-colors hover:bg-brand-soft hover:text-brand"
+                                                        className="text-ink-muted hover:bg-brand-soft hover:text-brand grid size-8 place-items-center rounded-full transition-colors"
                                                     >
                                                         <Pencil className="size-3.5" />
                                                     </button>
@@ -454,7 +465,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                         type="button"
                                                         onClick={() => handleDelete(product)}
                                                         aria-label={`Hapus ${product.name}`}
-                                                        className="grid size-8 place-items-center rounded-full text-ink-muted transition-colors hover:bg-danger-soft hover:text-danger"
+                                                        className="text-ink-muted hover:bg-danger-soft hover:text-danger grid size-8 place-items-center rounded-full transition-colors"
                                                     >
                                                         <Trash2 className="size-3.5" />
                                                     </button>
@@ -468,7 +479,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                     </div>
 
                     {filtered.length === 0 && (
-                        <p className="px-4 py-12 text-center text-[12px] text-ink-muted">
+                        <p className="text-ink-muted px-4 py-12 text-center text-[12px]">
                             Tidak ada produk yang cocok.
                         </p>
                     )}
@@ -479,7 +490,11 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                 open={sheetOpen}
                 onClose={() => setSheetOpen(false)}
                 title={editing ? 'Edit produk' : 'Produk baru'}
-                subtitle={editing ? `#${editing.id} · ${editing.slug}` : 'Simpan dulu untuk menambah varian & gambar'}
+                subtitle={
+                    editing
+                        ? `#${editing.id} · ${editing.slug}`
+                        : 'Simpan dulu untuk menambah varian & gambar'
+                }
                 footer={
                     <div className="flex items-center gap-2 pb-1">
                         <Button variant="outline" onClick={() => setSheetOpen(false)}>
@@ -499,13 +514,15 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                             onChange={(event) => setForm({ ...form, name: event.target.value })}
                         />
                         <label className="block space-y-1.5">
-                            <span className="block text-[13px] font-semibold text-ink">Kategori</span>
+                            <span className="text-ink block text-[13px] font-semibold">
+                                Kategori
+                            </span>
                             <select
                                 value={form.category_id}
                                 onChange={(event) =>
                                     setForm({ ...form, category_id: Number(event.target.value) })
                                 }
-                                className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-brand"
+                                className="border-line bg-surface text-ink focus:border-brand w-full rounded-xl border px-4 py-3 text-sm outline-none"
                             >
                                 <option value={0} disabled>
                                     Pilih kategori
@@ -527,7 +544,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                             }
                         />
                         <label className="block space-y-1.5">
-                            <span className="block text-[13px] font-semibold text-ink">Badge</span>
+                            <span className="text-ink block text-[13px] font-semibold">Badge</span>
                             <select
                                 value={form.badge}
                                 onChange={(event) =>
@@ -536,7 +553,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                         badge: event.target.value as ProductForm['badge'],
                                     })
                                 }
-                                className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-brand"
+                                className="border-line bg-surface text-ink focus:border-brand w-full rounded-xl border px-4 py-3 text-sm outline-none"
                             >
                                 <option value="">Tanpa badge</option>
                                 <option value="promo">Promo</option>
@@ -577,8 +594,8 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                     </div>
 
                     <div>
-                        <p className="text-[13px] font-semibold text-ink">Add-on yang tersedia</p>
-                        <p className="text-[11px] text-ink-muted">
+                        <p className="text-ink text-[13px] font-semibold">Add-on yang tersedia</p>
+                        <p className="text-ink-muted text-[11px]">
                             Disimpan bersama produk. Kosongkan jika tidak ada.
                         </p>
                         <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -605,10 +622,10 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                         : [...current, group.id],
                                                 )
                                             }
-                                            className="size-4 accent-[#1E5B3E]"
+                                            className="size-4 accent-brand"
                                         />
                                         {group.name}
-                                        <span className="ml-auto text-[10px] uppercase tracking-wide opacity-70">
+                                        <span className="ml-auto text-[10px] tracking-wide uppercase opacity-70">
                                             {group.selection_type}
                                         </span>
                                     </label>
@@ -620,9 +637,9 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                     {editing ? (
                         <>
                             <div>
-                                <p className="text-[13px] font-semibold text-ink">Gambar produk</p>
+                                <p className="text-ink text-[13px] font-semibold">Gambar produk</p>
                                 <div className="mt-2 flex items-center gap-3">
-                                    <div className="size-20 overflow-hidden rounded-2xl bg-canvas-deep">
+                                    <div className="bg-canvas-deep size-20 overflow-hidden rounded-2xl">
                                         {imagePreview ? (
                                             <img
                                                 src={imagePreview}
@@ -633,7 +650,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                             <CoffeeArt seed={editing.name} compact />
                                         )}
                                     </div>
-                                    <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-2 text-[11.5px] font-semibold text-ink-muted transition-colors hover:border-brand/30 hover:text-brand">
+                                    <label className="border-line bg-surface text-ink-muted hover:border-brand/30 hover:text-brand inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-2 text-[11.5px] font-semibold transition-colors">
                                         {uploading ? (
                                             <Loader2 className="size-3.5 animate-spin" />
                                         ) : (
@@ -648,16 +665,16 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                             className="sr-only"
                                         />
                                     </label>
-                                    <span className="text-[10.5px] text-ink-muted">
+                                    <span className="text-ink-muted text-[10.5px]">
                                         JPG/PNG/WebP maks 2 MB
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="border-t border-line/70 pt-4">
+                            <div className="border-line/70 border-t pt-4">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-[13px] font-semibold text-ink">Varian</p>
-                                    <span className="text-[10.5px] text-ink-muted">
+                                    <p className="text-ink text-[13px] font-semibold">Varian</p>
+                                    <span className="text-ink-muted text-[10.5px]">
                                         {editing.variants.length} varian
                                     </span>
                                 </div>
@@ -666,21 +683,21 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                     {editing.variants.map((variant) => (
                                         <div
                                             key={variant.id}
-                                            className="flex items-center gap-2 rounded-xl border border-line/70 bg-surface px-3 py-2"
+                                            className="border-line/70 bg-surface flex items-center gap-2 rounded-xl border px-3 py-2"
                                         >
-                                            <span className="rounded-full bg-canvas px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wide text-ink-muted">
+                                            <span className="bg-canvas text-ink-muted rounded-full px-2 py-0.5 text-[9.5px] font-bold tracking-wide uppercase">
                                                 {variant.type}
                                             </span>
-                                            <span className="text-[12px] font-semibold text-ink">
+                                            <span className="text-ink text-[12px] font-semibold">
                                                 {variant.name}
                                             </span>
-                                            <span className="text-[11px] tabular text-ink-muted">
+                                            <span className="tabular text-ink-muted text-[11px]">
                                                 {variant.price_delta > 0
                                                     ? `+${formatRupiah(variant.price_delta)}`
                                                     : 'Gratis'}
                                             </span>
                                             {variant.is_default && (
-                                                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[9.5px] font-bold text-brand">
+                                                <span className="bg-brand-soft text-brand rounded-full px-2 py-0.5 text-[9.5px] font-bold">
                                                     Default
                                                 </span>
                                             )}
@@ -698,7 +715,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                         })
                                                     }
                                                     aria-label={`Edit varian ${variant.name}`}
-                                                    className="grid size-7 place-items-center rounded-full text-ink-muted hover:bg-brand-soft hover:text-brand"
+                                                    className="text-ink-muted hover:bg-brand-soft hover:text-brand grid size-7 place-items-center rounded-full"
                                                 >
                                                     <Pencil className="size-3" />
                                                 </button>
@@ -706,7 +723,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                     type="button"
                                                     onClick={() => handleVariantDelete(variant)}
                                                     aria-label={`Hapus varian ${variant.name}`}
-                                                    className="grid size-7 place-items-center rounded-full text-ink-muted hover:bg-danger-soft hover:text-danger"
+                                                    className="text-ink-muted hover:bg-danger-soft hover:text-danger grid size-7 place-items-center rounded-full"
                                                 >
                                                     <Trash2 className="size-3" />
                                                 </button>
@@ -715,7 +732,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                     ))}
                                 </div>
 
-                                <div className="mt-3 rounded-xl bg-canvas p-3">
+                                <div className="bg-canvas mt-3 rounded-xl p-3">
                                     <div className="grid gap-2 sm:grid-cols-[110px_1fr_120px]">
                                         <select
                                             value={variantForm.type}
@@ -725,7 +742,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                     type: event.target.value as VariantForm['type'],
                                                 })
                                             }
-                                            className="rounded-lg border border-line bg-surface px-2 py-2 text-[12px] text-ink outline-none focus:border-brand"
+                                            className="border-line bg-surface text-ink focus:border-brand rounded-lg border px-2 py-2 text-[12px] outline-none"
                                         >
                                             <option value="size">Ukuran</option>
                                             <option value="temperature">Suhu</option>
@@ -733,10 +750,13 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                         <input
                                             value={variantForm.name}
                                             onChange={(event) =>
-                                                setVariantForm({ ...variantForm, name: event.target.value })
+                                                setVariantForm({
+                                                    ...variantForm,
+                                                    name: event.target.value,
+                                                })
                                             }
                                             placeholder="Nama varian"
-                                            className="rounded-lg border border-line bg-surface px-3 py-2 text-[12px] text-ink outline-none focus:border-brand"
+                                            className="border-line bg-surface text-ink focus:border-brand rounded-lg border px-3 py-2 text-[12px] outline-none"
                                         />
                                         <input
                                             type="number"
@@ -748,11 +768,11 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                 })
                                             }
                                             placeholder="+Harga"
-                                            className="rounded-lg border border-line bg-surface px-3 py-2 text-[12px] text-ink outline-none focus:border-brand"
+                                            className="border-line bg-surface text-ink focus:border-brand rounded-lg border px-3 py-2 text-[12px] outline-none"
                                         />
                                     </div>
                                     <div className="mt-2 flex items-center gap-3">
-                                        <label className="flex items-center gap-1.5 text-[11.5px] text-ink-muted">
+                                        <label className="text-ink-muted flex items-center gap-1.5 text-[11.5px]">
                                             <input
                                                 type="checkbox"
                                                 checked={variantForm.is_default}
@@ -762,7 +782,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                                         is_default: event.target.checked,
                                                     })
                                                 }
-                                                className="size-3.5 accent-[#1E5B3E]"
+                                                className="size-3.5 accent-brand"
                                             />
                                             Default
                                         </label>
@@ -777,7 +797,7 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                                             <button
                                                 type="button"
                                                 onClick={() => setVariantForm(emptyVariant())}
-                                                className="text-[11px] font-semibold text-ink-muted hover:text-ink"
+                                                className="text-ink-muted hover:text-ink text-[11px] font-semibold"
                                             >
                                                 Batal
                                             </button>
@@ -787,8 +807,9 @@ export default function AdminProducts({ staff }: AdminPageProps) {
                             </div>
                         </>
                     ) : (
-                        <p className="rounded-xl border border-dashed border-line px-3 py-3 text-[11.5px] text-ink-muted">
-                            Simpan produk terlebih dahulu untuk mengunggah gambar dan menambah varian.
+                        <p className="border-line text-ink-muted rounded-xl border border-dashed px-3 py-3 text-[11.5px]">
+                            Simpan produk terlebih dahulu untuk mengunggah gambar dan menambah
+                            varian.
                         </p>
                     )}
                 </div>
@@ -807,12 +828,12 @@ function Toggle({
     onChange: (checked: boolean) => void;
 }) {
     return (
-        <label className="flex items-center gap-2 text-[12.5px] font-medium text-ink">
+        <label className="text-ink flex items-center gap-2 text-[12.5px] font-medium">
             <input
                 type="checkbox"
                 checked={checked}
                 onChange={(event) => onChange(event.target.checked)}
-                className="size-4 accent-[#1E5B3E]"
+                className="size-4 accent-brand"
             />
             {label}
         </label>

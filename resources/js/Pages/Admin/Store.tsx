@@ -114,9 +114,11 @@ export default function AdminStore({ staff }: AdminPageProps) {
 
             <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-brand">Pengaturan</p>
-                    <h1 className="mt-1 text-2xl font-semibold text-ink md:text-[30px]">Toko</h1>
-                    <p className="mt-1 text-[12px] text-ink-muted">
+                    <p className="text-brand text-[10.5px] font-bold tracking-[0.18em] uppercase">
+                        Pengaturan
+                    </p>
+                    <h1 className="text-ink mt-1 text-2xl font-semibold md:text-[30px]">Toko</h1>
+                    <p className="text-ink-muted mt-1 text-[12px]">
                         Identitas, lokasi, jam buka, dan batas pembayaran.
                     </p>
                 </div>
@@ -127,31 +129,35 @@ export default function AdminStore({ staff }: AdminPageProps) {
             </div>
 
             {error && (
-                <p className="mt-4 rounded-xl bg-danger-soft px-3.5 py-2.5 text-[12px] font-medium text-danger">
+                <p className="bg-danger-soft text-danger mt-4 rounded-xl px-3.5 py-2.5 text-[12px] font-medium">
                     {error}
                 </p>
             )}
 
             {loading ? (
-                <div className="flex items-center justify-center gap-2 py-24 text-sm text-ink-muted">
+                <div className="text-ink-muted flex items-center justify-center gap-2 py-24 text-sm">
                     <Loader2 className="size-4 animate-spin" />
                     Memuat pengaturan...
                 </div>
             ) : (
                 <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
                     <div className="space-y-4">
-                        <section className="rounded-2xl border border-line/70 bg-surface p-4">
+                        <section className="border-line/70 bg-surface rounded-2xl border p-4">
                             <div className="flex items-center gap-2">
-                                <span className="grid size-8 place-items-center rounded-full bg-brand-soft text-brand">
+                                <span className="bg-brand-soft text-brand grid size-8 place-items-center rounded-full">
                                     <Store className="size-4" />
                                 </span>
-                                <h2 className="text-[15px] font-semibold text-ink">Identitas toko</h2>
+                                <h2 className="text-ink text-[15px] font-semibold">
+                                    Identitas toko
+                                </h2>
                             </div>
                             <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <Input
                                     label="Nama toko"
                                     value={form.name}
-                                    onChange={(event) => setForm({ ...form, name: event.target.value })}
+                                    onChange={(event) =>
+                                        setForm({ ...form, name: event.target.value })
+                                    }
                                 />
                                 <Input
                                     label="Zona waktu"
@@ -173,12 +179,12 @@ export default function AdminStore({ staff }: AdminPageProps) {
                             </div>
                         </section>
 
-                        <section className="rounded-2xl border border-line/70 bg-surface p-4">
+                        <section className="border-line/70 bg-surface rounded-2xl border p-4">
                             <div className="flex items-center gap-2">
-                                <span className="grid size-8 place-items-center rounded-full bg-brand-soft text-brand">
+                                <span className="bg-brand-soft text-brand grid size-8 place-items-center rounded-full">
                                     <MapPin className="size-4" />
                                 </span>
-                                <h2 className="text-[15px] font-semibold text-ink">Lokasi</h2>
+                                <h2 className="text-ink text-[15px] font-semibold">Lokasi</h2>
                             </div>
                             <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <Input
@@ -199,16 +205,18 @@ export default function AdminStore({ staff }: AdminPageProps) {
                             </div>
                         </section>
 
-                        <section className="rounded-2xl border border-line/70 bg-surface p-4">
+                        <section className="border-line/70 bg-surface rounded-2xl border p-4">
                             <div className="flex items-center gap-2">
-                                <span className="grid size-8 place-items-center rounded-full bg-brand-soft text-brand">
+                                <span className="bg-brand-soft text-brand grid size-8 place-items-center rounded-full">
                                     <Clock3 className="size-4" />
                                 </span>
-                                <h2 className="text-[15px] font-semibold text-ink">Jam operasional</h2>
+                                <h2 className="text-ink text-[15px] font-semibold">
+                                    Jam operasional
+                                </h2>
                             </div>
                             <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <label className="space-y-1.5">
-                                    <span className="block text-[13px] font-semibold text-ink">
+                                    <span className="text-ink block text-[13px] font-semibold">
                                         Jam buka
                                     </span>
                                     <input
@@ -217,11 +225,11 @@ export default function AdminStore({ staff }: AdminPageProps) {
                                         onChange={(event) =>
                                             setForm({ ...form, opening_time: event.target.value })
                                         }
-                                        className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-brand"
+                                        className="border-line bg-surface text-ink focus:border-brand w-full rounded-xl border px-4 py-3 text-sm outline-none"
                                     />
                                 </label>
                                 <label className="space-y-1.5">
-                                    <span className="block text-[13px] font-semibold text-ink">
+                                    <span className="text-ink block text-[13px] font-semibold">
                                         Jam tutup
                                     </span>
                                     <input
@@ -230,14 +238,16 @@ export default function AdminStore({ staff }: AdminPageProps) {
                                         onChange={(event) =>
                                             setForm({ ...form, closing_time: event.target.value })
                                         }
-                                        className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-brand"
+                                        className="border-line bg-surface text-ink focus:border-brand w-full rounded-xl border px-4 py-3 text-sm outline-none"
                                     />
                                 </label>
                             </div>
                         </section>
 
-                        <section className="rounded-2xl border border-line/70 bg-surface p-4">
-                            <h2 className="text-[15px] font-semibold text-ink">Pembayaran & pengantaran</h2>
+                        <section className="border-line/70 bg-surface rounded-2xl border p-4">
+                            <h2 className="text-ink text-[15px] font-semibold">
+                                Pembayaran & pengantaran
+                            </h2>
                             <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <Input
                                     label="Batas waktu pembayaran (menit)"
@@ -265,7 +275,7 @@ export default function AdminStore({ staff }: AdminPageProps) {
                                     }
                                 />
                             </div>
-                            <label className="mt-3 flex items-center gap-2 text-[12.5px] font-medium text-ink">
+                            <label className="text-ink mt-3 flex items-center gap-2 text-[12.5px] font-medium">
                                 <input
                                     type="checkbox"
                                     checked={form.is_accepting_orders}
@@ -275,7 +285,7 @@ export default function AdminStore({ staff }: AdminPageProps) {
                                             is_accepting_orders: event.target.checked,
                                         })
                                     }
-                                    className="size-4 accent-[#1E5B3E]"
+                                    className="size-4 accent-brand"
                                 />
                                 Menerima pesanan saat ini
                             </label>
@@ -283,26 +293,26 @@ export default function AdminStore({ staff }: AdminPageProps) {
                     </div>
 
                     <aside className="space-y-3 lg:sticky lg:top-6">
-                        <div className="rounded-2xl border border-line/70 bg-surface p-4">
-                            <p className="text-[10.5px] font-bold uppercase tracking-[0.12em] text-ink-muted">
+                        <div className="border-line/70 bg-surface rounded-2xl border p-4">
+                            <p className="text-ink-muted text-[10.5px] font-bold tracking-[0.12em] uppercase">
                                 Status toko
                             </p>
                             <p
                                 className={
                                     form.is_accepting_orders
-                                        ? 'mt-1 text-[15px] font-semibold text-success'
-                                        : 'mt-1 text-[15px] font-semibold text-danger'
+                                        ? 'text-success mt-1 text-[15px] font-semibold'
+                                        : 'text-danger mt-1 text-[15px] font-semibold'
                                 }
                             >
                                 {form.is_accepting_orders ? 'Menerima pesanan' : 'Sedang tutup'}
                             </p>
-                            <p className="mt-1 text-[11.5px] text-ink-muted">
+                            <p className="text-ink-muted mt-1 text-[11.5px]">
                                 {form.opening_time && form.closing_time
                                     ? `Jam buka ${form.opening_time}–${form.closing_time}`
                                     : 'Jam operasional belum diatur'}
                             </p>
                             {settings && (
-                                <p className="mt-3 border-t border-line/60 pt-3 text-[10.5px] text-ink-muted">
+                                <p className="border-line/60 text-ink-muted mt-3 border-t pt-3 text-[10.5px]">
                                     Store ID {settings.store_id} · zona {settings.timezone}
                                 </p>
                             )}
@@ -319,7 +329,7 @@ export default function AdminStore({ staff }: AdminPageProps) {
                             Simpan pengaturan
                         </Button>
 
-                        <p className="px-1 text-[10.5px] leading-relaxed text-ink-muted">
+                        <p className="text-ink-muted px-1 text-[10.5px] leading-relaxed">
                             Perubahan batas pembayaran dan minimal antar berlaku untuk checkout
                             berikutnya.
                         </p>

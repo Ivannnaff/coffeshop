@@ -20,7 +20,8 @@ export function StatusTimeline({ status, mode }: { status: OrderStatus; mode: st
                                     'mx-auto grid size-7 place-items-center rounded-full border-2 transition-colors',
                                     done && 'border-brand bg-brand text-white',
                                     current && 'border-brand bg-surface text-brand',
-                                    step.state === 'upcoming' && 'border-line bg-surface text-ink-muted',
+                                    step.state === 'upcoming' &&
+                                        'border-line bg-surface text-ink-muted',
                                 )}
                             >
                                 {done ? (
@@ -37,7 +38,7 @@ export function StatusTimeline({ status, mode }: { status: OrderStatus; mode: st
                         </div>
                         <span
                             className={cn(
-                                'text-center text-[10px] font-semibold leading-tight',
+                                'text-center text-[12px] leading-tight font-semibold',
                                 current ? 'text-brand' : done ? 'text-ink' : 'text-ink-muted',
                             )}
                         >

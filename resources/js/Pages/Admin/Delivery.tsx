@@ -198,9 +198,13 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
 
             <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-brand">Layanan</p>
-                    <h1 className="mt-1 text-2xl font-semibold text-ink md:text-[30px]">Pengantaran</h1>
-                    <p className="mt-1 text-[12px] text-ink-muted">
+                    <p className="text-brand text-[10.5px] font-bold tracking-[0.18em] uppercase">
+                        Layanan
+                    </p>
+                    <h1 className="text-ink mt-1 text-2xl font-semibold md:text-[30px]">
+                        Pengantaran
+                    </h1>
+                    <p className="text-ink-muted mt-1 text-[12px]">
                         Zona jarak, biaya antar, dan diskon berdasarkan subtotal.
                     </p>
                 </div>
@@ -211,28 +215,33 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
             </div>
 
             {error && (
-                <p className="mt-4 rounded-xl bg-danger-soft px-3.5 py-2.5 text-[12px] font-medium text-danger">
+                <p className="bg-danger-soft text-danger mt-4 rounded-xl px-3.5 py-2.5 text-[12px] font-medium">
                     {error}
                 </p>
             )}
 
             {loading ? (
-                <div className="flex items-center justify-center gap-2 py-24 text-sm text-ink-muted">
+                <div className="text-ink-muted flex items-center justify-center gap-2 py-24 text-sm">
                     <Loader2 className="size-4 animate-spin" />
                     Memuat zona...
                 </div>
             ) : (
                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
                     {zones.map((zone) => (
-                        <section key={zone.id} className="rounded-2xl border border-line/70 bg-surface p-4">
+                        <section
+                            key={zone.id}
+                            className="border-line/70 bg-surface rounded-2xl border p-4"
+                        >
                             <div className="flex items-start justify-between gap-2">
                                 <div className="flex items-center gap-2.5">
-                                    <span className="grid size-10 place-items-center rounded-full bg-brand-soft text-brand">
+                                    <span className="bg-brand-soft text-brand grid size-10 place-items-center rounded-full">
                                         <Truck className="size-4" />
                                     </span>
                                     <div>
-                                        <p className="text-[14px] font-semibold text-ink">{zone.name}</p>
-                                        <p className="text-[10.5px] text-ink-muted">
+                                        <p className="text-ink text-[14px] font-semibold">
+                                            {zone.name}
+                                        </p>
+                                        <p className="text-ink-muted text-[10.5px]">
                                             Maks {zone.max_distance_km} km · ongkir{' '}
                                             {formatRupiah(zone.base_fee)}
                                             {zone.free_fee_min_subtotal
@@ -246,7 +255,7 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
                                         type="button"
                                         onClick={() => openEdit(zone)}
                                         aria-label={`Edit ${zone.name}`}
-                                        className="grid size-8 place-items-center rounded-full text-ink-muted hover:bg-brand-soft hover:text-brand"
+                                        className="text-ink-muted hover:bg-brand-soft hover:text-brand grid size-8 place-items-center rounded-full"
                                     >
                                         <Pencil className="size-3.5" />
                                     </button>
@@ -254,22 +263,22 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
                                         type="button"
                                         onClick={() => handleZoneDelete(zone)}
                                         aria-label={`Hapus ${zone.name}`}
-                                        className="grid size-8 place-items-center rounded-full text-ink-muted hover:bg-danger-soft hover:text-danger"
+                                        className="text-ink-muted hover:bg-danger-soft hover:text-danger grid size-8 place-items-center rounded-full"
                                     >
                                         <Trash2 className="size-3.5" />
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="mt-3 border-t border-line/60 pt-3">
+                            <div className="border-line/60 mt-3 border-t pt-3">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink-muted">
+                                    <p className="text-ink-muted text-[11px] font-bold tracking-[0.1em] uppercase">
                                         Aturan ongkir
                                     </p>
                                     <button
                                         type="button"
                                         onClick={() => openFee(zone)}
-                                        className="inline-flex items-center gap-1 rounded-full border border-line px-2.5 py-1 text-[10.5px] font-semibold text-ink-muted hover:border-brand/30 hover:text-brand"
+                                        className="border-line text-ink-muted hover:border-brand/30 hover:text-brand inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10.5px] font-semibold"
                                     >
                                         <Plus className="size-3" />
                                         Tambah
@@ -278,31 +287,34 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
 
                                 <div className="mt-2 space-y-1.5">
                                     {zone.fee_rules.length === 0 && (
-                                        <p className="rounded-lg border border-dashed border-line px-3 py-3 text-[11px] text-ink-muted">
+                                        <p className="border-line text-ink-muted rounded-lg border border-dashed px-3 py-3 text-[11px]">
                                             Belum ada aturan tambahan.
                                         </p>
                                     )}
                                     {zone.fee_rules.map((rule) => (
                                         <div
                                             key={rule.id}
-                                            className="flex items-center gap-2 rounded-lg bg-canvas px-2.5 py-2 text-[11.5px]"
+                                            className="bg-canvas flex items-center gap-2 rounded-lg px-2.5 py-2 text-[11.5px]"
                                         >
                                             <span className="text-ink-muted">
-                                                Subtotal ≥ {formatRupiah(rule.min_eligible_subtotal)}
+                                                Subtotal ≥{' '}
+                                                {formatRupiah(rule.min_eligible_subtotal)}
                                             </span>
-                                            <span className="font-semibold text-brand">
+                                            <span className="text-brand font-semibold">
                                                 {rule.discount_type === 'free'
                                                     ? 'Gratis ongkir'
                                                     : `Diskon ${rule.discount_value}%`}
                                             </span>
                                             {!rule.is_active && (
-                                                <span className="text-[10px] text-ink-muted">nonaktif</span>
+                                                <span className="text-ink-muted text-[10px]">
+                                                    nonaktif
+                                                </span>
                                             )}
                                             <button
                                                 type="button"
                                                 onClick={() => handleFeeDelete(rule)}
                                                 aria-label="Hapus aturan"
-                                                className="ml-auto grid size-6 place-items-center rounded-full text-ink-muted hover:bg-danger-soft hover:text-danger"
+                                                className="text-ink-muted hover:bg-danger-soft hover:text-danger ml-auto grid size-6 place-items-center rounded-full"
                                             >
                                                 <Trash2 className="size-3" />
                                             </button>
@@ -314,7 +326,7 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
                     ))}
 
                     {zones.length === 0 && (
-                        <p className="rounded-2xl border border-dashed border-line px-4 py-16 text-center text-[12px] text-ink-muted lg:col-span-2">
+                        <p className="border-line text-ink-muted rounded-2xl border border-dashed px-4 py-16 text-center text-[12px] lg:col-span-2">
                             Belum ada zona pengantaran.
                         </p>
                     )}
@@ -383,14 +395,14 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
                             }
                         />
                     </div>
-                    <label className="flex items-center gap-2 text-[12.5px] font-medium text-ink">
+                    <label className="text-ink flex items-center gap-2 text-[12.5px] font-medium">
                         <input
                             type="checkbox"
                             checked={zoneForm.is_active}
                             onChange={(event) =>
                                 setZoneForm({ ...zoneForm, is_active: event.target.checked })
                             }
-                            className="size-4 accent-[#1E5B3E]"
+                            className="size-4 accent-brand"
                         />
                         Aktif
                     </label>
@@ -426,7 +438,9 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
                         }
                     />
                     <label className="block space-y-1.5">
-                        <span className="block text-[13px] font-semibold text-ink">Jenis diskon</span>
+                        <span className="text-ink block text-[13px] font-semibold">
+                            Jenis diskon
+                        </span>
                         <select
                             value={feeForm.discount_type}
                             onChange={(event) =>
@@ -435,7 +449,7 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
                                     discount_type: event.target.value as FeeForm['discount_type'],
                                 })
                             }
-                            className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-brand"
+                            className="border-line bg-surface text-ink focus:border-brand w-full rounded-xl border px-4 py-3 text-sm outline-none"
                         >
                             <option value="free">Gratis ongkir</option>
                             <option value="percent">Diskon persen</option>
@@ -456,14 +470,14 @@ export default function AdminDelivery({ staff }: AdminPageProps) {
                             }
                         />
                     )}
-                    <label className="flex items-center gap-2 text-[12.5px] font-medium text-ink">
+                    <label className="text-ink flex items-center gap-2 text-[12.5px] font-medium">
                         <input
                             type="checkbox"
                             checked={feeForm.is_active}
                             onChange={(event) =>
                                 setFeeForm({ ...feeForm, is_active: event.target.checked })
                             }
-                            className="size-4 accent-[#1E5B3E]"
+                            className="size-4 accent-brand"
                         />
                         Aktif
                     </label>

@@ -21,8 +21,8 @@ createInertiaApp({
         return page.default;
     },
     setup({ el, App, props }) {
-        const initialCart =
-            ((props.initialPage.props as { cart?: Cart | null }).cart ?? null) as Cart | null;
+        const initialCart = ((props.initialPage.props as { cart?: Cart | null }).cart ??
+            null) as Cart | null;
 
         const root = createRoot(el);
         root.render(
@@ -34,6 +34,6 @@ createInertiaApp({
         );
     },
     progress: {
-        color: '#1E5B3E',
+        color: '#B35A22',
     },
 });

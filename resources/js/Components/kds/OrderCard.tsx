@@ -70,20 +70,23 @@ export function OrderCard({ order, now, busy, onAction }: OrderCardProps) {
     return (
         <article
             className={cn(
-                'animate-fade-in rounded-2xl border border-l-[3px] border-line/70 bg-surface p-3.5 shadow-[0_2px_10px_-8px_rgba(24,33,28,0.4)]',
+                'animate-fade-in border-line/70 bg-surface rounded-2xl border border-l-[3px] p-3.5 shadow-[0_2px_10px_-8px_rgba(24,33,28,0.4)]',
                 ACCENT[order.status],
             )}
         >
             <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                    <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-ink-muted">
+                    <p className="text-ink-muted flex items-center gap-1.5 text-[11px] font-bold tracking-[0.08em] uppercase">
                         {order.status === 'PAID' && (
-                            <span className="size-1.5 animate-pulse rounded-full bg-warning" aria-hidden="true" />
+                            <span
+                                className="bg-warning size-1.5 animate-pulse rounded-full"
+                                aria-hidden="true"
+                            />
                         )}
                         #{order.order_number}
                     </p>
-                    <p className="mt-1 flex items-center gap-1.5 text-[12.5px] font-semibold text-ink">
-                        <ModeIcon className="size-3.5 shrink-0 text-ink-muted" />
+                    <p className="text-ink mt-1 flex items-center gap-1.5 text-[12.5px] font-semibold">
+                        <ModeIcon className="text-ink-muted size-3.5 shrink-0" />
                         {meta.label}
                         <span className="text-ink-muted">·</span>
                         <span className="truncate">{order.customer_name}</span>
@@ -91,7 +94,7 @@ export function OrderCard({ order, now, busy, onAction }: OrderCardProps) {
                 </div>
                 <span
                     className={cn(
-                        'inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[10.5px] font-bold tabular',
+                        'tabular inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[10.5px] font-bold',
                         timerTone,
                     )}
                 >
@@ -100,9 +103,9 @@ export function OrderCard({ order, now, busy, onAction }: OrderCardProps) {
                 </span>
             </div>
 
-            <p className="mt-1.5 truncate text-[11px] text-ink-muted">{location}</p>
+            <p className="text-ink-muted mt-1.5 truncate text-[11px]">{location}</p>
 
-            <ul className="mt-3 space-y-2 border-t border-line/60 pt-3">
+            <ul className="border-line/60 mt-3 space-y-2 border-t pt-3">
                 {order.items.map((item, index) => {
                     const details = [
                         item.size_name,
@@ -114,18 +117,20 @@ export function OrderCard({ order, now, busy, onAction }: OrderCardProps) {
 
                     return (
                         <li key={`${item.product_name}-${index}`} className="flex gap-2">
-                            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-md bg-brand-soft text-[10px] font-bold text-brand">
+                            <span className="bg-brand-soft text-brand mt-0.5 grid size-5 shrink-0 place-items-center rounded-md text-[10px] font-bold">
                                 {item.qty}×
                             </span>
                             <div className="min-w-0 flex-1">
-                                <p className="text-[12.5px] font-semibold leading-snug text-ink">
+                                <p className="text-ink text-[12.5px] leading-snug font-semibold">
                                     {item.product_name}
                                 </p>
                                 {details && (
-                                    <p className="text-[10.5px] leading-snug text-ink-muted">{details}</p>
+                                    <p className="text-ink-muted text-[10.5px] leading-snug">
+                                        {details}
+                                    </p>
                                 )}
                                 {item.note && (
-                                    <p className="mt-0.5 rounded-md bg-warning-soft px-1.5 py-0.5 text-[10.5px] font-medium text-warning">
+                                    <p className="bg-warning-soft text-warning mt-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-medium">
                                         “{item.note}”
                                     </p>
                                 )}
@@ -136,7 +141,7 @@ export function OrderCard({ order, now, busy, onAction }: OrderCardProps) {
             </ul>
 
             {order.pickup_note && (
-                <p className="mt-2.5 rounded-lg bg-canvas-deep px-2.5 py-1.5 text-[11px] text-ink">
+                <p className="bg-canvas-deep text-ink mt-2.5 rounded-lg px-2.5 py-1.5 text-[11px]">
                     <span className="font-semibold">Catatan: </span>
                     {order.pickup_note}
                 </p>

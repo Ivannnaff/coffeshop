@@ -25,7 +25,10 @@ const placeholderImages: [RegExp, string][] = [
     [/sandwich|roti/i, '/images/products/sandwich.jpg'],
     [/fries|nugget|kulit|platter/i, '/images/products/fries.jpg'],
     [/americano|iced|cold brew/i, '/images/products/iced-coffee.jpg'],
-    [/coffee|kopi|latte|cappuccino|moccacino|aren|caramel|vanilla|hazelnut|butterscotch/i, '/images/products/coffee.jpg'],
+    [
+        /coffee|kopi|latte|cappuccino|moccacino|aren|caramel|vanilla|hazelnut|butterscotch/i,
+        '/images/products/coffee.jpg',
+    ],
 ];
 
 export function placeholderProductImage(name: string): string | null {
@@ -43,6 +46,17 @@ export function resolveProductImage(product: Product): string | null {
         catalogImages[product.slug] ??
         placeholderProductImage(product.name)
     );
+}
+
+/** Dipakai untuk baris riwayat yang hanya menyimpan nama produk, bukan objek Product. */
+export function resolveProductImageByName(name: string): string | null {
+    const slug = name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+
+    return catalogImages[slug] ?? placeholderProductImage(name);
 }
 
 export function defaultVariantIds(product: Product): number[] {
@@ -75,7 +89,11 @@ export function isProductOrderable(product: Product): boolean {
     return product.is_active && !product.is_sold_out;
 }
 
-export function priceWithExtras(product: Product, variantIds: number[], addonIds: number[]): number {
+export function priceWithExtras(
+    product: Product,
+    variantIds: number[],
+    addonIds: number[],
+): number {
     const variants = product.variants
         .filter((variant) => variantIds.includes(variant.id))
         .reduce((sum, variant) => sum + variant.price_delta, 0);

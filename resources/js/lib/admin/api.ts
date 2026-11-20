@@ -32,7 +32,10 @@ export async function createCategory(payload: Record<string, unknown>): Promise<
     return response.data.data;
 }
 
-export async function updateCategory(id: number, payload: Record<string, unknown>): Promise<Category> {
+export async function updateCategory(
+    id: number,
+    payload: Record<string, unknown>,
+): Promise<Category> {
     const response = await client.put<{ data: Category }>(`/categories/${id}`, payload);
 
     return response.data.data;
@@ -54,7 +57,10 @@ export async function createProduct(payload: Record<string, unknown>): Promise<A
     return response.data.data;
 }
 
-export async function updateProduct(id: number, payload: Record<string, unknown>): Promise<AdminProduct> {
+export async function updateProduct(
+    id: number,
+    payload: Record<string, unknown>,
+): Promise<AdminProduct> {
     const response = await client.put<{ data: AdminProduct }>(`/products/${id}`, payload);
 
     return response.data.data;
@@ -90,7 +96,9 @@ export async function syncProductAddonGroups(id: number, addonGroupIds: number[]
 }
 
 export async function getProductVariants(productId: number): Promise<ProductVariant[]> {
-    const response = await client.get<{ data: ProductVariant[] }>(`/products/${productId}/variants`);
+    const response = await client.get<{ data: ProductVariant[] }>(
+        `/products/${productId}/variants`,
+    );
 
     return response.data.data;
 }
@@ -107,7 +115,10 @@ export async function createVariant(
     return response.data.data;
 }
 
-export async function updateVariant(id: number, payload: Record<string, unknown>): Promise<ProductVariant> {
+export async function updateVariant(
+    id: number,
+    payload: Record<string, unknown>,
+): Promise<ProductVariant> {
     const response = await client.put<{ data: ProductVariant }>(`/variants/${id}`, payload);
 
     return response.data.data;
@@ -177,7 +188,10 @@ export async function createTable(payload: Record<string, unknown>): Promise<Adm
     return response.data.data;
 }
 
-export async function updateTable(id: number, payload: Record<string, unknown>): Promise<AdminTable> {
+export async function updateTable(
+    id: number,
+    payload: Record<string, unknown>,
+): Promise<AdminTable> {
     const response = await client.put<{ data: AdminTable }>(`/tables/${id}`, payload);
 
     return response.data.data;
@@ -199,7 +213,9 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     return response.data.data;
 }
 
-export async function updateStoreSettings(payload: Record<string, unknown>): Promise<StoreSettings> {
+export async function updateStoreSettings(
+    payload: Record<string, unknown>,
+): Promise<StoreSettings> {
     const response = await client.put<{ data: StoreSettings }>('/store-settings', payload);
 
     return response.data.data;
