@@ -75,15 +75,17 @@ class SecurityHeaders
 
         // Dokumentasi API memakai Tailwind dari CDN dan hanya tersedia di non-production.
         if (! $isProduction) {
+            $viteOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+
             $scriptSrc[] = 'https://cdn.tailwindcss.com';
-            $scriptSrc[] = 'http://localhost:5173';
-            $scriptSrc[] = 'http://127.0.0.1:5173';
-            $connectSrc[] = 'http://localhost:5173';
-            $connectSrc[] = 'http://127.0.0.1:5173';
-            $connectSrc[] = 'ws://localhost:5173';
-            $connectSrc[] = 'ws://127.0.0.1:5173';
-            $connectSrc[] = 'http://localhost:8080';
-            $connectSrc[] = 'ws://localhost:8080';
+            $scriptSrc = array_merge($scriptSrc, $viteOrigins);
+            $styleSrc = array_merge($styleSrc, $viteOrigins);
+            $connectSrc = array_merge($connectSrc, $viteOrigins, [
+                'ws://localhost:5173',
+                'ws://127.0.0.1:5173',
+                'http://localhost:8080',
+                'ws://localhost:8080',
+            ]);
         }
 
         $realtimeUrl = trim((string) config('menanti.realtime_url', ''));
