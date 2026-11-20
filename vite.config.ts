@@ -20,6 +20,9 @@ export default defineConfig({
         },
     },
     server: {
+        // CSP tidak menerima [::1] sebagai source; paksa IPv4 agar @vite()
+        // menghasilkan http://127.0.0.1:5173 yang diizinkan header CSP.
+        host: '127.0.0.1',
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
